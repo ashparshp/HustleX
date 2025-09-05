@@ -27,7 +27,7 @@ const defaultSkills = [
 async function initDb() {
   try {
     await mongoose.connect(
-      "mongodb+srv://ashparsh:nVksHlUQaCLzVdfG@cluster0.bepaxx0.mongodb.net/",
+      "MONGODB_URI",
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
