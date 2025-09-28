@@ -10,7 +10,7 @@ const TimeBlockHighlight = ({
   currentWeek,
 }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [displayInHours, setDisplayInHours] = useState(false);
+  const [displayInHours, setDisplayInHours] = useState(true);
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   const currentDayIndex = useMemo(() => {
@@ -117,7 +117,11 @@ const TimeBlockHighlight = ({
               <div
                 className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full ${
                   isDark
-                    ? "bg-blue-900/50 text-blue-300"
+                    ? displayInHours
+                      ? "bg-orange-900/50 text-orange-300"
+                      : "bg-blue-900/50 text-blue-300"
+                    : displayInHours
+                    ? "bg-orange-100 text-orange-700"
                     : "bg-blue-100 text-blue-700"
                 }`}
               >
@@ -184,7 +188,13 @@ const TimeBlockHighlight = ({
               </p>
               <p
                 className={`text-xs mt-1 ${
-                  isDark ? "text-gray-400" : "text-gray-600"
+                  isDark
+                    ? displayInHours
+                      ? "text-orange-400"
+                      : "text-blue-400"
+                    : displayInHours
+                    ? "text-orange-600"
+                    : "text-blue-600"
                 }`}
               >
                 Starts at {upcomingActivity.startTime}
