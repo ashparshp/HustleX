@@ -77,6 +77,7 @@ app.use("/api/working-hours", require("./routes/workingHours"));
 app.use("/api/skills", require("./routes/skills"));
 app.use("/api/schedules", require("./routes/schedule"));
 app.use("/api/timetables", require("./routes/timetable"));
+app.use("/api/ai", require("./routes/ai"));
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({

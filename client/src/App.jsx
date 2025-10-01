@@ -37,6 +37,7 @@ import WorkingHoursPage from "./pages/WorkingHoursPage";
 import SkillsPage from "./pages/SkillsPage";
 import SchedulePage from "./pages/SchedulePage";
 import TimetablePage from "./pages/TimetablePage";
+import AIPage from "./pages/AIPage";
 
 // Landing Page
 import LandingPage from "./components/Landing/LandingPage";
@@ -86,9 +87,7 @@ function AppContent() {
         <Routes>
           <Route
             path="/login"
-            element={
-              isAuthenticated ? <Navigate to="/" /> : <LoginForm />
-            }
+            element={isAuthenticated ? <Navigate to="/" /> : <LoginForm />}
           />
           <Route
             path="/register"
@@ -146,6 +145,15 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <SchedulePage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/ai"
+            element={
+              <ProtectedRoute>
+                <AIPage />
               </ProtectedRoute>
             }
           />

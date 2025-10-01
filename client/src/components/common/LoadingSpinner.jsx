@@ -8,6 +8,7 @@ const LoadingSpinner = ({
   fullPage = true,
 }) => {
   const sizeMap = {
+    sm: { spinner: "h-6 w-6", container: "h-6 w-6", text: "text-sm" },
     small: { spinner: "h-6 w-6", container: "h-6 w-6", text: "text-sm" },
     medium: { spinner: "h-10 w-10", container: "h-10 w-10", text: "text-base" },
     large: { spinner: "h-16 w-16", container: "h-16 w-16", text: "text-lg" },
@@ -78,6 +79,10 @@ const LoadingSpinner = ({
     },
   };
 
+  // Get the actual size config, fallback to medium if not found
+  const currentSize = sizeMap[size] || sizeMap.medium;
+  const currentColor = colorMap[color] || colorMap.indigo;
+
   return (
     <motion.div
       initial="initial"
@@ -95,16 +100,16 @@ const LoadingSpinner = ({
         <motion.div
           variants={spinnerVariants}
           className={`${
-            sizeMap[size].spinner
+            currentSize.spinner
           } rounded-full border-4 border-t-4 border-gray-200 ${
-            colorMap[color].split(" ")[0]
+            currentColor.split(" ")[0]
           }`}
         />
 
         {/* Pulse effect behind the spinner */}
         <motion.div
           variants={pulseVariants}
-          className={`absolute inset-0 ${sizeMap[size].spinner} rounded-full border-4 border-gray-100 opacity-30`}
+          className={`absolute inset-0 ${currentSize.spinner} rounded-full border-4 border-gray-100 opacity-30`}
         />
       </div>
 
@@ -112,8 +117,8 @@ const LoadingSpinner = ({
       {showText && (
         <motion.p
           variants={textVariants}
-          className={`${sizeMap[size].text} font-medium ${
-            colorMap[color].split(" ")[1]
+          className={`${currentSize.text} font-medium ${
+            currentColor.split(" ")[1]
           }`}
         >
           {text}

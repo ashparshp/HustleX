@@ -13,6 +13,7 @@ import {
   Calendar,
   Layout,
   MoreHorizontal,
+  Sparkles,
 } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
@@ -127,6 +128,12 @@ const Navbar = () => {
       text: "Schedule",
       path: "/schedule",
       icon: <Calendar size={18} />,
+      authRequired: true,
+    },
+    {
+      text: "AI Assistant",
+      path: "/ai",
+      icon: <Sparkles size={18} />,
       authRequired: true,
     },
   ];

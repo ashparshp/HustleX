@@ -6,5 +6,6 @@ export { default as useSkills } from "./useSkills";
 export { default as useSchedules } from "./useSchedules";
 export { default as useCategories } from "./useCategories";
 export { default as useTimeTracking } from "./useTimeTracking";
+export { useAI } from "./useAI";
 
 export { useTheme } from "../context/ThemeContext";
