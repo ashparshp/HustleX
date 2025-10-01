@@ -1,10 +1,4 @@
-import React from "react";
-import {
-  Lightbulb,
-  ListChecks,
-  BarChart3,
-  Info,
-} from "lucide-react";
+import { Lightbulb, ListChecks, BarChart3, Info } from "lucide-react";
 
 const FormattedMessage = ({ content = "" }) => {
   const renderInline = (line) => {
