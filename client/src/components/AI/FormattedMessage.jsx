@@ -25,9 +25,15 @@ const FormattedMessage = ({ content = "" }) => {
     if (!listType || listBuffer.length === 0) return;
     if (listType === "ul") {
       elements.push(
-        <ul key={`ul-${elements.length}`} className="list-disc pl-5 my-3 space-y-1">
+        <ul
+          key={`ul-${elements.length}`}
+          className="list-disc pl-5 my-3 space-y-1"
+        >
           {listBuffer.map((txt, i) => (
-            <li key={i} className="text-sm leading-relaxed text-black dark:text-gray-100">
+            <li
+              key={i}
+              className="text-sm leading-relaxed text-black dark:text-gray-100"
+            >
               {renderInline(txt)}
             </li>
           ))}
@@ -35,9 +41,15 @@ const FormattedMessage = ({ content = "" }) => {
       );
     } else if (listType === "ol") {
       elements.push(
-        <ol key={`ol-${elements.length}`} className="list-decimal pl-5 my-3 space-y-1">
+        <ol
+          key={`ol-${elements.length}`}
+          className="list-decimal pl-5 my-3 space-y-1"
+        >
           {listBuffer.map((txt, i) => (
-            <li key={i} className="text-sm leading-relaxed text-black dark:text-gray-100">
+            <li
+              key={i}
+              className="text-sm leading-relaxed text-black dark:text-gray-100"
+            >
               {renderInline(txt)}
             </li>
           ))}
@@ -58,14 +70,18 @@ const FormattedMessage = ({ content = "" }) => {
     }
 
     // Headings: ###, ##, or **Heading**
-    const headingMatch = line.match(/^#{1,3}\s+(.+)/) || line.match(/^\*\*(.+?)\*\*:?\s*$/);
+    const headingMatch =
+      line.match(/^#{1,3}\s+(.+)/) || line.match(/^\*\*(.+?)\*\*:?\s*$/);
     if (headingMatch) {
       flushList();
       const heading = (headingMatch[1] || line)
         .replace(/^\*\*/, "")
         .replace(/\*\*:?:?\s*$/, "");
       elements.push(
-        <h3 key={`h-${idx}`} className="text-base font-semibold text-black dark:text-white mt-4">
+        <h3
+          key={`h-${idx}`}
+          className="text-base font-semibold text-black dark:text-white mt-4"
+        >
           {heading}
         </h3>
       );
@@ -109,7 +125,10 @@ const FormattedMessage = ({ content = "" }) => {
     // Default paragraph
     flushList();
     elements.push(
-      <p key={`p-${idx}`} className="text-sm leading-relaxed text-black dark:text-gray-300 my-2">
+      <p
+        key={`p-${idx}`}
+        className="text-sm leading-relaxed text-black dark:text-gray-300 my-2"
+      >
         {renderInline(line)}
       </p>
     );
