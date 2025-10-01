@@ -26,7 +26,7 @@ const FormattedMessage = ({ content }) => {
             {listItems.map((item, idx) => (
               <li key={idx} className="flex gap-3 items-start group">
                 <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 mt-2 shadow-sm" />
-                <span className="text-sm leading-relaxed text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                <span className="text-sm leading-relaxed text-gray-900 dark:text-gray-100 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors">
                   {parseInlineFormatting(item)}
                 </span>
               </li>
@@ -43,10 +43,10 @@ const FormattedMessage = ({ content }) => {
         elements.push(
           <div
             key={`card-${elements.length}`}
-            className="my-4 p-4 rounded-xl bg-gradient-to-br from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/20 dark:to-purple-950/20 border border-indigo-200/50 dark:border-indigo-800/30 backdrop-blur-sm"
+            className="my-4 p-4 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20 border border-indigo-200 dark:border-indigo-800/30 shadow-sm"
           >
             <div className="flex items-start gap-3 mb-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md flex items-center justify-center">
                 <getCardIcon type={currentCard.type} />
               </div>
               <div className="flex-1">
@@ -59,7 +59,7 @@ const FormattedMessage = ({ content }) => {
               {cardContent.map((line, idx) => (
                 <p
                   key={idx}
-                  className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed"
+                  className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed"
                 >
                   {parseInlineFormatting(line)}
                 </p>
@@ -113,7 +113,7 @@ const FormattedMessage = ({ content }) => {
           return (
             <span
               key={idx}
-              className="inline-flex items-center px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-semibold text-sm"
+              className="inline-flex items-center px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 font-semibold text-sm border border-indigo-200 dark:border-indigo-800"
             >
               {part}
             </span>
@@ -124,7 +124,7 @@ const FormattedMessage = ({ content }) => {
           return (
             <span
               key={idx}
-              className="inline-flex items-center px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold text-sm"
+              className="inline-flex items-center px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-semibold text-sm border border-blue-200 dark:border-blue-800"
             >
               {part}
             </span>
@@ -135,7 +135,7 @@ const FormattedMessage = ({ content }) => {
           return (
             <span
               key={idx}
-              className="inline-flex items-center px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 font-medium text-sm"
+              className="inline-flex items-center px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 font-medium text-sm border border-purple-200 dark:border-purple-800"
             >
               {part}
             </span>
@@ -174,8 +174,8 @@ const FormattedMessage = ({ content }) => {
             key={`heading-${index}`}
             className="relative mt-6 mb-4 first:mt-0"
           >
-            <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full" />
-            <h3 className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent pl-3">
+            <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full shadow-sm" />
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white pl-3">
               {heading}
             </h3>
           </div>
@@ -237,12 +237,12 @@ const FormattedMessage = ({ content }) => {
             key={`numbered-${index}`}
             className="flex gap-3 items-start my-3"
           >
-            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md flex items-center justify-center">
               <span className="text-xs font-bold text-white">
                 {trimmedLine.match(/^\d+/)[0]}
               </span>
             </div>
-            <span className="text-sm leading-relaxed text-gray-700 dark:text-gray-300 pt-0.5">
+            <span className="text-sm leading-relaxed text-gray-900 dark:text-gray-100 pt-0.5">
               {parseInlineFormatting(content)}
             </span>
           </div>
@@ -264,17 +264,17 @@ const FormattedMessage = ({ content }) => {
         elements.push(
           <div
             key={`callout-${index}`}
-            className={`my-3 p-4 rounded-lg border ${
+            className={`my-3 p-4 rounded-lg border shadow-sm ${
               isWarning
-                ? "bg-amber-50/50 dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30"
+                ? "bg-amber-50 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800/30"
                 : isTip
-                ? "bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50 dark:border-blue-800/30"
+                ? "bg-blue-50 dark:bg-blue-950/20 border-blue-300 dark:border-blue-800/30"
                 : isSuccess
-                ? "bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/30"
-                : "bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 dark:border-purple-800/30"
+                ? "bg-green-50 dark:bg-green-950/20 border-green-300 dark:border-green-800/30"
+                : "bg-purple-50 dark:bg-purple-950/20 border-purple-300 dark:border-purple-800/30"
             }`}
           >
-            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+            <p className="text-sm text-gray-900 dark:text-gray-100 leading-relaxed font-medium">
               {parseInlineFormatting(trimmedLine)}
             </p>
           </div>
