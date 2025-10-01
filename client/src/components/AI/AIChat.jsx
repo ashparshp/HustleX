@@ -129,8 +129,8 @@ const AIChat = ({ onSendMessage, messages = [], isLoading = false }) => {
                       ? "bg-indigo-500/20 border border-indigo-500/30 text-white"
                       : "bg-indigo-500 text-white"
                     : isDark
-                    ? "bg-gray-900/70 border border-gray-700"
-                    : "bg-gray-50 border border-gray-200"
+                    ? "bg-gray-900/70 border border-gray-700 text-gray-100"
+                    : "bg-gray-50 border border-gray-200 text-black"
                 }`}
               >
                 {message.role === "user" ? (
