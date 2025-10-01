@@ -36,7 +36,7 @@ const AIChat = ({ onSendMessage, messages = [], isLoading = false }) => {
   return (
     <div
       className={`flex flex-col h-full rounded-lg border ${
-        isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        isDark ? "bg-gray-900/50 border-gray-700" : "bg-white border-gray-200"
       }`}
     >
       {/* Chat Header */}
@@ -47,7 +47,9 @@ const AIChat = ({ onSendMessage, messages = [], isLoading = false }) => {
       >
         <div className="flex items-center gap-2">
           <Cpu
-            className={`w-6 h-6 ${isDark ? "text-blue-400" : "text-blue-500"}`}
+            className={`w-6 h-6 ${
+              isDark ? "text-indigo-400" : "text-indigo-500"
+            }`}
           />
           <div>
             <h3
@@ -55,7 +57,7 @@ const AIChat = ({ onSendMessage, messages = [], isLoading = false }) => {
                 isDark ? "text-white" : "text-gray-900"
               }`}
             >
-              AI Assistant
+              AI Chat
             </h3>
             <p
               className={`text-sm ${
@@ -106,8 +108,16 @@ const AIChat = ({ onSendMessage, messages = [], isLoading = false }) => {
             >
               {message.role === "assistant" && (
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                    <Cpu className="text-white w-5 h-5" />
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      isDark ? "bg-indigo-500/20" : "bg-indigo-100"
+                    }`}
+                  >
+                    <Cpu
+                      className={`w-5 h-5 ${
+                        isDark ? "text-indigo-400" : "text-indigo-600"
+                      }`}
+                    />
                   </div>
                 </div>
               )}
@@ -115,9 +125,11 @@ const AIChat = ({ onSendMessage, messages = [], isLoading = false }) => {
               <div
                 className={`max-w-[70%] rounded-lg p-4 ${
                   message.role === "user"
-                    ? "bg-blue-500 text-white"
+                    ? isDark
+                      ? "bg-indigo-500/20 border border-indigo-500/30 text-white"
+                      : "bg-indigo-500 text-white"
                     : isDark
-                    ? "bg-gray-750 border border-gray-700"
+                    ? "bg-gray-900/70 border border-gray-700"
                     : "bg-gray-50 border border-gray-200"
                 }`}
               >
@@ -132,8 +144,16 @@ const AIChat = ({ onSendMessage, messages = [], isLoading = false }) => {
 
               {message.role === "user" && (
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center">
-                    <User className="text-white w-5 h-5" />
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      isDark ? "bg-gray-700" : "bg-gray-300"
+                    }`}
+                  >
+                    <User
+                      className={`w-5 h-5 ${
+                        isDark ? "text-gray-300" : "text-gray-600"
+                      }`}
+                    />
                   </div>
                 </div>
               )}
@@ -148,14 +168,22 @@ const AIChat = ({ onSendMessage, messages = [], isLoading = false }) => {
             className="flex gap-3"
           >
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                <Cpu className="text-white w-5 h-5" />
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  isDark ? "bg-indigo-500/20" : "bg-indigo-100"
+                }`}
+              >
+                <Cpu
+                  className={`w-5 h-5 ${
+                    isDark ? "text-indigo-400" : "text-indigo-600"
+                  }`}
+                />
               </div>
             </div>
             <div
               className={`rounded-lg p-3 border ${
                 isDark
-                  ? "bg-gray-750 border-gray-700"
+                  ? "bg-gray-900/70 border-gray-700"
                   : "bg-gray-50 border-gray-200"
               }`}
             >
@@ -180,20 +208,24 @@ const AIChat = ({ onSendMessage, messages = [], isLoading = false }) => {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Ask me anything about your productivity..."
-            className={`flex-1 px-4 py-2 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            className={`flex-1 px-4 py-2 border rounded-lg resize-none focus:outline-none focus:ring-2 transition-all ${
               isDark
-                ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+                ? "bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500"
+                : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500"
             }`}
             rows="1"
             disabled={isLoading}
           />
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
+              isDark
+                ? "bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/30 hover:border-indigo-400"
+                : "bg-indigo-500 border border-indigo-500 text-white hover:bg-indigo-600"
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             <Send className="w-5 h-5" />
           </motion.button>
