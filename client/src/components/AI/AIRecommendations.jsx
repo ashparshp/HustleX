@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronUp,
   Target,
+  AlertCircle,
 } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import LoadingSpinner from "../common/LoadingSpinner";
@@ -48,42 +49,63 @@ const AIRecommendations = ({ recommendations, isLoading }) => {
     lines.forEach((line) => {
       const trimmedLine = line.trim();
 
-      // Match numbered items like "1. **Title**" or "### 1. Title"
-      const numberedMatch = trimmedLine.match(
-        /^(?:###\s*)?(\d+)\.\s*\*\*(.+?)\*\*/
+      // Match numbered items with ### heading format: "### 1. Title" or "### 1. **Title**"
+      const h3Match = trimmedLine.match(
+        /^###\s*(\d+)\.\s*(?:\*\*)?(.+?)(?:\*\*)?$/
       );
-      const headerMatch = trimmedLine.match(/^###\s*(\d+)\.\s*(.+)/);
 
-      if (numberedMatch || headerMatch) {
+      // Match numbered items with bold: "1. **Title**"
+      const boldMatch = trimmedLine.match(/^(\d+)\.\s*\*\*(.+?)\*\*$/);
+
+      // Match plain numbered items: "1. Title"
+      const plainMatch = trimmedLine.match(/^(\d+)\.\s*(.+)$/);
+
+      const match = h3Match || boldMatch || plainMatch;
+
+      if (match) {
+        // Save previous item if exists
         if (currentItem) items.push(currentItem);
-        const match = numberedMatch || headerMatch;
+
         currentItem = {
           number: match[1],
-          title: match[2].replace(/\*\*/g, ""),
+          title: match[2].replace(/\*\*/g, "").trim(),
           sections: [],
         };
         currentSection = null;
       } else if (currentItem) {
-        // Check for sub-sections with asterisks
-        const bulletMatch = trimmedLine.match(/^\*\s*\*\*(.+?)\*\*:?\s*(.*)/);
-        if (bulletMatch) {
+        // Check for section headers: "**Detailed Explanation:**" or "**Expected Impact:**"
+        const sectionMatch = trimmedLine.match(/^\*\*([^*]+):\*\*\s*(.*)$/);
+
+        if (sectionMatch) {
+          const sectionTitle = sectionMatch[1].trim();
+          const sectionContent = sectionMatch[2].trim();
+
           currentSection = {
-            title: bulletMatch[1],
-            content: bulletMatch[2] ? [bulletMatch[2]] : [],
+            title: sectionTitle,
+            content: sectionContent ? [sectionContent] : [],
           };
           currentItem.sections.push(currentSection);
         } else if (trimmedLine.length > 0 && trimmedLine !== "---") {
-          const cleanLine = trimmedLine.replace(/\*\*/g, "");
+          // Regular content line
+          const cleanLine = trimmedLine.replace(/^\*\s*/, ""); // Remove leading asterisk if bullet
+
           if (currentSection) {
+            // Add to current section
             currentSection.content.push(cleanLine);
           } else {
-            currentItem.sections.push({ title: null, content: [cleanLine] });
+            // Create unnamed section for orphan content
+            currentItem.sections.push({
+              title: null,
+              content: [cleanLine],
+            });
           }
         }
       }
     });
 
+    // Don't forget the last item
     if (currentItem) items.push(currentItem);
+
     return items.length > 0 ? items : null;
   };
 
@@ -93,6 +115,44 @@ const AIRecommendations = ({ recommendations, isLoading }) => {
 
   return (
     <div className="space-y-6">
+      {/* Quality Indicator */}
+      {recommendations.quality && recommendations.quality.score < 75 && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`p-4 rounded-xl border-l-4 border-amber-500 ${
+            isDark
+              ? "bg-gradient-to-r from-amber-900/20 to-orange-900/20"
+              : "bg-gradient-to-r from-amber-50 to-orange-50"
+          }`}
+        >
+          <div className="flex items-start gap-2">
+            <AlertCircle
+              className={`w-5 h-5 mt-0.5 ${
+                isDark ? "text-amber-400" : "text-amber-600"
+              }`}
+            />
+            <div>
+              <p
+                className={`text-sm font-medium ${
+                  isDark ? "text-amber-400" : "text-amber-600"
+                }`}
+              >
+                Limited Data Context
+              </p>
+              <p
+                className={`text-xs mt-1 ${
+                  isDark ? "text-amber-300/80" : "text-amber-700/80"
+                }`}
+              >
+                Some recommendations may be generic.{" "}
+                {recommendations.quality.warnings?.join(". ")}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {/* Focus Area */}
       {recommendations.focusArea && recommendations.focusArea !== "null" && (
         <motion.div
@@ -192,35 +252,90 @@ const AIRecommendations = ({ recommendations, isLoading }) => {
                       <div className="space-y-4">
                         {rec.sections.map((section, sectionIndex) => {
                           if (section.title) {
+                            // Determine section type for styling
+                            const isImplementation = section.title
+                              .toLowerCase()
+                              .includes("implement");
+                            const isImpact = section.title
+                              .toLowerCase()
+                              .includes("impact");
+                            const isExplanation = section.title
+                              .toLowerCase()
+                              .includes("explanation");
+
                             return (
                               <div
                                 key={sectionIndex}
-                                className={`rounded-lg p-4 border-l-4 border-blue-500 ${
-                                  isDark ? "bg-gray-750" : "bg-gray-50"
-                                }`}
+                                className={`rounded-lg p-4 border-l-4 ${
+                                  isImplementation
+                                    ? "border-green-500"
+                                    : isImpact
+                                    ? "border-purple-500"
+                                    : "border-blue-500"
+                                } ${isDark ? "bg-gray-750" : "bg-gray-50"}`}
                               >
                                 <h4
-                                  className={`font-semibold mb-2 flex items-start gap-2 ${
+                                  className={`font-semibold mb-3 flex items-start gap-2 ${
                                     isDark ? "text-white" : "text-gray-900"
                                   }`}
                                 >
-                                  <ArrowRight className="text-blue-500 mt-1 flex-shrink-0 w-5 h-5" />
+                                  {isImplementation ? (
+                                    <CheckCircle className="text-green-500 mt-1 flex-shrink-0 w-5 h-5" />
+                                  ) : isImpact ? (
+                                    <Target className="text-purple-500 mt-1 flex-shrink-0 w-5 h-5" />
+                                  ) : (
+                                    <ArrowRight className="text-blue-500 mt-1 flex-shrink-0 w-5 h-5" />
+                                  )}
                                   <span>{section.title}</span>
                                 </h4>
-                                {section.content
-                                  .filter((c) => c.trim())
-                                  .map((text, textIndex) => (
-                                    <p
-                                      key={textIndex}
-                                      className={`text-sm leading-relaxed ml-6 mb-1 ${
-                                        isDark
-                                          ? "text-gray-300"
-                                          : "text-gray-600"
-                                      }`}
-                                    >
-                                      {text}
-                                    </p>
-                                  ))}
+                                <div
+                                  className={`ml-6 space-y-2 ${
+                                    isImplementation ? "space-y-3" : "space-y-2"
+                                  }`}
+                                >
+                                  {section.content
+                                    .filter((c) => c.trim())
+                                    .map((text, textIndex) => {
+                                      // Check if this is a numbered step (starts with number)
+                                      const stepMatch =
+                                        text.match(/^(\d+)\.\s*(.+)$/);
+
+                                      if (stepMatch && isImplementation) {
+                                        return (
+                                          <div
+                                            key={textIndex}
+                                            className="flex gap-3 items-start"
+                                          >
+                                            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-semibold">
+                                              {stepMatch[1]}
+                                            </div>
+                                            <p
+                                              className={`text-sm leading-relaxed flex-1 ${
+                                                isDark
+                                                  ? "text-gray-300"
+                                                  : "text-gray-600"
+                                              }`}
+                                            >
+                                              {stepMatch[2]}
+                                            </p>
+                                          </div>
+                                        );
+                                      }
+
+                                      return (
+                                        <p
+                                          key={textIndex}
+                                          className={`text-sm leading-relaxed ${
+                                            isDark
+                                              ? "text-gray-300"
+                                              : "text-gray-600"
+                                          }`}
+                                        >
+                                          {text}
+                                        </p>
+                                      );
+                                    })}
+                                </div>
                               </div>
                             );
                           } else {

@@ -46,12 +46,290 @@ const getUserData = async (userId, options = {}) => {
 };
 
 /**
+ * Generate summary statistics and detect anomalies
+ */
+const generateDataSummary = (userData) => {
+  const { schedules, skills, timetables, workingHours } = userData;
+  let summary = "=== DATA SUMMARY & KEY INSIGHTS ===\n\n";
+
+  // Schedule Statistics
+  if (schedules && schedules.length > 0) {
+    const completedSchedules = schedules.filter(
+      (s) => s.status === "completed"
+    ).length;
+    const totalTasks = schedules.reduce(
+      (sum, s) => sum + (s.items?.length || 0),
+      0
+    );
+    const completedTasks = schedules.reduce(
+      (sum, s) => sum + (s.items?.filter((i) => i.completed).length || 0),
+      0
+    );
+    const taskCompletionRate =
+      totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(1) : 0;
+
+    summary += `SCHEDULE INSIGHTS:\n`;
+    summary += `- Total Schedules: ${schedules.length} (${completedSchedules} completed)\n`;
+    summary += `- Task Completion Rate: ${taskCompletionRate}% (${completedTasks}/${totalTasks} tasks)\n`;
+    summary += `- Average Tasks per Day: ${(
+      totalTasks / schedules.length
+    ).toFixed(1)}\n`;
+
+    // Recent trend (last 7 days)
+    const recent = schedules.slice(0, 7);
+    const recentCompleted = recent.reduce(
+      (sum, s) => sum + (s.items?.filter((i) => i.completed).length || 0),
+      0
+    );
+    const recentTotal = recent.reduce(
+      (sum, s) => sum + (s.items?.length || 0),
+      0
+    );
+    if (recentTotal > 0) {
+      summary += `- Recent 7-day Completion: ${(
+        (recentCompleted / recentTotal) *
+        100
+      ).toFixed(1)}%\n`;
+    }
+    summary += "\n";
+  }
+
+  // Skills Statistics
+  if (skills && skills.length > 0) {
+    const completed = skills.filter(
+      (s) => s.status === "completed" || s.progress === 100
+    ).length;
+    const inProgress = skills.filter(
+      (s) => s.status === "in-progress" && s.progress < 100
+    ).length;
+    const upcoming = skills.filter(
+      (s) => s.status === "upcoming" || s.status === "not-started"
+    ).length;
+    const highPriorityUpcoming = skills.filter(
+      (s) =>
+        (s.status === "upcoming" || s.status === "not-started") &&
+        s.priority === "high"
+    ).length;
+
+    const avgProgress =
+      skills.length > 0
+        ? (
+            skills.reduce((sum, s) => sum + (s.progress || 0), 0) /
+            skills.length
+          ).toFixed(1)
+        : 0;
+
+    summary += `SKILLS INSIGHTS:\n`;
+    summary += `- Total Skills: ${skills.length}\n`;
+    summary += `- Status: ${completed} completed, ${inProgress} in-progress, ${upcoming} upcoming\n`;
+    summary += `- Average Progress: ${avgProgress}%\n`;
+    summary += `- High-Priority Upcoming: ${highPriorityUpcoming} skills\n`;
+
+    if (highPriorityUpcoming > 10) {
+      summary += `- ⚠️ WARNING: ${highPriorityUpcoming} high-priority upcoming skills may cause decision paralysis\n`;
+    }
+
+    // Find stalled skills (in-progress but low progress)
+    const stalledSkills = skills.filter(
+      (s) => s.status === "in-progress" && s.progress < 20
+    );
+    if (stalledSkills.length > 0) {
+      summary += `- ⚠️ ${stalledSkills.length} stalled skills (in-progress but <20% complete)\n`;
+    }
+
+    // Find nearly complete skills
+    const nearlyComplete = skills.filter(
+      (s) => s.progress >= 80 && s.progress < 100 && s.status !== "completed"
+    );
+    if (nearlyComplete.length > 0) {
+      summary += `- ✨ ${nearlyComplete.length} skills nearly complete (≥80% but not marked completed)\n`;
+    }
+    summary += "\n";
+  }
+
+  // Timetable Statistics
+  if (timetables && timetables.length > 0) {
+    timetables.forEach((tt) => {
+      if (tt.currentWeek) {
+        const week = tt.currentWeek;
+        summary += `TIMETABLE "${tt.name}" - Current Week:\n`;
+        summary += `- Period: ${new Date(
+          week.weekStartDate
+        ).toLocaleDateString()} - ${new Date(
+          week.weekEndDate
+        ).toLocaleDateString()}\n`;
+        summary += `- Overall Completion: ${week.overallCompletionRate}%\n`;
+
+        if (week.activities && week.activities.length > 0) {
+          const perfect = week.activities.filter(
+            (a) => a.completionRate === 100
+          ).length;
+          const failed = week.activities.filter(
+            (a) => a.completionRate === 0
+          ).length;
+          summary += `- Activities: ${perfect} perfect (100%), ${failed} not started (0%)\n`;
+
+          // Highlight best and worst activities
+          const sorted = [...week.activities].sort(
+            (a, b) => b.completionRate - a.completionRate
+          );
+          if (sorted.length > 0) {
+            summary += `- Best: ${sorted[0].activity.name} (${sorted[0].completionRate}%)\n`;
+            if (sorted[sorted.length - 1].completionRate < 50) {
+              summary += `- Needs attention: ${
+                sorted[sorted.length - 1].activity.name
+              } (${sorted[sorted.length - 1].completionRate}%)\n`;
+            }
+          }
+        }
+        summary += "\n";
+      }
+
+      // Historical trend
+      if (tt.history && tt.history.length >= 2) {
+        const recent = tt.history.slice(-2);
+        const trend =
+          recent[1].overallCompletionRate - recent[0].overallCompletionRate;
+        summary += `- Trend: ${
+          trend > 0 ? "📈 Improving" : trend < 0 ? "📉 Declining" : "➡️ Stable"
+        } (${trend > 0 ? "+" : ""}${trend.toFixed(1)}% vs previous week)\n\n`;
+      }
+    });
+  }
+
+  // Working Hours Statistics
+  if (workingHours && workingHours.length > 0) {
+    const totalTarget = workingHours.reduce(
+      (sum, w) => sum + (w.targetHours || 0),
+      0
+    );
+    const totalAchieved = workingHours.reduce(
+      (sum, w) => sum + (w.achievedHours || 0),
+      0
+    );
+    const overallRate =
+      totalTarget > 0 ? ((totalAchieved / totalTarget) * 100).toFixed(1) : 0;
+
+    summary += `WORKING HOURS INSIGHTS:\n`;
+    summary += `- Total Records: ${workingHours.length} days\n`;
+    summary += `- Overall Achievement: ${overallRate}% (${totalAchieved}h / ${totalTarget}h)\n`;
+
+    // Recent 7 days
+    const recent = workingHours.slice(0, 7);
+    const recentTarget = recent.reduce(
+      (sum, w) => sum + (w.targetHours || 0),
+      0
+    );
+    const recentAchieved = recent.reduce(
+      (sum, w) => sum + (w.achievedHours || 0),
+      0
+    );
+    if (recentTarget > 0) {
+      summary += `- Recent 7-day Achievement: ${(
+        (recentAchieved / recentTarget) *
+        100
+      ).toFixed(1)}%\n`;
+    }
+
+    // Mood analysis
+    const moods = workingHours.filter((w) => w.mood).map((w) => w.mood);
+    if (moods.length > 0) {
+      const goodMoods = moods.filter(
+        (m) => m === "great" || m === "good"
+      ).length;
+      summary += `- Positive Mood Days: ${(
+        (goodMoods / moods.length) *
+        100
+      ).toFixed(0)}%\n`;
+    }
+    summary += "\n";
+  }
+
+  // Cross-data validation
+  summary += generateDataValidation(userData);
+
+  return summary + "=================================\n\n";
+};
+
+/**
+ * Detect inconsistencies across data sources
+ */
+const generateDataValidation = (userData) => {
+  const { schedules, timetables, workingHours } = userData;
+  let validation = "DATA QUALITY CHECKS:\n";
+  let issuesFound = false;
+
+  // Check for timetable vs working hours discrepancy
+  if (timetables.length > 0 && workingHours.length > 0) {
+    timetables.forEach((tt) => {
+      if (tt.currentWeek) {
+        const weekStart = new Date(tt.currentWeek.weekStartDate);
+        const weekEnd = new Date(tt.currentWeek.weekEndDate);
+
+        const whInSamePeriod = workingHours.filter((w) => {
+          const whDate = new Date(w.date);
+          return whDate >= weekStart && whDate <= weekEnd;
+        });
+
+        if (whInSamePeriod.length > 0) {
+          const ttCompletion = tt.currentWeek.overallCompletionRate;
+          const whCompletion =
+            whInSamePeriod.reduce(
+              (sum, w) => sum + ((w.achievedHours / w.targetHours) * 100 || 0),
+              0
+            ) / whInSamePeriod.length;
+
+          const discrepancy = Math.abs(ttCompletion - whCompletion);
+          if (discrepancy > 30) {
+            validation += `- ⚠️ DISCREPANCY: Timetable shows ${ttCompletion}% completion but Working Hours shows ${whCompletion.toFixed(
+              0
+            )}% for the same period\n`;
+            issuesFound = true;
+          }
+        }
+      }
+    });
+  }
+
+  // Check for skills marked as completed but progress < 100
+  if (userData.skills) {
+    const inconsistentSkills = userData.skills.filter(
+      (s) => s.status === "completed" && s.progress < 100
+    );
+    if (inconsistentSkills.length > 0) {
+      validation += `- ⚠️ ${inconsistentSkills.length} skills marked completed but progress < 100%\n`;
+      issuesFound = true;
+    }
+  }
+
+  // Check for skills with 100% progress but not marked completed
+  if (userData.skills) {
+    const unmarkedComplete = userData.skills.filter(
+      (s) => s.progress === 100 && s.status !== "completed"
+    );
+    if (unmarkedComplete.length > 0) {
+      validation += `- ⚠️ ${unmarkedComplete.length} skills at 100% progress but not marked as completed\n`;
+      issuesFound = true;
+    }
+  }
+
+  if (!issuesFound) {
+    validation += `- ✅ No major inconsistencies detected\n`;
+  }
+
+  return validation + "\n";
+};
+
+/**
  * Format user data for AI context
  */
 const formatUserDataForAI = (userData) => {
   const { schedules, skills, timetables, workingHours } = userData;
 
   let context = "User's Productivity Data:\n\n";
+
+  // Add data summary and insights
+  context += generateDataSummary(userData);
 
   // Schedules
   if (schedules && schedules.length > 0) {
@@ -77,20 +355,86 @@ const formatUserDataForAI = (userData) => {
   // Skills
   if (skills && skills.length > 0) {
     context += "SKILLS:\n";
-    skills.forEach((skill, index) => {
-      context += `${index + 1}. ${skill.name}\n`;
-      context += `   Category: ${skill.category}\n`;
-      context += `   Status: ${skill.status}\n`;
-      context += `   Progress: ${skill.progress}%\n`;
-      context += `   Priority: ${skill.priority}\n`;
-      if (skill.description) {
-        context += `   Description: ${skill.description}\n`;
+
+    // Group skills by status
+    const completedSkills = skills.filter(
+      (s) => s.status === "completed" || s.progress === 100
+    );
+    const inProgressSkills = skills.filter(
+      (s) => s.status === "in-progress" && s.progress < 100
+    );
+    const upcomingSkills = skills.filter(
+      (s) => s.status === "upcoming" || s.status === "not-started"
+    );
+
+    context += `Summary: ${skills.length} total (${completedSkills.length} completed, ${inProgressSkills.length} in-progress, ${upcomingSkills.length} upcoming)\n\n`;
+
+    if (completedSkills.length > 0) {
+      context += `COMPLETED SKILLS (${completedSkills.length}):\n`;
+      completedSkills.forEach((skill, index) => {
+        context += `${index + 1}. ${skill.name} (${skill.category})\n`;
+        if (skill.description) {
+          context += `   Description: ${skill.description}\n`;
+        }
+      });
+      context += "\n";
+    }
+
+    if (inProgressSkills.length > 0) {
+      context += `IN-PROGRESS SKILLS (${inProgressSkills.length}):\n`;
+      inProgressSkills.forEach((skill, index) => {
+        context += `${index + 1}. ${skill.name}\n`;
+        context += `   Category: ${skill.category}\n`;
+        context += `   Progress: ${skill.progress}%\n`;
+        context += `   Priority: ${skill.priority}\n`;
+        if (skill.description) {
+          context += `   Description: ${skill.description}\n`;
+        }
+        if (skill.resources && skill.resources.length > 0) {
+          context += `   Resources: ${skill.resources.length} items\n`;
+        }
+      });
+      context += "\n";
+    }
+
+    if (upcomingSkills.length > 0) {
+      // Group upcoming by priority
+      const highPriority = upcomingSkills.filter((s) => s.priority === "high");
+      const mediumPriority = upcomingSkills.filter(
+        (s) => s.priority === "medium"
+      );
+      const lowPriority = upcomingSkills.filter((s) => s.priority === "low");
+
+      context += `UPCOMING SKILLS (${upcomingSkills.length}):\n`;
+      context += `  Priority Distribution: ${highPriority.length} high, ${mediumPriority.length} medium, ${lowPriority.length} low\n`;
+
+      if (highPriority.length > 0) {
+        context += `  High Priority (${highPriority.length}):\n`;
+        highPriority.slice(0, 10).forEach((skill, index) => {
+          context += `    ${index + 1}. ${skill.name} (${skill.category})`;
+          if (skill.description) {
+            context += ` - ${skill.description.substring(0, 80)}${
+              skill.description.length > 80 ? "..." : ""
+            }`;
+          }
+          context += "\n";
+        });
+        if (highPriority.length > 10) {
+          context += `    ... and ${
+            highPriority.length - 10
+          } more high priority skills\n`;
+        }
       }
-      if (skill.resources && skill.resources.length > 0) {
-        context += `   Resources: ${skill.resources.length} items\n`;
+
+      if (mediumPriority.length > 0) {
+        context += `  Medium Priority: ${mediumPriority.length} skills\n`;
+      }
+
+      if (lowPriority.length > 0) {
+        context += `  Low Priority: ${lowPriority.length} skills\n`;
       }
       context += "\n";
-    });
+    }
   }
 
   // Timetables
@@ -128,12 +472,14 @@ const formatUserDataForAI = (userData) => {
         context += `   Historical Data (${timetable.history.length} past weeks):\n`;
         // Show last 4 weeks of history
         const recentHistory = timetable.history.slice(-4);
+        const totalWeeks = timetable.history.length;
         recentHistory.forEach((week, weekIndex) => {
-          context += `     Week ${weekIndex + 1}: ${new Date(
+          const weekNumber = totalWeeks - recentHistory.length + weekIndex + 1;
+          context += `     Week ${weekNumber} (${new Date(
             week.weekStartDate
           ).toLocaleDateString()} - ${new Date(
             week.weekEndDate
-          ).toLocaleDateString()}\n`;
+          ).toLocaleDateString()}):\n`;
           context += `       Overall Completion: ${week.overallCompletionRate}%\n`;
           if (week.activities && week.activities.length > 0) {
             week.activities.forEach((act) => {
@@ -205,14 +551,21 @@ Keep it concise and focused on the most important insights.`;
 Provide extensive, personalized analysis with specific data references and examples.`;
     } else {
       // detailed (default)
-      promptInstructions = `Based on the above productivity data, provide a comprehensive analysis with the following:
+      promptInstructions = `Based on the above productivity data and the DATA SUMMARY insights, provide a comprehensive analysis with the following:
 
-1. **Productivity Patterns**: Identify patterns in their work habits, schedule completion rates, and time management
-2. **Strengths**: What are they doing well?
-3. **Areas for Improvement**: Where can they improve?
-4. **Skill Development**: Analyze their skill progress and provide recommendations
-5. **Time Management**: Insights on their working hours and schedule effectiveness
-6. **Actionable Recommendations**: 3-5 specific, actionable recommendations to improve productivity
+1. **Productivity Patterns**: Identify patterns in their work habits, schedule completion rates, and time management. Reference specific data points and trends from the summary.
+
+2. **Strengths**: What are they doing well? Highlight specific achievements, consistent activities, and positive trends with actual data.
+
+3. **Areas for Improvement**: Where can they improve? Reference specific issues from the data quality checks, declining trends, or underperforming areas.
+
+4. **Skill Development**: Analyze their skill progress and provide recommendations. Address any stalled skills, skills needing status updates, and prioritization issues.
+
+5. **Time Management**: Insights on their working hours and schedule effectiveness. Address any discrepancies between different tracking methods.
+
+6. **Actionable Recommendations**: 3-5 specific, actionable recommendations to improve productivity. Each should be data-driven and reference specific records.
+
+IMPORTANT: Use actual data points, dates, percentages, and specific activity/skill names from their records. Make insights concrete and actionable, not generic.
 
 Provide a detailed, personalized analysis in a clear, structured format.`;
     }
@@ -253,35 +606,124 @@ const getRecommendations = async (userId, focusArea = null) => {
 
     let prompt = `${context}
 
-Based on the above productivity data, provide personalized recommendations`;
+You are an expert productivity coach analyzing the user's data. `;
 
     if (focusArea) {
-      prompt += ` specifically focused on: ${focusArea}`;
+      prompt += `The user has specifically requested recommendations focused on: "${focusArea}"\n\n`;
     }
 
-    prompt += `\n\nProvide 5-7 specific, actionable recommendations that will help improve productivity. Each recommendation should include:
-- A clear title
-- Detailed explanation
-- Expected impact
-- How to implement it
+    prompt += `Based on the DATA SUMMARY and detailed productivity data above, provide 5-7 highly specific, data-driven recommendations.
 
-Format as a numbered list with clear sections.`;
+CRITICAL REQUIREMENTS:
+1. Each recommendation MUST reference specific data points from the user's records (dates, percentages, activity names, skill names)
+2. Focus on actionable changes, not generic advice
+3. Prioritize recommendations based on the data issues and patterns identified in the DATA SUMMARY
+4. Address any data inconsistencies or warnings highlighted above
+
+FORMAT EACH RECOMMENDATION EXACTLY AS FOLLOWS:
+
+### 1. [Clear, Action-Oriented Title]
+
+**Detailed Explanation:**
+[2-3 paragraphs explaining the issue/opportunity. MUST include:
+- Specific data references (e.g., "Your 'Go Microservices' activity shows 0% completion in Week 4")
+- Concrete examples from their records
+- Why this matters for their goals]
+
+**Expected Impact:**
+[1-2 sentences on the specific benefits, quantified if possible]
+
+**How to Implement It:**
+1. [Specific first step with details]
+2. [Specific second step with details]
+3. [Specific third step with details]
+
+---
+
+FOCUS AREAS TO PRIORITIZE:
+${focusArea ? `- Primary: ${focusArea}` : ""}
+- High-priority upcoming skills causing decision paralysis
+- Skills at 100% progress not marked completed
+- Activities with 0% completion in current timetable
+- Discrepancies between timetable and working hours data
+- Stalled in-progress skills (<20% progress)
+- Declining completion trends
+
+Make every recommendation specific, data-backed, and immediately actionable.`;
 
     const result = await genAI.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash-exp",
       contents: prompt,
     });
 
     const recommendations = result.text;
 
+    // Validate response quality
+    const validation = validateRecommendationResponse(
+      recommendations,
+      userData
+    );
+
     return {
       recommendations,
       focusArea: focusArea || "general productivity",
+      quality: validation,
     };
   } catch (error) {
     console.error("Error generating recommendations:", error);
     throw error;
   }
+};
+
+/**
+ * Validate recommendation response quality
+ */
+const validateRecommendationResponse = (text, userData) => {
+  const validation = {
+    hasDataReferences: false,
+    hasSpecificDates: false,
+    hasActionableSteps: false,
+    hasExpectedImpact: false,
+    score: 0,
+    warnings: [],
+  };
+
+  // Check for data references (skill names, activity names, percentages)
+  const hasPercentages = /\d+%/.test(text);
+  const hasSkillMentions = userData.skills.some((s) =>
+    text.toLowerCase().includes(s.name.toLowerCase().substring(0, 15))
+  );
+  const hasTimetableMentions = userData.timetables.some((t) =>
+    t.currentWeek?.activities?.some((a) =>
+      text.toLowerCase().includes(a.activity.name.toLowerCase())
+    )
+  );
+
+  validation.hasDataReferences =
+    hasPercentages || hasSkillMentions || hasTimetableMentions;
+  if (validation.hasDataReferences) validation.score += 25;
+  else validation.warnings.push("Missing specific data references");
+
+  // Check for dates or time periods
+  validation.hasSpecificDates =
+    /week \d+|september|october|9\/\d+\/|last \d+ (days|weeks)/i.test(text);
+  if (validation.hasSpecificDates) validation.score += 25;
+  else validation.warnings.push("Missing specific dates or time periods");
+
+  // Check for implementation steps
+  validation.hasActionableSteps = /how to implement|step \d+|^\d+\./m.test(
+    text
+  );
+  if (validation.hasActionableSteps) validation.score += 25;
+  else validation.warnings.push("Missing clear implementation steps");
+
+  // Check for impact statements
+  validation.hasExpectedImpact =
+    /expected impact|benefit|improve|increase|reduce/i.test(text);
+  if (validation.hasExpectedImpact) validation.score += 25;
+  else validation.warnings.push("Missing expected impact statements");
+
+  return validation;
 };
 
 /**

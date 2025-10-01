@@ -25,8 +25,8 @@ const FormattedMessage = ({ content }) => {
           <ul key={`list-${elements.length}`} className="space-y-2.5 my-4">
             {listItems.map((item, idx) => (
               <li key={idx} className="flex gap-3 items-start group">
-                <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-gradient-to-r from-indigo-400 to-purple-400 mt-2" />
-                <span className="text-sm leading-relaxed text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 mt-2 shadow-sm" />
+                <span className="text-sm leading-relaxed text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                   {parseInlineFormatting(item)}
                 </span>
               </li>
@@ -91,8 +91,10 @@ const FormattedMessage = ({ content }) => {
     };
 
     const parseInlineFormatting = (line) => {
-      // Handle bold (**text**)
-      const parts = line.split(/(\*\*.*?\*\*)/g);
+      // Handle bold (**text**) and inline code/data (percentages, dates)
+      const parts = line.split(
+        /(\*\*.*?\*\*|\d+%|Week \d+|\d{1,2}\/\d{1,2}\/\d{4})/g
+      );
 
       return parts.map((part, idx) => {
         if (part.startsWith("**") && part.endsWith("**")) {
@@ -103,6 +105,39 @@ const FormattedMessage = ({ content }) => {
               className="font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent"
             >
               {text}
+            </span>
+          );
+        }
+        // Highlight percentages
+        if (/^\d+%$/.test(part)) {
+          return (
+            <span
+              key={idx}
+              className="inline-flex items-center px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-semibold text-sm"
+            >
+              {part}
+            </span>
+          );
+        }
+        // Highlight week numbers
+        if (/^Week \d+$/.test(part)) {
+          return (
+            <span
+              key={idx}
+              className="inline-flex items-center px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold text-sm"
+            >
+              {part}
+            </span>
+          );
+        }
+        // Highlight dates
+        if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(part)) {
+          return (
+            <span
+              key={idx}
+              className="inline-flex items-center px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 font-medium text-sm"
+            >
+              {part}
             </span>
           );
         }
@@ -216,16 +251,30 @@ const FormattedMessage = ({ content }) => {
       }
 
       // Important callout (starts with ⚠️, 💡, ✨, or similar emoji/special marker)
-      if (trimmedLine.match(/^[⚠️💡✨🎯📌]/)) {
+      if (trimmedLine.match(/^[⚠️💡✨🎯📌🔍]/)) {
         flushCard();
         flushList();
+
+        // Determine callout type
+        const isWarning = trimmedLine.startsWith("⚠️");
+        const isTip = trimmedLine.startsWith("💡");
+        const isSuccess =
+          trimmedLine.startsWith("✨") || trimmedLine.startsWith("🎯");
 
         elements.push(
           <div
             key={`callout-${index}`}
-            className="my-3 p-3 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30"
+            className={`my-3 p-4 rounded-lg border ${
+              isWarning
+                ? "bg-amber-50/50 dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30"
+                : isTip
+                ? "bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50 dark:border-blue-800/30"
+                : isSuccess
+                ? "bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/30"
+                : "bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 dark:border-purple-800/30"
+            }`}
           >
-            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
               {parseInlineFormatting(trimmedLine)}
             </p>
           </div>
