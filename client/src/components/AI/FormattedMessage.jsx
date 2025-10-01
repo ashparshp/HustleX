@@ -1,19 +1,12 @@
 import React from "react";
 import {
   Lightbulb,
-  AlertTriangle,
   ListChecks,
   BarChart3,
-  CalendarCheck2,
-  Clock3,
   Info,
 } from "lucide-react";
 
-// Lightweight, beautiful formatter for AI messages.
-// - If message matches a common "insights" structure, render a polished layout
-// - Otherwise, gracefully fall back to a markdown-like renderer
 const FormattedMessage = ({ content = "" }) => {
-  // Minimal inline bold parser (**text**)
   const renderInline = (line) => {
     const parts = line.split(/(\*\*[^*]+\*\*)/g);
     return parts.map((part, idx) => {
@@ -28,10 +21,8 @@ const FormattedMessage = ({ content = "" }) => {
     });
   };
 
-  // --- Specialized parsing for Insights-style content ---
   const parseSections = (raw) => {
     if (!raw || typeof raw !== "string") return null;
-    // Normalize lines and strip obvious greetings
     let lines = raw
       .split("\n")
       .map((l) => l.trim())
@@ -42,22 +33,18 @@ const FormattedMessage = ({ content = "" }) => {
       lines.shift();
     }
 
-    // Identify section anchors
     const findIdx = (re) => lines.findIndex((l) => re.test(l));
     const idxObs = findIdx(/^key\s+observations.*:$/i);
     const idxData = findIdx(/^(specific\s+data\s+points|key\s+metrics).*:$/i);
     const idxSummary = findIdx(/^(in\s+summary|summary)[:]?/i);
 
-    // If no recognizable sections, return null (fallback will handle)
     if (idxObs === -1 && idxData === -1 && idxSummary === -1) return null;
 
-    // Intro is everything before the first section anchor
     const firstIdx = [idxObs, idxData, idxSummary]
       .filter((i) => i !== -1)
       .sort((a, b) => a - b)[0];
 
     const introLines = lines.slice(0, firstIdx);
-    // Prefer a sentence like "Based on your ..." if present
     const intro = introLines
       .join(" ")
       .replace(/:$/g, "")
@@ -78,13 +65,11 @@ const FormattedMessage = ({ content = "" }) => {
     const summaryRaw =
       idxSummary === -1 ? [] : lines.slice(idxSummary).slice(1);
 
-    // Normalize list items (handle bullets or plain lines)
     const normalizeList = (arr) =>
       arr.map((l) => l.replace(/^([*\-•]\s+)/, "").trim()).filter(Boolean);
 
     const observations = normalizeList(observationsRaw);
 
-    // Parse metrics like "Label: Value (extra)"
     const dataPoints = normalizeList(dataPointsRaw).map((l) => {
       const m = l.match(/^([^:]+):\s*(.+)$/);
       const label = m ? m[1].trim() : l;
@@ -111,12 +96,10 @@ const FormattedMessage = ({ content = "" }) => {
 
   const sections = parseSections(content);
 
-  // --- Specialized rendering when sections exist ---
   if (sections) {
     const { intro, observations, dataPoints, summary } = sections;
     return (
       <div className="space-y-4 max-w-full">
-        {/* Intro card */}
         {(intro || true) && (
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/40 to-blue-500/40 rounded-xl blur opacity-30 group-hover:opacity-50 transition" />
@@ -138,7 +121,6 @@ const FormattedMessage = ({ content = "" }) => {
           </div>
         )}
 
-        {/* Observations */}
         {observations?.length > 0 && (
           <div className="p-5 rounded-xl border bg-gray-50/70 dark:bg-gray-900/40 border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2 mb-3">
@@ -160,7 +142,6 @@ const FormattedMessage = ({ content = "" }) => {
           </div>
         )}
 
-        {/* Metrics grid */}
         {dataPoints?.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -205,7 +186,6 @@ const FormattedMessage = ({ content = "" }) => {
           </div>
         )}
 
-        {/* Summary callout */}
         {summary && (
           <div className="my-1 p-4 rounded-lg border bg-amber-50/70 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700/40">
             <div className="flex items-start gap-3">
@@ -220,11 +200,10 @@ const FormattedMessage = ({ content = "" }) => {
     );
   }
 
-  // --- Fallback: generic markdown-like rendering (original behavior, refined) ---
   const lines = content.split("\n");
   const elements = [];
   let listBuffer = [];
-  let listType = null; // 'ul' | 'ol'
+  let listType = null;
 
   const flushList = () => {
     if (!listType || listBuffer.length === 0) return;
