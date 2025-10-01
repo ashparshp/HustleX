@@ -10,8 +10,26 @@
   color-scheme: light;
 }
 
-body {
-  @apply antialiased;
+/* Ensure base text color is crisp per theme */
+html:not(.dark) body {
+  color: #000; /* text-black */
+  background-color: #fff;
+}
+
+html.dark body {
+  color: #e5e7eb; /* text-gray-200 */
+  background-color: #111827; /* gray-900 */
+}
+
+/* Improve readability: use subpixel antialiasing in light mode and antialiased in dark mode */
+html.dark body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html:not(.dark) body {
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
 }
 
 .react-datepicker-wrapper {

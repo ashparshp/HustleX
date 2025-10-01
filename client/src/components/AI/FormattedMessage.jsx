@@ -1,324 +1,123 @@
 import React from "react";
-import {
-  Sparkles,
-  TrendingUp,
-  Calendar,
-  Target,
-  CheckCircle2,
-  AlertCircle,
-  ArrowRight,
-  Lightbulb,
-} from "lucide-react";
 
-const FormattedMessage = ({ content }) => {
-  const formatContent = (text) => {
-    const lines = text.split("\n");
-    const elements = [];
-    let listItems = [];
-    let inList = false;
-    let currentCard = null;
-    let cardContent = [];
-
-    const flushList = () => {
-      if (listItems.length > 0) {
-        elements.push(
-          <ul key={`list-${elements.length}`} className="space-y-2.5 my-4">
-            {listItems.map((item, idx) => (
-              <li key={idx} className="flex gap-3 items-start group">
-                <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 mt-2 shadow-sm" />
-                <span className="text-sm leading-relaxed text-gray-900 dark:text-gray-100 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors">
-                  {parseInlineFormatting(item)}
-                </span>
-              </li>
-            ))}
-          </ul>
+const FormattedMessage = ({ content = "" }) => {
+  // Minimal inline bold parser (**text**)
+  const renderInline = (line) => {
+    const parts = line.split(/(\*\*[^*]+\*\*)/g);
+    return parts.map((part, idx) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return (
+          <strong key={idx} className="font-semibold">
+            {part.slice(2, -2)}
+          </strong>
         );
-        listItems = [];
       }
-      inList = false;
-    };
-
-    const flushCard = () => {
-      if (currentCard && cardContent.length > 0) {
-        elements.push(
-          <div
-            key={`card-${elements.length}`}
-            className="my-4 p-4 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20 border border-indigo-200 dark:border-indigo-800/30 shadow-sm"
-          >
-            <div className="flex items-start gap-3 mb-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md flex items-center justify-center">
-                <getCardIcon type={currentCard.type} />
-              </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
-                  {parseInlineFormatting(currentCard.title)}
-                </h4>
-              </div>
-            </div>
-            <div className="ml-11 space-y-2">
-              {cardContent.map((line, idx) => (
-                <p
-                  key={idx}
-                  className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed"
-                >
-                  {parseInlineFormatting(line)}
-                </p>
-              ))}
-            </div>
-          </div>
-        );
-        currentCard = null;
-        cardContent = [];
-      }
-    };
-
-    const getCardIcon = ({ type }) => {
-      const iconProps = { className: "w-4 h-4 text-white", strokeWidth: 2.5 };
-
-      if (type?.includes("week") || type?.includes("trend")) {
-        return <TrendingUp {...iconProps} />;
-      }
-      if (type?.includes("timetable") || type?.includes("schedule")) {
-        return <Calendar {...iconProps} />;
-      }
-      if (type?.includes("goal") || type?.includes("focus")) {
-        return <Target {...iconProps} />;
-      }
-      if (type?.includes("recommendation") || type?.includes("suggest")) {
-        return <Lightbulb {...iconProps} />;
-      }
-      return <Sparkles {...iconProps} />;
-    };
-
-    const parseInlineFormatting = (line) => {
-      // Handle bold (**text**) and inline code/data (percentages, dates)
-      const parts = line.split(
-        /(\*\*.*?\*\*|\d+%|Week \d+|\d{1,2}\/\d{1,2}\/\d{4})/g
-      );
-
-      return parts.map((part, idx) => {
-        if (part.startsWith("**") && part.endsWith("**")) {
-          const text = part.slice(2, -2);
-          return (
-            <span
-              key={idx}
-              className="font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent"
-            >
-              {text}
-            </span>
-          );
-        }
-        // Highlight percentages
-        if (/^\d+%$/.test(part)) {
-          return (
-            <span
-              key={idx}
-              className="inline-flex items-center px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 font-semibold text-sm border border-indigo-200 dark:border-indigo-800"
-            >
-              {part}
-            </span>
-          );
-        }
-        // Highlight week numbers
-        if (/^Week \d+$/.test(part)) {
-          return (
-            <span
-              key={idx}
-              className="inline-flex items-center px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-semibold text-sm border border-blue-200 dark:border-blue-800"
-            >
-              {part}
-            </span>
-          );
-        }
-        // Highlight dates
-        if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(part)) {
-          return (
-            <span
-              key={idx}
-              className="inline-flex items-center px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 font-medium text-sm border border-purple-200 dark:border-purple-800"
-            >
-              {part}
-            </span>
-          );
-        }
-        return <span key={idx}>{part}</span>;
-      });
-    };
-
-    lines.forEach((line, index) => {
-      const trimmedLine = line.trim();
-
-      // Empty line - flush any pending content
-      if (!trimmedLine) {
-        flushList();
-        flushCard();
-        elements.push(<div key={`space-${index}`} className="h-3" />);
-        return;
-      }
-
-      // Main heading with full bold (### or ## or just **Heading**)
-      if (
-        trimmedLine.match(/^#{1,3}\s+(.+)/) ||
-        trimmedLine.match(/^\*\*(.+?)\*\*:?\s*$/)
-      ) {
-        flushList();
-        flushCard();
-
-        let heading = trimmedLine
-          .replace(/^#{1,3}\s+/, "")
-          .replace(/^\*\*/, "")
-          .replace(/\*\*:?\s*$/, "");
-
-        elements.push(
-          <div
-            key={`heading-${index}`}
-            className="relative mt-6 mb-4 first:mt-0"
-          >
-            <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full shadow-sm" />
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white pl-3">
-              {heading}
-            </h3>
-          </div>
-        );
-        return;
-      }
-
-      // Card-style sections (Week 1:, Overall:, Timetable:, etc.)
-      const cardMatch = trimmedLine.match(
-        /^(Week \d+|Overall Trend|Timetable|Day \d+|Summary|Analysis|Insights?|Recommendations?|Key Points?):\s*(.*)/i
-      );
-      if (cardMatch) {
-        flushList();
-        flushCard();
-
-        const title = cardMatch[1];
-        const content = cardMatch[2];
-
-        currentCard = {
-          title: title,
-          type: title.toLowerCase(),
-        };
-
-        if (content) {
-          cardContent.push(content);
-        }
-        return;
-      }
-
-      // Content line within a card
-      if (currentCard && trimmedLine) {
-        // Check if it's a new list within the card
-        if (trimmedLine.match(/^\*\s+(.+)/)) {
-          const content = trimmedLine.replace(/^\*\s+/, "");
-          cardContent.push(`• ${content}`);
-        } else {
-          cardContent.push(trimmedLine);
-        }
-        return;
-      }
-
-      // Bulleted list item
-      if (trimmedLine.match(/^\*\s+(.+)/)) {
-        flushCard();
-        const content = trimmedLine.replace(/^\*\s+/, "");
-        listItems.push(content);
-        inList = true;
-        return;
-      }
-
-      // Numbered list or actionable items
-      if (trimmedLine.match(/^\d+\.\s+(.+)/)) {
-        flushCard();
-        flushList();
-
-        const content = trimmedLine.replace(/^\d+\.\s+/, "");
-        elements.push(
-          <div
-            key={`numbered-${index}`}
-            className="flex gap-3 items-start my-3"
-          >
-            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md flex items-center justify-center">
-              <span className="text-xs font-bold text-white">
-                {trimmedLine.match(/^\d+/)[0]}
-              </span>
-            </div>
-            <span className="text-sm leading-relaxed text-gray-900 dark:text-gray-100 pt-0.5">
-              {parseInlineFormatting(content)}
-            </span>
-          </div>
-        );
-        return;
-      }
-
-      // Important callout (starts with ⚠️, 💡, ✨, or similar emoji/special marker)
-      if (trimmedLine.match(/^[⚠️💡✨🎯📌🔍]/)) {
-        flushCard();
-        flushList();
-
-        // Determine callout type
-        const isWarning = trimmedLine.startsWith("⚠️");
-        const isTip = trimmedLine.startsWith("💡");
-        const isSuccess =
-          trimmedLine.startsWith("✨") || trimmedLine.startsWith("🎯");
-
-        elements.push(
-          <div
-            key={`callout-${index}`}
-            className={`my-3 p-4 rounded-lg border shadow-sm ${
-              isWarning
-                ? "bg-amber-50 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800/30"
-                : isTip
-                ? "bg-blue-50 dark:bg-blue-950/20 border-blue-300 dark:border-blue-800/30"
-                : isSuccess
-                ? "bg-green-50 dark:bg-green-950/20 border-green-300 dark:border-green-800/30"
-                : "bg-purple-50 dark:bg-purple-950/20 border-purple-300 dark:border-purple-800/30"
-            }`}
-          >
-            <p className="text-sm text-gray-900 dark:text-gray-100 leading-relaxed font-medium">
-              {parseInlineFormatting(trimmedLine)}
-            </p>
-          </div>
-        );
-        return;
-      }
-
-      // Regular paragraph with inline formatting
-      if (trimmedLine.includes("**")) {
-        flushCard();
-        flushList();
-
-        elements.push(
-          <p
-            key={`p-${index}`}
-            className="text-sm leading-relaxed my-2.5 text-gray-700 dark:text-gray-300"
-          >
-            {parseInlineFormatting(trimmedLine)}
-          </p>
-        );
-        return;
-      }
-
-      // Plain text paragraph
-      flushCard();
-      flushList();
-
-      elements.push(
-        <p
-          key={`p-${index}`}
-          className="text-sm leading-relaxed my-2 text-gray-600 dark:text-gray-400"
-        >
-          {trimmedLine}
-        </p>
-      );
+      return <span key={idx}>{part}</span>;
     });
-
-    flushList();
-    flushCard();
-
-    return elements;
   };
 
-  return <div className="space-y-1 max-w-full">{formatContent(content)}</div>;
+  const lines = content.split("\n");
+  const elements = [];
+  let listBuffer = [];
+  let listType = null; // 'ul' | 'ol'
+
+  const flushList = () => {
+    if (!listType || listBuffer.length === 0) return;
+    if (listType === "ul") {
+      elements.push(
+        <ul key={`ul-${elements.length}`} className="list-disc pl-5 my-3 space-y-1">
+          {listBuffer.map((txt, i) => (
+            <li key={i} className="text-sm leading-relaxed text-black dark:text-gray-100">
+              {renderInline(txt)}
+            </li>
+          ))}
+        </ul>
+      );
+    } else if (listType === "ol") {
+      elements.push(
+        <ol key={`ol-${elements.length}`} className="list-decimal pl-5 my-3 space-y-1">
+          {listBuffer.map((txt, i) => (
+            <li key={i} className="text-sm leading-relaxed text-black dark:text-gray-100">
+              {renderInline(txt)}
+            </li>
+          ))}
+        </ol>
+      );
+    }
+    listBuffer = [];
+    listType = null;
+  };
+
+  lines.forEach((raw, idx) => {
+    const line = raw.trim();
+
+    if (!line) {
+      flushList();
+      elements.push(<div key={`sp-${idx}`} className="h-2" />);
+      return;
+    }
+
+    // Headings: ###, ##, or **Heading**
+    const headingMatch = line.match(/^#{1,3}\s+(.+)/) || line.match(/^\*\*(.+?)\*\*:?\s*$/);
+    if (headingMatch) {
+      flushList();
+      const heading = (headingMatch[1] || line)
+        .replace(/^\*\*/, "")
+        .replace(/\*\*:?:?\s*$/, "");
+      elements.push(
+        <h3 key={`h-${idx}`} className="text-base font-semibold text-black dark:text-white mt-4">
+          {heading}
+        </h3>
+      );
+      return;
+    }
+
+    // Bulleted list ("* " or "- ")
+    const bullet = line.match(/^([*-])\s+(.+)/);
+    if (bullet) {
+      if (listType && listType !== "ul") flushList();
+      listType = "ul";
+      listBuffer.push(bullet[2]);
+      return;
+    }
+
+    // Numbered list ("1. ")
+    const numbered = line.match(/^\d+\.\s+(.+)/);
+    if (numbered) {
+      if (listType && listType !== "ol") flushList();
+      listType = "ol";
+      listBuffer.push(numbered[1]);
+      return;
+    }
+
+    // Callouts starting with emoji
+    if (/^[⚠️💡✨🎯📌🔍]/.test(line)) {
+      flushList();
+      elements.push(
+        <div
+          key={`co-${idx}`}
+          className="my-3 p-3 rounded-md border bg-gray-50/70 dark:bg-gray-900/40 border-gray-200 dark:border-gray-700"
+        >
+          <p className="text-sm leading-relaxed text-black dark:text-gray-200 font-medium">
+            {renderInline(line)}
+          </p>
+        </div>
+      );
+      return;
+    }
+
+    // Default paragraph
+    flushList();
+    elements.push(
+      <p key={`p-${idx}`} className="text-sm leading-relaxed text-black dark:text-gray-300 my-2">
+        {renderInline(line)}
+      </p>
+    );
+  });
+
+  flushList();
+
+  return <div className="space-y-1 max-w-full">{elements}</div>;
 };
 
 export default FormattedMessage;
