@@ -1,4 +1,14 @@
 import React from "react";
+import {
+  Sparkles,
+  TrendingUp,
+  Calendar,
+  Target,
+  CheckCircle2,
+  AlertCircle,
+  ArrowRight,
+  Lightbulb,
+} from "lucide-react";
 
 const FormattedMessage = ({ content }) => {
   const formatContent = (text) => {
@@ -6,16 +16,19 @@ const FormattedMessage = ({ content }) => {
     const elements = [];
     let listItems = [];
     let inList = false;
-    let currentSection = null;
+    let currentCard = null;
+    let cardContent = [];
 
     const flushList = () => {
       if (listItems.length > 0) {
         elements.push(
-          <ul key={`list-${elements.length}`} className="space-y-2 my-3 ml-2">
+          <ul key={`list-${elements.length}`} className="space-y-2.5 my-4">
             {listItems.map((item, idx) => (
-              <li key={idx} className="flex gap-2 text-sm leading-relaxed">
-                <span className="text-blue-500 font-bold mt-0.5">•</span>
-                <span>{parseInlineFormatting(item)}</span>
+              <li key={idx} className="flex gap-3 items-start group">
+                <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-gradient-to-r from-indigo-400 to-purple-400 mt-2" />
+                <span className="text-sm leading-relaxed text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                  {parseInlineFormatting(item)}
+                </span>
               </li>
             ))}
           </ul>
@@ -25,19 +38,72 @@ const FormattedMessage = ({ content }) => {
       inList = false;
     };
 
+    const flushCard = () => {
+      if (currentCard && cardContent.length > 0) {
+        elements.push(
+          <div
+            key={`card-${elements.length}`}
+            className="my-4 p-4 rounded-xl bg-gradient-to-br from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/20 dark:to-purple-950/20 border border-indigo-200/50 dark:border-indigo-800/30 backdrop-blur-sm"
+          >
+            <div className="flex items-start gap-3 mb-3">
+              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                <getCardIcon type={currentCard.type} />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                  {parseInlineFormatting(currentCard.title)}
+                </h4>
+              </div>
+            </div>
+            <div className="ml-11 space-y-2">
+              {cardContent.map((line, idx) => (
+                <p
+                  key={idx}
+                  className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed"
+                >
+                  {parseInlineFormatting(line)}
+                </p>
+              ))}
+            </div>
+          </div>
+        );
+        currentCard = null;
+        cardContent = [];
+      }
+    };
+
+    const getCardIcon = ({ type }) => {
+      const iconProps = { className: "w-4 h-4 text-white", strokeWidth: 2.5 };
+
+      if (type?.includes("week") || type?.includes("trend")) {
+        return <TrendingUp {...iconProps} />;
+      }
+      if (type?.includes("timetable") || type?.includes("schedule")) {
+        return <Calendar {...iconProps} />;
+      }
+      if (type?.includes("goal") || type?.includes("focus")) {
+        return <Target {...iconProps} />;
+      }
+      if (type?.includes("recommendation") || type?.includes("suggest")) {
+        return <Lightbulb {...iconProps} />;
+      }
+      return <Sparkles {...iconProps} />;
+    };
+
     const parseInlineFormatting = (line) => {
-      // Split by bold markers (**text**)
+      // Handle bold (**text**)
       const parts = line.split(/(\*\*.*?\*\*)/g);
 
       return parts.map((part, idx) => {
         if (part.startsWith("**") && part.endsWith("**")) {
+          const text = part.slice(2, -2);
           return (
-            <strong
+            <span
               key={idx}
-              className="font-bold text-gray-900 dark:text-white"
+              className="font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent"
             >
-              {part.slice(2, -2)}
-            </strong>
+              {text}
+            </span>
           );
         }
         return <span key={idx}>{part}</span>;
@@ -47,122 +113,163 @@ const FormattedMessage = ({ content }) => {
     lines.forEach((line, index) => {
       const trimmedLine = line.trim();
 
-      // Empty line
+      // Empty line - flush any pending content
       if (!trimmedLine) {
         flushList();
-        if (currentSection) {
-          elements.push(currentSection);
-          currentSection = null;
-        }
-        elements.push(<div key={`space-${index}`} className="h-2" />);
+        flushCard();
+        elements.push(<div key={`space-${index}`} className="h-3" />);
         return;
       }
 
-      // Main heading (starts with **)
-      if (trimmedLine.match(/^\*\*(.+?)\*\*:?$/)) {
+      // Main heading with full bold (### or ## or just **Heading**)
+      if (
+        trimmedLine.match(/^#{1,3}\s+(.+)/) ||
+        trimmedLine.match(/^\*\*(.+?)\*\*:?\s*$/)
+      ) {
         flushList();
-        if (currentSection) {
-          elements.push(currentSection);
-          currentSection = null;
-        }
-        const heading = trimmedLine.slice(2, -2).replace(/:$/, "");
+        flushCard();
+
+        let heading = trimmedLine
+          .replace(/^#{1,3}\s+/, "")
+          .replace(/^\*\*/, "")
+          .replace(/\*\*:?\s*$/, "");
+
         elements.push(
           <div
             key={`heading-${index}`}
-            className="mt-4 mb-2 pb-2 border-b border-gray-200 dark:border-gray-700"
+            className="relative mt-6 mb-4 first:mt-0"
           >
-            <h4 className="text-base font-bold text-gray-900 dark:text-white">
+            <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full" />
+            <h3 className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent pl-3">
               {heading}
-            </h4>
+            </h3>
           </div>
         );
         return;
       }
 
-      // Subheading or section with bold text (contains ** in middle)
-      if (trimmedLine.includes("**") && !trimmedLine.startsWith("*")) {
+      // Card-style sections (Week 1:, Overall:, Timetable:, etc.)
+      const cardMatch = trimmedLine.match(
+        /^(Week \d+|Overall Trend|Timetable|Day \d+|Summary|Analysis|Insights?|Recommendations?|Key Points?):\s*(.*)/i
+      );
+      if (cardMatch) {
         flushList();
-        if (currentSection) {
-          elements.push(currentSection);
-          currentSection = null;
+        flushCard();
+
+        const title = cardMatch[1];
+        const content = cardMatch[2];
+
+        currentCard = {
+          title: title,
+          type: title.toLowerCase(),
+        };
+
+        if (content) {
+          cardContent.push(content);
         }
-        elements.push(
-          <div key={`section-${index}`} className="my-3">
-            {parseInlineFormatting(trimmedLine)}
-          </div>
-        );
         return;
       }
 
-      // List item (starts with *)
+      // Content line within a card
+      if (currentCard && trimmedLine) {
+        // Check if it's a new list within the card
+        if (trimmedLine.match(/^\*\s+(.+)/)) {
+          const content = trimmedLine.replace(/^\*\s+/, "");
+          cardContent.push(`• ${content}`);
+        } else {
+          cardContent.push(trimmedLine);
+        }
+        return;
+      }
+
+      // Bulleted list item
       if (trimmedLine.match(/^\*\s+(.+)/)) {
+        flushCard();
         const content = trimmedLine.replace(/^\*\s+/, "");
         listItems.push(content);
         inList = true;
         return;
       }
 
-      // Numbered/labeled item (e.g., "Week 1:", "Overall:")
-      if (trimmedLine.match(/^(Week \d+|Overall Trend|Timetable):/i)) {
+      // Numbered list or actionable items
+      if (trimmedLine.match(/^\d+\.\s+(.+)/)) {
+        flushCard();
         flushList();
-        if (currentSection) {
-          elements.push(currentSection);
-        }
-        currentSection = (
+
+        const content = trimmedLine.replace(/^\d+\.\s+/, "");
+        elements.push(
           <div
-            key={`section-${index}`}
-            className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 my-2 border-l-4 border-blue-500"
+            key={`numbered-${index}`}
+            className="flex gap-3 items-start my-3"
           >
-            <div className="font-semibold text-gray-900 dark:text-white mb-1">
-              {parseInlineFormatting(trimmedLine)}
+            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+              <span className="text-xs font-bold text-white">
+                {trimmedLine.match(/^\d+/)[0]}
+              </span>
             </div>
+            <span className="text-sm leading-relaxed text-gray-700 dark:text-gray-300 pt-0.5">
+              {parseInlineFormatting(content)}
+            </span>
           </div>
         );
         return;
       }
 
-      // Content line within a section
-      if (currentSection && trimmedLine) {
-        const prevContent = currentSection.props.children[0];
-        currentSection = (
+      // Important callout (starts with ⚠️, 💡, ✨, or similar emoji/special marker)
+      if (trimmedLine.match(/^[⚠️💡✨🎯📌]/)) {
+        flushCard();
+        flushList();
+
+        elements.push(
           <div
-            key={`section-${index}`}
-            className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 my-2 border-l-4 border-blue-500"
+            key={`callout-${index}`}
+            className="my-3 p-3 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30"
           >
-            {prevContent}
-            <div className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
               {parseInlineFormatting(trimmedLine)}
-            </div>
+            </p>
           </div>
         );
         return;
       }
 
-      // Regular paragraph
+      // Regular paragraph with inline formatting
+      if (trimmedLine.includes("**")) {
+        flushCard();
+        flushList();
+
+        elements.push(
+          <p
+            key={`p-${index}`}
+            className="text-sm leading-relaxed my-2.5 text-gray-700 dark:text-gray-300"
+          >
+            {parseInlineFormatting(trimmedLine)}
+          </p>
+        );
+        return;
+      }
+
+      // Plain text paragraph
+      flushCard();
       flushList();
-      if (currentSection) {
-        elements.push(currentSection);
-        currentSection = null;
-      }
+
       elements.push(
         <p
           key={`p-${index}`}
-          className="text-sm leading-relaxed my-2 text-gray-700 dark:text-gray-300"
+          className="text-sm leading-relaxed my-2 text-gray-600 dark:text-gray-400"
         >
-          {parseInlineFormatting(trimmedLine)}
+          {trimmedLine}
         </p>
       );
     });
 
     flushList();
-    if (currentSection) {
-      elements.push(currentSection);
-    }
+    flushCard();
 
     return elements;
   };
 
-  return <div className="space-y-1">{formatContent(content)}</div>;
+  return <div className="space-y-1 max-w-full">{formatContent(content)}</div>;
 };
 
 export default FormattedMessage;
