@@ -6,15 +6,15 @@ const sendEmail = async (options) => {
       service: "Gmail",
       auth: {
         user: process.env.SMTP_EMAIL,
-        pass: process.env.SMTP_PASSWORD,
-      },
+        pass: process.env.SMTP_PASSWORD
+      }
     });
 
     const mailOptions = {
       from: `"${process.env.FROM_NAME}" <${process.env.SMTP_EMAIL}>`,
       to: options.email,
       subject: options.subject,
-      html: options.html,
+      html: options.html
     };
 
     const info = await transporter.sendMail(mailOptions);
@@ -26,7 +26,7 @@ const sendEmail = async (options) => {
   }
 };
 
-// Send email verification
+
 const sendVerificationEmail = async (user, verificationUrl) => {
   const html = `
     <!DOCTYPE html>
@@ -49,8 +49,7 @@ const sendVerificationEmail = async (user, verificationUrl) => {
         <tr>
           <td style="padding: 40px 30px;">
             <p style="font-size: 16px; line-height: 1.6; margin-bottom: 25px;">Hi ${
-              user.name || "there"
-            },</p>
+  user.name || "there"},</p>
             
             <p style="font-size: 16px; line-height: 1.6; margin-bottom: 25px;">Thanks for signing up with HustleX! To get started, please verify your email address by clicking the button below:</p>
             
@@ -58,7 +57,8 @@ const sendVerificationEmail = async (user, verificationUrl) => {
             <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 30px 0;">
               <tr>
                 <td align="center">
-                  <a href="${verificationUrl}" target="_blank" style="display: inline-block; background-color: #5469d4; color: white; text-decoration: none; padding: 14px 35px; border-radius: 4px; font-weight: 600; font-size: 16px;">Verify My Email</a>
+                  <a href="${
+  verificationUrl}" target="_blank" style="display: inline-block; background-color: #5469d4; color: white; text-decoration: none; padding: 14px 35px; border-radius: 4px; font-weight: 600; font-size: 16px;">Verify My Email</a>
                 </td>
               </tr>
             </table>
@@ -93,11 +93,11 @@ const sendVerificationEmail = async (user, verificationUrl) => {
   await sendEmail({
     email: user.email,
     subject: "Verify Your Email - HustleX",
-    html,
+    html
   });
 };
 
-// Send password reset email
+
 const sendResetPasswordEmail = async (user, resetToken) => {
   const resetUrl = `${resetToken}`;
   const html = `
@@ -121,8 +121,7 @@ const sendResetPasswordEmail = async (user, resetToken) => {
         <tr>
           <td style="padding: 40px 30px;">
             <p style="font-size: 16px; line-height: 1.6; margin-bottom: 25px;">Hi ${
-              user.name || "there"
-            },</p>
+  user.name || "there"},</p>
             
             <p style="font-size: 16px; line-height: 1.6; margin-bottom: 25px;">We received a request to reset your password for your HustleX account. Click the button below to create a new password:</p>
             
@@ -130,7 +129,8 @@ const sendResetPasswordEmail = async (user, resetToken) => {
             <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 30px 0;">
               <tr>
                 <td align="center">
-                  <a href="${resetUrl}" target="_blank" style="display: inline-block; background-color: #5469d4; color: white; text-decoration: none; padding: 14px 35px; border-radius: 4px; font-weight: 600; font-size: 16px;">Reset My Password</a>
+                  <a href="${
+  resetUrl}" target="_blank" style="display: inline-block; background-color: #5469d4; color: white; text-decoration: none; padding: 14px 35px; border-radius: 4px; font-weight: 600; font-size: 16px;">Reset My Password</a>
                 </td>
               </tr>
             </table>
@@ -176,12 +176,12 @@ const sendResetPasswordEmail = async (user, resetToken) => {
   await sendEmail({
     email: user.email,
     subject: "Reset Your Password - HustleX",
-    html,
+    html
   });
 };
 
 module.exports = {
   sendEmail,
   sendVerificationEmail,
-  sendResetPasswordEmail,
+  sendResetPasswordEmail
 };

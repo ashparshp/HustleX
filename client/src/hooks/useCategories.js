@@ -134,7 +134,7 @@ const useCategories = (type = "working-hours") => {
     return () => {
       isMountedRef.current = false;
     };
-  }, [isAuthenticated, type]); // Remove function dependencies to prevent infinite loop
+  }, [isAuthenticated, type]);
 
   return {
     categories,
@@ -145,7 +145,7 @@ const useCategories = (type = "working-hours") => {
     fetchDefaultCategories,
     addCategory,
     updateCategory,
-    deleteCategory,
+    deleteCategory
   };
 };
 

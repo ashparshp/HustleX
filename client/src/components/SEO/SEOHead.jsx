@@ -8,52 +8,52 @@ const SEOHead = ({
   ogImage = "https://hustlex.app/og-image.jpg",
   twitterImage = "https://hustlex.app/twitter-image.jpg",
   noIndex = false,
-  structuredData = null,
+  structuredData = null
 }) => {
   useEffect(() => {
-    // Update document title
+
     document.title = title;
 
-    // Update meta description
+
     updateMetaTag("description", description);
     updateMetaTag("keywords", keywords);
 
-    // Update Open Graph tags
+
     updateMetaProperty("og:title", title);
     updateMetaProperty("og:description", description);
     updateMetaProperty("og:url", canonical);
     updateMetaProperty("og:image", ogImage);
 
-    // Update Twitter tags
+
     updateMetaProperty("twitter:title", title);
     updateMetaProperty("twitter:description", description);
     updateMetaProperty("twitter:url", canonical);
     updateMetaProperty("twitter:image", twitterImage);
 
-    // Update canonical URL
+
     updateCanonical(canonical);
 
-    // Update robots meta tag
+
     updateMetaTag("robots", noIndex ? "noindex, nofollow" : "index, follow");
 
-    // Add structured data if provided
+
     if (structuredData) {
       addStructuredData(structuredData);
     }
 
     return () => {
-      // Cleanup function if needed
+
     };
   }, [
-    title,
-    description,
-    keywords,
-    canonical,
-    ogImage,
-    twitterImage,
-    noIndex,
-    structuredData,
-  ]);
+  title,
+  description,
+  keywords,
+  canonical,
+  ogImage,
+  twitterImage,
+  noIndex,
+  structuredData]
+  );
 
   const updateMetaTag = (name, content) => {
     let element = document.querySelector(`meta[name="${name}"]`);
@@ -92,7 +92,7 @@ const SEOHead = ({
   };
 
   const addStructuredData = (data) => {
-    // Remove existing structured data
+
     const existing = document.querySelector(
       'script[type="application/ld+json"].dynamic-seo'
     );
@@ -100,7 +100,7 @@ const SEOHead = ({
       existing.remove();
     }
 
-    // Add new structured data
+
     const script = document.createElement("script");
     script.type = "application/ld+json";
     script.className = "dynamic-seo";
@@ -108,7 +108,7 @@ const SEOHead = ({
     document.head.appendChild(script);
   };
 
-  return null; // This component doesn't render anything
+  return null;
 };
 
 export default SEOHead;

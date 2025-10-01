@@ -14,7 +14,7 @@ exports.getSchedules = async (req, res) => {
     if (startDate && endDate) {
       query.date = {
         $gte: new Date(startDate),
-        $lte: new Date(endDate),
+        $lte: new Date(endDate)
       };
     }
 
@@ -27,7 +27,7 @@ exports.getSchedules = async (req, res) => {
     res.json({
       success: true,
       count: schedules.length,
-      data: schedules,
+      data: schedules
     });
   } catch (error) {
     handleError(res, error, "Error getting schedules");
@@ -38,19 +38,19 @@ exports.getSchedule = async (req, res) => {
   try {
     const schedule = await Schedule.findOne({
       _id: req.params.id,
-      user: req.user.id,
+      user: req.user.id
     });
 
     if (!schedule) {
       return res.status(404).json({
         success: false,
-        message: "Schedule not found or not authorized",
+        message: "Schedule not found or not authorized"
       });
     }
 
     res.json({
       success: true,
-      data: schedule,
+      data: schedule
     });
   } catch (error) {
     handleError(res, error, "Error getting schedule");
@@ -66,13 +66,13 @@ exports.createSchedule = async (req, res) => {
 
     const existingSchedule = await Schedule.findOne({
       user: req.user.id,
-      date: scheduleDate,
+      date: scheduleDate
     });
 
     if (existingSchedule) {
       return res.status(400).json({
         success: false,
-        message: "Schedule already exists for this date",
+        message: "Schedule already exists for this date"
       });
     }
 
@@ -82,14 +82,14 @@ exports.createSchedule = async (req, res) => {
       user: req.user.id,
       date: scheduleDate,
       dayType,
-      items: items || [],
+      items: items || []
     });
 
     await schedule.save();
 
     res.status(201).json({
       success: true,
-      data: schedule,
+      data: schedule
     });
   } catch (error) {
     handleError(res, error, "Error creating schedule");
@@ -102,13 +102,13 @@ exports.updateSchedule = async (req, res) => {
 
     const schedule = await Schedule.findOne({
       _id: id,
-      user: req.user.id,
+      user: req.user.id
     });
 
     if (!schedule) {
       return res.status(404).json({
         success: false,
-        message: "Schedule not found or not authorized",
+        message: "Schedule not found or not authorized"
       });
     }
 
@@ -134,7 +134,7 @@ exports.updateSchedule = async (req, res) => {
 
     res.json({
       success: true,
-      data: updatedSchedule,
+      data: updatedSchedule
     });
   } catch (error) {
     handleError(res, error, "Error updating schedule");
@@ -145,13 +145,13 @@ exports.deleteSchedule = async (req, res) => {
   try {
     const schedule = await Schedule.findOne({
       _id: req.params.id,
-      user: req.user.id,
+      user: req.user.id
     });
 
     if (!schedule) {
       return res.status(404).json({
         success: false,
-        message: "Schedule not found or not authorized",
+        message: "Schedule not found or not authorized"
       });
     }
 
@@ -159,7 +159,7 @@ exports.deleteSchedule = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Schedule deleted successfully",
+      message: "Schedule deleted successfully"
     });
   } catch (error) {
     handleError(res, error, "Error deleting schedule");
@@ -170,13 +170,13 @@ exports.addScheduleItem = async (req, res) => {
   try {
     const schedule = await Schedule.findOne({
       _id: req.params.id,
-      user: req.user.id,
+      user: req.user.id
     });
 
     if (!schedule) {
       return res.status(404).json({
         success: false,
-        message: "Schedule not found or not authorized",
+        message: "Schedule not found or not authorized"
       });
     }
 
@@ -184,7 +184,7 @@ exports.addScheduleItem = async (req, res) => {
     if (!title || !startTime || !endTime || !category) {
       return res.status(400).json({
         success: false,
-        message: "Title, start time, end time, and category are required",
+        message: "Title, start time, end time, and category are required"
       });
     }
 
@@ -193,7 +193,7 @@ exports.addScheduleItem = async (req, res) => {
 
     res.json({
       success: true,
-      data: schedule,
+      data: schedule
     });
   } catch (error) {
     handleError(res, error, "Error adding schedule item");
@@ -204,13 +204,13 @@ exports.updateScheduleItem = async (req, res) => {
   try {
     const schedule = await Schedule.findOne({
       _id: req.params.id,
-      user: req.user.id,
+      user: req.user.id
     });
 
     if (!schedule) {
       return res.status(404).json({
         success: false,
-        message: "Schedule not found or not authorized",
+        message: "Schedule not found or not authorized"
       });
     }
 
@@ -218,7 +218,7 @@ exports.updateScheduleItem = async (req, res) => {
     if (!item) {
       return res.status(404).json({
         success: false,
-        message: "Schedule item not found",
+        message: "Schedule item not found"
       });
     }
 
@@ -230,7 +230,7 @@ exports.updateScheduleItem = async (req, res) => {
 
     res.json({
       success: true,
-      data: schedule,
+      data: schedule
     });
   } catch (error) {
     handleError(res, error, "Error updating schedule item");
@@ -241,13 +241,13 @@ exports.deleteScheduleItem = async (req, res) => {
   try {
     const schedule = await Schedule.findOne({
       _id: req.params.id,
-      user: req.user.id,
+      user: req.user.id
     });
 
     if (!schedule) {
       return res.status(404).json({
         success: false,
-        message: "Schedule not found or not authorized",
+        message: "Schedule not found or not authorized"
       });
     }
 
@@ -259,7 +259,7 @@ exports.deleteScheduleItem = async (req, res) => {
 
     res.json({
       success: true,
-      data: schedule,
+      data: schedule
     });
   } catch (error) {
     handleError(res, error, "Error deleting schedule item");
@@ -280,7 +280,7 @@ exports.getScheduleCategories = async (req, res) => {
 
     const userCategories = await Category.find({
       user: req.user.id,
-      type: "schedule",
+      type: "schedule"
     });
 
     userCategories.forEach((category) => {
@@ -291,7 +291,7 @@ exports.getScheduleCategories = async (req, res) => {
 
     res.json({
       success: true,
-      categories,
+      categories
     });
   } catch (error) {
     handleError(res, error, "Error getting schedule categories");

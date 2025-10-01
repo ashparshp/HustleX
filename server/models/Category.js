@@ -5,34 +5,34 @@ const categorySchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: true
     },
     name: {
       type: String,
       required: [true, "Category name is required"],
-      trim: true,
+      trim: true
     },
     type: {
       type: String,
       required: true,
       enum: ["working-hours", "skills", "schedule", "timetable"],
-      default: "working-hours",
+      default: "working-hours"
     },
     color: {
       type: String,
-      default: "#3498db",
+      default: "#3498db"
     },
     icon: {
       type: String,
-      default: "circle",
+      default: "circle"
     },
     description: {
       type: String,
-      trim: true,
-    },
+      trim: true
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 

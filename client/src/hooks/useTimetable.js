@@ -22,7 +22,7 @@ const useTimetable = (timetableId = null) => {
       "Content-Type": "application/json",
       "Cache-Control": "no-cache, no-store, must-revalidate",
       Pragma: "no-cache",
-      Expires: "0",
+      Expires: "0"
     };
   }, [token]);
 
@@ -43,7 +43,7 @@ const useTimetable = (timetableId = null) => {
       }
 
       const response = await fetch(`${API_URL}/api/timetables`, {
-        headers: getAuthHeaders(),
+        headers: getAuthHeaders()
       });
 
       if (!response.ok) {
@@ -67,8 +67,8 @@ const useTimetable = (timetableId = null) => {
 
         if (!selectedTimetable) {
           selectedTimetable =
-            data.data.find((t) => t.isActive) ||
-            (data.data.length > 0 ? data.data[0] : null);
+          data.data.find((t) => t.isActive) || (
+          data.data.length > 0 ? data.data[0] : null);
         }
 
         if (selectedTimetable) {
@@ -87,13 +87,13 @@ const useTimetable = (timetableId = null) => {
       setLoading(false);
     }
   }, [
-    API_URL,
-    getAuthHeaders,
-    timetableId,
-    token,
-    currentTimetable,
-    timetables.length,
-  ]);
+  API_URL,
+  getAuthHeaders,
+  timetableId,
+  token,
+  currentTimetable,
+  timetables.length]
+  );
 
   const createTimetable = useCallback(
     async (timetableData) => {
@@ -103,7 +103,7 @@ const useTimetable = (timetableId = null) => {
         const response = await fetch(`${API_URL}/api/timetables`, {
           method: "POST",
           headers: getAuthHeaders(),
-          body: JSON.stringify(timetableData),
+          body: JSON.stringify(timetableData)
         });
 
         if (!response.ok) {
@@ -134,7 +134,7 @@ const useTimetable = (timetableId = null) => {
         const response = await fetch(`${API_URL}/api/timetables/${id}`, {
           method: "PUT",
           headers: getAuthHeaders(),
-          body: JSON.stringify(timetableData),
+          body: JSON.stringify(timetableData)
         });
 
         if (!response.ok) {
@@ -171,7 +171,7 @@ const useTimetable = (timetableId = null) => {
       try {
         const response = await fetch(`${API_URL}/api/timetables/${id}`, {
           method: "DELETE",
-          headers: getAuthHeaders(),
+          headers: getAuthHeaders()
         });
 
         if (!response.ok) {
@@ -217,7 +217,7 @@ const useTimetable = (timetableId = null) => {
         }
 
         const timetableIdToUse =
-          id || (currentTimetable ? currentTimetable.id : null);
+        id || (currentTimetable ? currentTimetable.id : null);
 
         if (!timetableIdToUse) {
           setError("No timetable selected");
@@ -229,7 +229,7 @@ const useTimetable = (timetableId = null) => {
         const response = await fetch(
           `${API_URL}/api/timetables/${timetableIdToUse}/current-week`,
           {
-            headers: getAuthHeaders(),
+            headers: getAuthHeaders()
           }
         );
 
@@ -279,15 +279,15 @@ const useTimetable = (timetableId = null) => {
           return {
             ...prevWeek,
             activities: prevWeek.activities.map((activity) =>
-              activity._id === activityId
-                ? {
-                    ...activity,
-                    dailyStatus: activity.dailyStatus.map((status, i) =>
-                      i === dayIndex ? !status : status
-                    ),
-                  }
-                : activity
-            ),
+            activity._id === activityId ?
+            {
+              ...activity,
+              dailyStatus: activity.dailyStatus.map((status, i) =>
+              i === dayIndex ? !status : status
+              )
+            } :
+            activity
+            )
           };
         });
 
@@ -296,7 +296,7 @@ const useTimetable = (timetableId = null) => {
           {
             method: "POST",
             headers: getAuthHeaders(),
-            body: JSON.stringify({ activityId, dayIndex }),
+            body: JSON.stringify({ activityId, dayIndex })
           }
         );
 
@@ -331,7 +331,7 @@ const useTimetable = (timetableId = null) => {
 
       try {
         const timetableIdToUse =
-          id || (currentTimetable ? currentTimetable.id : null);
+        id || (currentTimetable ? currentTimetable.id : null);
 
         if (!timetableIdToUse) {
           throw new Error("No timetable selected");
@@ -340,7 +340,7 @@ const useTimetable = (timetableId = null) => {
         const response = await fetch(
           `${API_URL}/api/timetables/${timetableIdToUse}/history?page=${page}`,
           {
-            headers: getAuthHeaders(),
+            headers: getAuthHeaders()
           }
         );
 
@@ -374,7 +374,7 @@ const useTimetable = (timetableId = null) => {
         updateInProgress.current = true;
 
         const timetableIdToUse =
-          id || (currentTimetable ? currentTimetable.id : null);
+        id || (currentTimetable ? currentTimetable.id : null);
 
         if (!timetableIdToUse) {
           throw new Error("No timetable selected");
@@ -383,7 +383,7 @@ const useTimetable = (timetableId = null) => {
         const response = await fetch(
           `${API_URL}/api/timetables/${timetableIdToUse}/stats`,
           {
-            headers: getAuthHeaders(),
+            headers: getAuthHeaders()
           }
         );
 
@@ -416,7 +416,7 @@ const useTimetable = (timetableId = null) => {
 
     try {
       const response = await fetch(`${API_URL}/api/timetables/categories`, {
-        headers: getAuthHeaders(),
+        headers: getAuthHeaders()
       });
 
       if (!response.ok) {
@@ -444,7 +444,7 @@ const useTimetable = (timetableId = null) => {
 
       try {
         const timetableIdToUse =
-          options.id || (currentTimetable ? currentTimetable.id : null);
+        options.id || (currentTimetable ? currentTimetable.id : null);
 
         if (!timetableIdToUse) {
           throw new Error("No timetable selected");
@@ -455,7 +455,7 @@ const useTimetable = (timetableId = null) => {
           {
             method: "PUT",
             headers: getAuthHeaders(),
-            body: JSON.stringify({ activities }),
+            body: JSON.stringify({ activities })
           }
         );
 
@@ -493,7 +493,7 @@ const useTimetable = (timetableId = null) => {
 
       try {
         const timetableIdToUse =
-          id || (currentTimetable ? currentTimetable.id : null);
+        id || (currentTimetable ? currentTimetable.id : null);
 
         if (!timetableIdToUse) {
           throw new Error("No timetable selected");
@@ -503,7 +503,7 @@ const useTimetable = (timetableId = null) => {
           `${API_URL}/api/timetables/${timetableIdToUse}/new-week`,
           {
             method: "POST",
-            headers: getAuthHeaders(),
+            headers: getAuthHeaders()
           }
         );
 
@@ -552,7 +552,7 @@ const useTimetable = (timetableId = null) => {
         clearInterval(weekCheckIntervalRef.current);
       }
     };
-  }, [currentTimetable, token]); // Remove function dependencies to prevent infinite loop
+  }, [currentTimetable, token]);
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -564,12 +564,12 @@ const useTimetable = (timetableId = null) => {
 
         const timetablesData = await fetchTimetables();
 
-        if (currentTimetable || (timetablesData && timetablesData.length > 0)) {
+        if (currentTimetable || timetablesData && timetablesData.length > 0) {
           try {
             const timetableToUse =
-              currentTimetable ||
-              timetablesData.find((t) => t.isActive) ||
-              timetablesData[0];
+            currentTimetable ||
+            timetablesData.find((t) => t.isActive) ||
+            timetablesData[0];
 
             if (timetableToUse) {
               await fetchCurrentWeek(timetableToUse.id);
@@ -586,33 +586,33 @@ const useTimetable = (timetableId = null) => {
     };
 
     loadInitialData();
-  }, [token]); // Remove function dependencies to prevent infinite loop
+  }, [token]);
 
   useEffect(() => {
     if (
-      token &&
-      currentTimetable &&
-      initialLoadComplete.current &&
-      !currentWeek
-    ) {
+    token &&
+    currentTimetable &&
+    initialLoadComplete.current &&
+    !currentWeek)
+    {
       fetchCurrentWeek(currentTimetable.id).catch((err) => {
         console.error("Failed to load data for new timetable:", err);
       });
     }
-  }, [currentTimetable?.id, token, currentWeek]); // Remove fetchCurrentWeek to prevent infinite loop
+  }, [currentTimetable?.id, token, currentWeek]);
 
   useEffect(() => {
     if (
-      token &&
-      currentTimetable &&
-      initialLoadComplete.current &&
-      !currentWeek
-    ) {
+    token &&
+    currentTimetable &&
+    initialLoadComplete.current &&
+    !currentWeek)
+    {
       fetchCurrentWeek(currentTimetable.id).catch((err) => {
         console.error("Failed to load data for new timetable:", err);
       });
     }
-  }, [token, currentTimetable, currentWeek]); // Remove fetchCurrentWeek to prevent infinite loop
+  }, [token, currentTimetable, currentWeek]);
 
   return {
     timetables,
@@ -630,7 +630,7 @@ const useTimetable = (timetableId = null) => {
     getStats,
     getCategories,
     updateDefaultActivities,
-    startNewWeek,
+    startNewWeek
   };
 };
 

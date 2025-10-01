@@ -4,10 +4,10 @@ import apiClient from "../utils/apiClient";
 import { useAuth } from "../context/AuthContext";
 
 const useTimeTracking = (
-  initialTime = 0,
-  categoryId = null,
-  taskName = null
-) => {
+initialTime = 0,
+categoryId = null,
+taskName = null) =>
+{
   const [timeSpent, setTimeSpent] = useState(initialTime);
   const [isTracking, setIsTracking] = useState(false);
   const [startTime, setStartTime] = useState(null);
@@ -30,13 +30,13 @@ const useTimeTracking = (
 
     if (isAuthenticated) {
       try {
-        apiClient
-          .post("/time-tracking/start", {
-            startTime: new Date().toISOString(),
-            category: categoryId,
-            taskName,
-          })
-          .catch((err) => console.error("Failed to log tracking start:", err));
+        apiClient.
+        post("/time-tracking/start", {
+          startTime: new Date().toISOString(),
+          category: categoryId,
+          taskName
+        }).
+        catch((err) => console.error("Failed to log tracking start:", err));
       } catch (error) {
         console.error("Error logging tracking start:", error);
       }
@@ -58,15 +58,15 @@ const useTimeTracking = (
 
     if (isAuthenticated && startTime) {
       try {
-        apiClient
-          .post("/time-tracking/stop", {
-            startTime: startTime.toISOString(),
-            endTime: endTime.toISOString(),
-            duration,
-            category: categoryId,
-            taskName,
-          })
-          .catch((err) => console.error("Failed to log tracking stop:", err));
+        apiClient.
+        post("/time-tracking/stop", {
+          startTime: startTime.toISOString(),
+          endTime: endTime.toISOString(),
+          duration,
+          category: categoryId,
+          taskName
+        }).
+        catch((err) => console.error("Failed to log tracking stop:", err));
       } catch (error) {
         console.error("Error logging tracking stop:", error);
       }
@@ -74,16 +74,16 @@ const useTimeTracking = (
 
     if (startTime) {
       setTrackedSessions((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          startTime,
-          endTime,
-          duration,
-          category: categoryId,
-          taskName,
-        },
-      ]);
+      ...prev,
+      {
+        id: Date.now().toString(),
+        startTime,
+        endTime,
+        duration,
+        category: categoryId,
+        taskName
+      }]
+      );
     }
 
     return duration;
@@ -105,11 +105,11 @@ const useTimeTracking = (
 
   const formatTime = useCallback((seconds) => {
     const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
+    const minutes = Math.floor(seconds % 3600 / 60);
     const remainingSeconds = seconds % 60;
-    return `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+    return `${hours.toString().padStart(2, "0")}:${minutes.
+    toString().
+    padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   }, []);
 
   const saveSession = useCallback(
@@ -146,7 +146,7 @@ const useTimeTracking = (
         setLoading(true);
 
         const response = await apiClient.get("/time-tracking/sessions", {
-          params: filters,
+          params: filters
         });
 
         setTrackedSessions(response.data || []);
@@ -172,7 +172,7 @@ const useTimeTracking = (
         await apiClient.delete(`/time-tracking/sessions/${sessionId}`);
 
         setTrackedSessions((prev) =>
-          prev.filter((session) => session.id !== sessionId)
+        prev.filter((session) => session.id !== sessionId)
         );
 
         toast.success("Session deleted successfully");
@@ -214,7 +214,7 @@ const useTimeTracking = (
     formattedTime: formatTime(timeSpent),
     saveSession,
     fetchSessions,
-    deleteSession,
+    deleteSession
   };
 };
 

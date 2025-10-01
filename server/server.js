@@ -22,22 +22,22 @@ app.get("/api/health", (req, res) => {
   res.status(200).json({
     status: "success",
     message: "API is running",
-    serverTime: new Date(),
+    serverTime: new Date()
   });
 });
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   max: 100,
-  message: "Too many requests from this IP, please try again after 10 minutes",
+  message: "Too many requests from this IP, please try again after 10 minutes"
 });
 app.use("/api/auth", limiter);
 
 app.use(hpp());
 
-const allowedOrigins = process.env.CLIENT_URLS
-  ? process.env.CLIENT_URLS.split(",")
-  : ["http://localhost:5173"];
+const allowedOrigins = process.env.CLIENT_URLS ?
+process.env.CLIENT_URLS.split(",") :
+["http://localhost:5173"];
 
 app.use(
   cors({
@@ -48,7 +48,7 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true,
+    credentials: true
   })
 );
 
@@ -60,7 +60,7 @@ const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
     console.log("✅ MongoDB Connected!");
   } catch (error) {
@@ -83,7 +83,7 @@ app.get("/api/health", (req, res) => {
   res.status(200).json({
     status: "success",
     message: "API is running",
-    serverTime: new Date(),
+    serverTime: new Date()
   });
 });
 
@@ -96,7 +96,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json({
     success: false,
     message,
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined
   });
 });
 

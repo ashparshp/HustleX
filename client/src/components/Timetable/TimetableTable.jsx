@@ -12,55 +12,55 @@ const Toast = ({ toast, isDark, onClose, onUndo }) => {
       exit={{ opacity: 0, y: 20 }}
       className={`fixed top-4 right-4 z-50 p-3 rounded-lg shadow-md flex items-center space-x-3 
         ${
-          toast.type === "success"
-            ? isDark
-              ? "bg-green-950 text-green-300 border border-green-900"
-              : "bg-green-50 text-green-700 border border-green-200"
-            : toast.type === "error"
-            ? isDark
-              ? "bg-red-950 text-red-300 border border-red-900"
-              : "bg-red-50 text-red-700 border border-red-200"
-            : isDark
-            ? "bg-blue-950 text-blue-300 border border-blue-900"
-            : "bg-blue-50 text-blue-700 border border-blue-200"
-        }`}
-    >
-      {toast.type === "success" ? (
-        <CheckCircle className="w-5 h-5" />
-      ) : toast.type === "error" ? (
-        <XCircle className="w-5 h-5" />
-      ) : null}
+      toast.type === "success" ?
+      isDark ?
+      "bg-green-950 text-green-300 border border-green-900" :
+      "bg-green-50 text-green-700 border border-green-200" :
+      toast.type === "error" ?
+      isDark ?
+      "bg-red-950 text-red-300 border border-red-900" :
+      "bg-red-50 text-red-700 border border-red-200" :
+      isDark ?
+      "bg-blue-950 text-blue-300 border border-blue-900" :
+      "bg-blue-50 text-blue-700 border border-blue-200"}`
+      }>
+
+      {toast.type === "success" ?
+      <CheckCircle className="w-5 h-5" /> :
+      toast.type === "error" ?
+      <XCircle className="w-5 h-5" /> :
+      null}
 
       <span className="text-sm flex-grow ml-2">{toast.message}</span>
 
-      {toast.undoAction && (
-        <button
-          onClick={onUndo}
-          className={`flex items-center gap-1 px-2 py-1 rounded transition-all
+      {toast.undoAction &&
+      <button
+        onClick={onUndo}
+        className={`flex items-center gap-1 px-2 py-1 rounded transition-all
             ${
-              isDark
-                ? "hover:bg-white/10 text-gray-300"
-                : "hover:bg-black/5 text-gray-600"
-            }`}
-        >
+        isDark ?
+        "hover:bg-white/10 text-gray-300" :
+        "hover:bg-black/5 text-gray-600"}`
+        }>
+
           <Undo className="w-4 h-4" />
           Undo
         </button>
-      )}
+      }
 
       <button
         onClick={onClose}
         className={`ml-2 rounded-full p-1 transition-all hover:bg-black/10
           ${
-            isDark
-              ? "hover:bg-white/10 text-gray-300"
-              : "hover:bg-black/5 text-gray-600"
-          }`}
-      >
+        isDark ?
+        "hover:bg-white/10 text-gray-300" :
+        "hover:bg-black/5 text-gray-600"}`
+        }>
+
         ✕
       </button>
-    </motion.div>
-  );
+    </motion.div>);
+
 };
 
 const useToast = () => {
@@ -101,7 +101,7 @@ const TimetableTableBase = ({
   isDark,
   toggleActivityStatus,
   getCategoryStyle,
-  formatTimeRange,
+  formatTimeRange
 }) => {
   const { toast, addToast, removeToast, undoLastAction } = useToast();
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -113,9 +113,9 @@ const TimetableTableBase = ({
         opacity: 1,
         transition: {
           staggerChildren: 0.05,
-          delayChildren: 0.1,
-        },
-      },
+          delayChildren: 0.1
+        }
+      }
     }),
     []
   );
@@ -125,7 +125,7 @@ const TimetableTableBase = ({
       hidden: {
         opacity: 0,
         x: -20,
-        scale: 0.98,
+        scale: 0.98
       },
       show: {
         opacity: 1,
@@ -133,17 +133,17 @@ const TimetableTableBase = ({
         scale: 1,
         transition: {
           type: "tween",
-          duration: 0.3,
-        },
+          duration: 0.3
+        }
       },
       exit: {
         opacity: 0,
         x: 20,
         scale: 0.98,
         transition: {
-          duration: 0.2,
-        },
-      },
+          duration: 0.2
+        }
+      }
     }),
     []
   );
@@ -153,12 +153,12 @@ const TimetableTableBase = ({
       initial: { scale: 1 },
       hover: {
         scale: 1.05,
-        transition: { duration: 0.2 },
+        transition: { duration: 0.2 }
       },
       tap: {
         scale: 0.95,
-        transition: { duration: 0.1 },
-      },
+        transition: { duration: 0.1 }
+      }
     }),
     []
   );
@@ -166,17 +166,17 @@ const TimetableTableBase = ({
     (activityId, dayIndex) => {
       const activity = currentWeek.activities.find((a) => a._id === activityId);
       const currentStatus = activity.dailyStatus[dayIndex];
-      
+
       const undoAction = () => {
         toggleActivityStatus(activityId, dayIndex);
       };
-      
+
       toggleActivityStatus(activityId, dayIndex);
-      
+
       addToast(
         `${activity.activity.name} marked as ${
-          !currentStatus ? "completed" : "not completed"
-        } for ${days[dayIndex]}`,
+        !currentStatus ? "completed" : "not completed"} for ${
+        days[dayIndex]}`,
         !currentStatus ? "success" : "error",
         undoAction
       );
@@ -199,14 +199,14 @@ const TimetableTableBase = ({
   return (
     <div className="relative overflow-x-auto">
       <AnimatePresence>
-        {toast && (
-          <Toast
-            toast={toast}
-            isDark={isDark}
-            onClose={removeToast}
-            onUndo={toast.undoAction ? undoLastAction : undefined}
-          />
-        )}
+        {toast &&
+        <Toast
+          toast={toast}
+          isDark={isDark}
+          onClose={removeToast}
+          onUndo={toast.undoAction ? undoLastAction : undefined} />
+
+        }
       </AnimatePresence>
 
       <motion.table
@@ -214,47 +214,47 @@ const TimetableTableBase = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full min-w-[800px] shadow-sm rounded-lg overflow-hidden"
-      >
+        className="w-full min-w-[800px] shadow-sm rounded-lg overflow-hidden">
+
         <thead>
           <tr
             className={
-              isDark
-                ? "bg-gray-950 border-b border-gray-900"
-                : "bg-gray-100 border-b border-gray-200"
-            }
-          >
+            isDark ?
+            "bg-gray-950 border-b border-gray-900" :
+            "bg-gray-100 border-b border-gray-200"
+            }>
+
             <th
               className={`p-3 text-center text-xs font-semibold uppercase tracking-wider ${
-                isDark ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
+              isDark ? "text-gray-400" : "text-gray-600"}`
+              }>
+
               Activity
             </th>
             <th
               className={`p-3 text-left text-xs font-semibold uppercase tracking-wider ${
-                isDark ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
+              isDark ? "text-gray-400" : "text-gray-600"}`
+              }>
+
               <div className="flex items-center justify-center gap-2">
                 <Clock
                   className={`w-4 h-4 ${
-                    isDark ? "text-gray-500" : "text-gray-600"
-                  }`}
-                />
+                  isDark ? "text-gray-500" : "text-gray-600"}`
+                  } />
+
                 Time
               </div>
             </th>
-            {days.map((day) => (
-              <th
-                key={day}
-                className={`p-3 text-center text-xs font-semibold uppercase tracking-wider ${
-                  isDark ? "text-gray-400" : "text-gray-600"
-                }`}
-              >
+            {days.map((day) =>
+            <th
+              key={day}
+              className={`p-3 text-center text-xs font-semibold uppercase tracking-wider ${
+              isDark ? "text-gray-400" : "text-gray-600"}`
+              }>
+
                 {day}
               </th>
-            ))}
+            )}
           </tr>
         </thead>
         <motion.tbody
@@ -262,9 +262,9 @@ const TimetableTableBase = ({
           initial="hidden"
           animate="show"
           className={`${
-            isDark ? "bg-black" : "bg-white"
-          } divide-y divide-dashed`}
-        >
+          isDark ? "bg-black" : "bg-white"} divide-y divide-dashed`
+          }>
+
           <AnimatePresence mode="popLayout">
             {currentWeek?.activities.map((activityItem) => {
               const style = getCategoryStyle();
@@ -274,8 +274,8 @@ const TimetableTableBase = ({
                   variants={rowVariants}
                   layout
                   className={`transition-all duration-200 group ${style.bg} 
-                      ${isDark ? "border-gray-900" : "border-gray-100"}`}
-                >
+                      ${isDark ? "border-gray-900" : "border-gray-100"}`}>
+
                   <td className="p-3 text-center">
                     <motion.div
                       layout
@@ -283,14 +283,14 @@ const TimetableTableBase = ({
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3 }}
                       className={`px-3 py-1.5 text-xs rounded-md font-medium border ${
-                        style.border
-                      } group-hover:scale-[1.02] transition-transform
+                      style.border} group-hover:scale-[1.02] transition-transform
                       ${
-                        isDark
-                          ? "bg-gray-950 text-gray-300"
-                          : "bg-white text-gray-700"
-                      }`}
-                    >
+
+                      isDark ?
+                      "bg-gray-950 text-gray-300" :
+                      "bg-white text-gray-700"}`
+                      }>
+
                       {activityItem.activity.name}
                     </motion.div>
                   </td>
@@ -302,64 +302,64 @@ const TimetableTableBase = ({
                       transition={{ duration: 0.3, delay: 0.1 }}
                       className={`px-3 py-1.5 text-xs rounded-md text-center border
                           ${
-                            isDark
-                              ? "bg-gray-950 text-gray-400 border-gray-900"
-                              : "bg-white text-gray-600 border-gray-200"
-                          }`}
-                    >
+                      isDark ?
+                      "bg-gray-950 text-gray-400 border-gray-900" :
+                      "bg-white text-gray-600 border-gray-200"}`
+                      }>
+
                       {formatTimeRange(activityItem.activity.time)}
                     </motion.div>
                   </td>
-                  {activityItem.dailyStatus.map((status, dayIndex) => (
-                    <td key={dayIndex} className="p-3 text-center">
+                  {activityItem.dailyStatus.map((status, dayIndex) =>
+                  <td key={dayIndex} className="p-3 text-center">
                       <motion.button
-                        variants={statusButtonVariants}
-                        initial="initial"
-                        whileHover="hover"
-                        whileTap="tap"
-                        onClick={() =>
-                          handleToggleActivityStatus(activityItem._id, dayIndex)
-                        }
-                        onKeyDown={(e) =>
-                          handleKeyboardToggle(e, activityItem._id, dayIndex)
-                        }
-                        tabIndex={0}
-                        aria-label={`Toggle ${activityItem.activity.name} status for ${days[dayIndex]}`}
-                        className={`p-1.5 rounded-md transition-all duration-200 focus:outline-none 
+                      variants={statusButtonVariants}
+                      initial="initial"
+                      whileHover="hover"
+                      whileTap="tap"
+                      onClick={() =>
+                      handleToggleActivityStatus(activityItem._id, dayIndex)
+                      }
+                      onKeyDown={(e) =>
+                      handleKeyboardToggle(e, activityItem._id, dayIndex)
+                      }
+                      tabIndex={0}
+                      aria-label={`Toggle ${activityItem.activity.name} status for ${days[dayIndex]}`}
+                      className={`p-1.5 rounded-md transition-all duration-200 focus:outline-none 
                             ${
-                              isDark
-                                ? status
-                                  ? "bg-green-950 hover:bg-green-900 focus:ring-green-700"
-                                  : "bg-red-950 hover:bg-red-900 focus:ring-red-700"
-                                : status
-                                ? "bg-green-50 hover:bg-green-100 focus:ring-green-200"
-                                : "bg-red-50 hover:bg-red-100 focus:ring-red-200"
-                            }`}
-                      >
-                        {status ? (
-                          <CheckCircle
-                            className={`w-5 h-5 ${
-                              isDark ? "text-green-500" : "text-green-600"
-                            }`}
-                          />
-                        ) : (
-                          <XCircle
-                            className={`w-5 h-5 ${
-                              isDark ? "text-red-500" : "text-red-600"
-                            }`}
-                          />
-                        )}
+                      isDark ?
+                      status ?
+                      "bg-green-950 hover:bg-green-900 focus:ring-green-700" :
+                      "bg-red-950 hover:bg-red-900 focus:ring-red-700" :
+                      status ?
+                      "bg-green-50 hover:bg-green-100 focus:ring-green-200" :
+                      "bg-red-50 hover:bg-red-100 focus:ring-red-200"}`
+                      }>
+
+                        {status ?
+                      <CheckCircle
+                        className={`w-5 h-5 ${
+                        isDark ? "text-green-500" : "text-green-600"}`
+                        } /> :
+
+
+                      <XCircle
+                        className={`w-5 h-5 ${
+                        isDark ? "text-red-500" : "text-red-600"}`
+                        } />
+
+                      }
                       </motion.button>
                     </td>
-                  ))}
-                </motion.tr>
-              );
+                  )}
+                </motion.tr>);
+
             })}
           </AnimatePresence>
         </motion.tbody>
       </motion.table>
-    </div>
-  );
+    </div>);
+
 };
 
 const TimetableTable = memo(TimetableTableBase);

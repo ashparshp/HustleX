@@ -10,8 +10,8 @@ const ProtectedRoute = ({ children, requireVerified = false }) => {
     return (
       <div className="flex items-center justify-center h-screen">
         <LoadingSpinner size="lg" />
-      </div>
-    );
+      </div>);
+
   }
 
   if (!isAuthenticated) {

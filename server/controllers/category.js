@@ -12,19 +12,19 @@ exports.getCategories = async (req, res) => {
     if (!type) {
       return res.status(400).json({
         success: false,
-        message: "Category type is required",
+        message: "Category type is required"
       });
     }
 
     const categories = await Category.find({
       user: req.user.id,
-      type,
+      type
     }).sort({ name: 1 });
 
     res.json({
       success: true,
       count: categories.length,
-      data: categories,
+      data: categories
     });
   } catch (error) {
     handleError(res, error, "Error getting categories");
@@ -38,20 +38,20 @@ exports.createCategory = async (req, res) => {
     if (!name || !type) {
       return res.status(400).json({
         success: false,
-        message: "Name and type are required",
+        message: "Name and type are required"
       });
     }
 
     const existingCategory = await Category.findOne({
       user: req.user.id,
       name: name.trim(),
-      type,
+      type
     });
 
     if (existingCategory) {
       return res.status(400).json({
         success: false,
-        message: "Category with this name already exists",
+        message: "Category with this name already exists"
       });
     }
 
@@ -61,12 +61,12 @@ exports.createCategory = async (req, res) => {
       type,
       color,
       icon,
-      description,
+      description
     });
 
     res.status(201).json({
       success: true,
-      data: category,
+      data: category
     });
   } catch (error) {
     handleError(res, error, "Error creating category");
@@ -79,13 +79,13 @@ exports.updateCategory = async (req, res) => {
 
     let category = await Category.findOne({
       _id: req.params.id,
-      user: req.user.id,
+      user: req.user.id
     });
 
     if (!category) {
       return res.status(404).json({
         success: false,
-        message: "Category not found or not authorized",
+        message: "Category not found or not authorized"
       });
     }
 
@@ -94,13 +94,13 @@ exports.updateCategory = async (req, res) => {
         user: req.user.id,
         name: name.trim(),
         type: category.type,
-        _id: { $ne: category._id },
+        _id: { $ne: category._id }
       });
 
       if (existingCategory) {
         return res.status(400).json({
           success: false,
-          message: "Category with this name already exists",
+          message: "Category with this name already exists"
         });
       }
     }
@@ -114,7 +114,7 @@ exports.updateCategory = async (req, res) => {
 
     res.json({
       success: true,
-      data: category,
+      data: category
     });
   } catch (error) {
     handleError(res, error, "Error updating category");
@@ -125,13 +125,13 @@ exports.deleteCategory = async (req, res) => {
   try {
     const category = await Category.findOne({
       _id: req.params.id,
-      user: req.user.id,
+      user: req.user.id
     });
 
     if (!category) {
       return res.status(404).json({
         success: false,
-        message: "Category not found or not authorized",
+        message: "Category not found or not authorized"
       });
     }
 
@@ -139,7 +139,7 @@ exports.deleteCategory = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Category deleted successfully",
+      message: "Category deleted successfully"
     });
   } catch (error) {
     handleError(res, error, "Error deleting category");
@@ -155,40 +155,40 @@ exports.getDefaultCategories = async (req, res) => {
     switch (type) {
       case "working-hours":
         defaultCategories = [
-          { name: "Coding", color: "#3498db", icon: "code" },
-          { name: "Learning", color: "#2ecc71", icon: "book" },
-          { name: "Project Work", color: "#e74c3c", icon: "briefcase" },
-          { name: "Other", color: "#95a5a6", icon: "more-horizontal" },
-        ];
+        { name: "Coding", color: "#3498db", icon: "code" },
+        { name: "Learning", color: "#2ecc71", icon: "book" },
+        { name: "Project Work", color: "#e74c3c", icon: "briefcase" },
+        { name: "Other", color: "#95a5a6", icon: "more-horizontal" }];
+
         break;
       case "skills":
         defaultCategories = [
-          { name: "MERN Stack", color: "#3498db", icon: "server" },
-          { name: "Java & Ecosystem", color: "#e67e22", icon: "coffee" },
-          { name: "DevOps", color: "#9b59b6", icon: "settings" },
-          { name: "Data Science & ML", color: "#2ecc71", icon: "bar-chart-2" },
-          { name: "Mobile Development", color: "#e74c3c", icon: "smartphone" },
-          { name: "Go Backend", color: "#1abc9c", icon: "send" },
-        ];
+        { name: "MERN Stack", color: "#3498db", icon: "server" },
+        { name: "Java & Ecosystem", color: "#e67e22", icon: "coffee" },
+        { name: "DevOps", color: "#9b59b6", icon: "settings" },
+        { name: "Data Science & ML", color: "#2ecc71", icon: "bar-chart-2" },
+        { name: "Mobile Development", color: "#e74c3c", icon: "smartphone" },
+        { name: "Go Backend", color: "#1abc9c", icon: "send" }];
+
         break;
       case "schedule":
         defaultCategories = [
-          { name: "DSA", color: "#3498db", icon: "code" },
-          { name: "System Design", color: "#9b59b6", icon: "git-branch" },
-          { name: "Development", color: "#2ecc71", icon: "code-sandbox" },
-          { name: "Learning", color: "#f39c12", icon: "book-open" },
-          { name: "Problem Solving", color: "#e74c3c", icon: "zap" },
-          { name: "Other", color: "#95a5a6", icon: "more-horizontal" },
-        ];
+        { name: "DSA", color: "#3498db", icon: "code" },
+        { name: "System Design", color: "#9b59b6", icon: "git-branch" },
+        { name: "Development", color: "#2ecc71", icon: "code-sandbox" },
+        { name: "Learning", color: "#f39c12", icon: "book-open" },
+        { name: "Problem Solving", color: "#e74c3c", icon: "zap" },
+        { name: "Other", color: "#95a5a6", icon: "more-horizontal" }];
+
         break;
       case "timetable":
         defaultCategories = [
-          { name: "Career", color: "#3498db", icon: "briefcase" },
-          { name: "Backend", color: "#2ecc71", icon: "server" },
-          { name: "Core", color: "#e74c3c", icon: "cpu" },
-          { name: "Frontend", color: "#f39c12", icon: "layout" },
-          { name: "Mobile", color: "#9b59b6", icon: "smartphone" },
-        ];
+        { name: "Career", color: "#3498db", icon: "briefcase" },
+        { name: "Backend", color: "#2ecc71", icon: "server" },
+        { name: "Core", color: "#e74c3c", icon: "cpu" },
+        { name: "Frontend", color: "#f39c12", icon: "layout" },
+        { name: "Mobile", color: "#9b59b6", icon: "smartphone" }];
+
         break;
       default:
         break;
@@ -196,7 +196,7 @@ exports.getDefaultCategories = async (req, res) => {
 
     res.json({
       success: true,
-      data: defaultCategories,
+      data: defaultCategories
     });
   } catch (error) {
     handleError(res, error, "Error getting default categories");

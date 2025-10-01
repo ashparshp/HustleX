@@ -17,13 +17,13 @@ const useSkills = () => {
     async (category, status, forceRefresh = false) => {
       if (!isAuthenticated || !isMountedRef.current) return;
 
-      // Prevent duplicate requests within 1 second unless forced
+
       const now = Date.now();
       if (
-        !forceRefresh &&
-        lastFetchRef.current &&
-        now - lastFetchRef.current < 1000
-      ) {
+      !forceRefresh &&
+      lastFetchRef.current &&
+      now - lastFetchRef.current < 1000)
+      {
         return;
       }
       lastFetchRef.current = now;
@@ -164,7 +164,7 @@ const useSkills = () => {
 
       try {
         const updatePromises = skillsData.map((skill) =>
-          updateSkill(skill.id || skill._id, skill)
+        updateSkill(skill.id || skill._id, skill)
         );
 
         await Promise.all(updatePromises);
@@ -190,7 +190,7 @@ const useSkills = () => {
         try {
           const skillsData = orderedSkills.map((skill, index) => ({
             id: skill.id || skill._id,
-            orderIndex: index,
+            orderIndex: index
           }));
 
           await apiClient.post("/skills/reorder", { skills: skillsData });
@@ -204,7 +204,7 @@ const useSkills = () => {
             await updateSkill(skill.id || skill._id, {
               orderIndex: i,
               name: skill.name,
-              category: skill.category,
+              category: skill.category
             });
           }
         }
@@ -231,7 +231,7 @@ const useSkills = () => {
     return () => {
       isMountedRef.current = false;
     };
-  }, [isAuthenticated]); // Remove fetchSkills from dependencies to prevent infinite loop
+  }, [isAuthenticated]);
 
   return {
     skills,
@@ -245,7 +245,7 @@ const useSkills = () => {
     deleteSkill,
     getSkillCategories,
     getSkillStats,
-    updateSkillOrder,
+    updateSkillOrder
   };
 };
 

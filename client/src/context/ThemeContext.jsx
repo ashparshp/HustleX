@@ -39,48 +39,48 @@ export function ThemeProvider({ children }) {
 
   const theme = {
     colors: {
-      primary: isDark
-        ? {
-            light: "#818cf8",
-            DEFAULT: "#6366f1",
-            dark: "#4f46e5",
-          }
-        : {
-            light: "#a5b4fc",
-            DEFAULT: "#6366f1",
-            dark: "#4338ca",
-          },
+      primary: isDark ?
+      {
+        light: "#818cf8",
+        DEFAULT: "#6366f1",
+        dark: "#4f46e5"
+      } :
+      {
+        light: "#a5b4fc",
+        DEFAULT: "#6366f1",
+        dark: "#4338ca"
+      }
     },
     card: `rounded-lg border ${
-      isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-    }`,
+    isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`,
+
     button: {
       primary: `px-4 py-2 rounded-lg font-medium transition-colors duration-200 
         ${
-          isDark
-            ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-            : "bg-indigo-500 hover:bg-indigo-600 text-white"
-        }`,
+      isDark ?
+      "bg-indigo-600 hover:bg-indigo-700 text-white" :
+      "bg-indigo-500 hover:bg-indigo-600 text-white"}`,
+
       secondary: `px-4 py-2 rounded-lg font-medium transition-colors duration-200 
         ${
-          isDark
-            ? "bg-gray-700 hover:bg-gray-600 text-gray-200"
-            : "bg-gray-100 hover:bg-gray-200 text-gray-900"
-        }`,
+      isDark ?
+      "bg-gray-700 hover:bg-gray-600 text-gray-200" :
+      "bg-gray-100 hover:bg-gray-200 text-gray-900"}`
+
     },
     input: `w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 transition-colors duration-200
       ${
-        isDark
-          ? "bg-gray-700 border-gray-600 text-white focus:ring-indigo-500"
-          : "bg-white border-gray-300 text-gray-900 focus:ring-indigo-500"
-      }`,
+    isDark ?
+    "bg-gray-700 border-gray-600 text-white focus:ring-indigo-500" :
+    "bg-white border-gray-300 text-gray-900 focus:ring-indigo-500"}`
+
   };
 
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme, theme }}>
       {children}
-    </ThemeContext.Provider>
-  );
+    </ThemeContext.Provider>);
+
 }
 
 export function useTheme() {

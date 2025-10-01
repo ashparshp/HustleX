@@ -14,7 +14,7 @@ exports.getWorkingHours = async (req, res) => {
     if (startDate && endDate) {
       query.date = {
         $gte: new Date(startDate),
-        $lte: new Date(endDate),
+        $lte: new Date(endDate)
       };
     }
 
@@ -22,9 +22,9 @@ exports.getWorkingHours = async (req, res) => {
       query.category = category;
     }
 
-    const workingHours = await WorkingHours.find(query)
-      .sort({ date: -1 })
-      .limit(30);
+    const workingHours = await WorkingHours.find(query).
+    sort({ date: -1 }).
+    limit(30);
 
     const stats = {
       totalDays: workingHours.length,
@@ -37,9 +37,9 @@ exports.getWorkingHours = async (req, res) => {
         0
       ),
       averageCompletion:
-        workingHours.length > 0 
-          ? workingHours.reduce((sum, day) => sum + day.progressPercentage, 0) / workingHours.length
-          : 0,
+      workingHours.length > 0 ?
+      workingHours.reduce((sum, day) => sum + day.progressPercentage, 0) / workingHours.length :
+      0,
       categoryBreakdown: workingHours.reduce((acc, day) => {
         acc[day.category] = (acc[day.category] || 0) + day.achievedHours;
         return acc;
@@ -47,7 +47,7 @@ exports.getWorkingHours = async (req, res) => {
       moodDistribution: workingHours.reduce((acc, day) => {
         acc[day.mood] = (acc[day.mood] || 0) + 1;
         return acc;
-      }, {}),
+      }, {})
     };
 
     res.json({ success: true, workingHours, stats });
@@ -61,15 +61,15 @@ exports.addWorkingHours = async (req, res) => {
     const { date, targetHours, achievedHours, category, notes, mood } = req.body;
 
     if (!category) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Category is required" 
+      return res.status(400).json({
+        success: false,
+        message: "Category is required"
       });
     }
 
     let existingEntry = await WorkingHours.findOne({
       user: req.user.id,
-      date: new Date(date).setHours(0, 0, 0, 0),
+      date: new Date(date).setHours(0, 0, 0, 0)
     });
 
     if (existingEntry) {
@@ -88,7 +88,7 @@ exports.addWorkingHours = async (req, res) => {
         achievedHours,
         category,
         notes,
-        mood,
+        mood
       });
       await workingHours.save();
       res.status(201).json({ success: true, data: workingHours });
@@ -113,16 +113,16 @@ exports.updateWorkingHours = async (req, res) => {
     });
 
     if (!workingHours) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Working hours entry not found or not authorized" 
+      return res.status(404).json({
+        success: false,
+        message: "Working hours entry not found or not authorized"
       });
     }
 
-    Object.keys(updates).forEach(key => {
+    Object.keys(updates).forEach((key) => {
       workingHours[key] = updates[key];
     });
-    
+
     await workingHours.save();
     res.json({ success: true, data: workingHours });
   } catch (error) {
@@ -140,16 +140,16 @@ exports.deleteWorkingHours = async (req, res) => {
     });
 
     if (!workingHours) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Working hours entry not found or not authorized" 
+      return res.status(404).json({
+        success: false,
+        message: "Working hours entry not found or not authorized"
       });
     }
 
     await workingHours.deleteOne();
-    res.json({ 
-      success: true, 
-      message: "Working hours entry deleted successfully" 
+    res.json({
+      success: true,
+      message: "Working hours entry deleted successfully"
     });
   } catch (error) {
     handleError(res, error, "Error deleting working hours");
@@ -164,12 +164,12 @@ exports.getStats = async (req, res) => {
     if (startDate && endDate) {
       query.date = {
         $gte: new Date(startDate),
-        $lte: new Date(endDate),
+        $lte: new Date(endDate)
       };
     }
 
     const workingHours = await WorkingHours.find(query);
-    
+
     if (workingHours.length === 0) {
       return res.json({
         success: true,
@@ -195,8 +195,8 @@ exports.getStats = async (req, res) => {
         0
       ),
       averageCompletion:
-        workingHours.reduce((sum, day) => sum + day.progressPercentage, 0) /
-        workingHours.length,
+      workingHours.reduce((sum, day) => sum + day.progressPercentage, 0) /
+      workingHours.length,
       categoryBreakdown: workingHours.reduce((acc, day) => {
         acc[day.category] = (acc[day.category] || 0) + day.achievedHours;
         return acc;
@@ -204,7 +204,7 @@ exports.getStats = async (req, res) => {
       moodDistribution: workingHours.reduce((acc, day) => {
         acc[day.mood] = (acc[day.mood] || 0) + 1;
         return acc;
-      }, {}),
+      }, {})
     };
 
     res.json({ success: true, stats });
@@ -216,17 +216,17 @@ exports.getStats = async (req, res) => {
 exports.getCategories = async (req, res) => {
   try {
     const categories = await WorkingHours.distinct('category', { user: req.user.id });
-    
-    const userCategories = await Category.find({ 
+
+    const userCategories = await Category.find({
       user: req.user.id,
       type: 'working-hours'
     });
-    
+
     const allCategories = [...new Set([
-      ...categories,
-      ...userCategories.map(cat => cat.name)
-    ])];
-    
+    ...categories,
+    ...userCategories.map((cat) => cat.name)]
+    )];
+
     res.json({ success: true, categories: allCategories });
   } catch (error) {
     handleError(res, error, "Error getting categories");

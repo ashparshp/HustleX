@@ -12,7 +12,7 @@ const {
   updateDefaultActivities,
   getStats,
   startNewWeek,
-  getCategories,
+  getCategories
 } = require("../controllers/timetable");
 const { protect } = require("../middleware/auth");
 
@@ -30,10 +30,10 @@ router.put("/:id/activities", updateDefaultActivities);
 router.get("/:id/stats", getStats);
 router.post("/:id/new-week", startNewWeek);
 
-router
-  .route("/:id")
-  .get(getTimetable)
-  .put(updateTimetable)
-  .delete(deleteTimetable);
+router.
+route("/:id").
+get(getTimetable).
+put(updateTimetable).
+delete(deleteTimetable);
 
 module.exports = router;

@@ -6,7 +6,7 @@ const {
   updateWorkingHours,
   deleteWorkingHours,
   getStats,
-  getCategories,
+  getCategories
 } = require("../controllers/workingHours");
 const { protect } = require("../middleware/auth");
 

@@ -22,7 +22,7 @@ exports.getSkills = async (req, res) => {
     const skills = await Skill.find(query).sort({
       category: 1,
       orderIndex: 1,
-      name: 1,
+      name: 1
     });
 
     const groupedSkills = skills.reduce((acc, skill) => {
@@ -37,7 +37,7 @@ exports.getSkills = async (req, res) => {
       success: true,
       count: skills.length,
       data: skills,
-      groupedSkills,
+      groupedSkills
     });
   } catch (error) {
     handleError(res, error, "Error retrieving skills");
@@ -54,37 +54,37 @@ exports.addSkill = async (req, res) => {
       description,
       resources,
       priority,
-      orderIndex,
+      orderIndex
     } = req.body;
 
     if (!name || !category) {
       return res.status(400).json({
         success: false,
-        message: "Name and category are required",
+        message: "Name and category are required"
       });
     }
 
     const existingSkill = await Skill.findOne({
       user: req.user.id,
       name: name.trim(),
-      category,
+      category
     });
 
     if (existingSkill) {
       return res.status(400).json({
         success: false,
-        message: "Skill already exists in this category",
+        message: "Skill already exists in this category"
       });
     }
 
     const highestOrderSkill = await Skill.findOne({
       user: req.user.id,
-      category,
+      category
     }).sort({ orderIndex: -1 });
 
-    const nextOrderIndex = highestOrderSkill
-      ? highestOrderSkill.orderIndex + 1
-      : 0;
+    const nextOrderIndex = highestOrderSkill ?
+    highestOrderSkill.orderIndex + 1 :
+    0;
 
     const skill = new Skill({
       user: req.user.id,
@@ -95,7 +95,7 @@ exports.addSkill = async (req, res) => {
       description,
       resources,
       priority,
-      orderIndex: orderIndex !== undefined ? orderIndex : nextOrderIndex,
+      orderIndex: orderIndex !== undefined ? orderIndex : nextOrderIndex
     });
 
     if (status === "in-progress" && !skill.startDate) {
@@ -110,7 +110,7 @@ exports.addSkill = async (req, res) => {
     await skill.save();
     res.status(201).json({
       success: true,
-      data: skill,
+      data: skill
     });
   } catch (error) {
     handleError(res, error, "Error adding skill");
@@ -124,32 +124,32 @@ exports.updateSkill = async (req, res) => {
 
     const skill = await Skill.findOne({
       _id: id,
-      user: req.user.id,
+      user: req.user.id
     });
 
     if (!skill) {
       return res.status(404).json({
         success: false,
-        message: "Skill not found or not authorized",
+        message: "Skill not found or not authorized"
       });
     }
 
     if (
-      updates.name &&
-      updates.category &&
-      (updates.name !== skill.name || updates.category !== skill.category)
-    ) {
+    updates.name &&
+    updates.category && (
+    updates.name !== skill.name || updates.category !== skill.category))
+    {
       const existingSkill = await Skill.findOne({
         user: req.user.id,
         name: updates.name.trim(),
         category: updates.category,
-        _id: { $ne: id },
+        _id: { $ne: id }
       });
 
       if (existingSkill) {
         return res.status(400).json({
           success: false,
-          message: "Skill already exists in this category",
+          message: "Skill already exists in this category"
         });
       }
     }
@@ -181,7 +181,7 @@ exports.updateSkill = async (req, res) => {
 
     res.json({
       success: true,
-      data: skill,
+      data: skill
     });
   } catch (error) {
     handleError(res, error, "Error updating skill");
@@ -194,13 +194,13 @@ exports.deleteSkill = async (req, res) => {
 
     const skill = await Skill.findOne({
       _id: id,
-      user: req.user.id,
+      user: req.user.id
     });
 
     if (!skill) {
       return res.status(404).json({
         success: false,
-        message: "Skill not found or not authorized",
+        message: "Skill not found or not authorized"
       });
     }
 
@@ -213,14 +213,14 @@ exports.deleteSkill = async (req, res) => {
       {
         user: req.user.id,
         category,
-        orderIndex: { $gt: orderIndex },
+        orderIndex: { $gt: orderIndex }
       },
       { $inc: { orderIndex: -1 } }
     );
 
     res.json({
       success: true,
-      message: "Skill deleted successfully",
+      message: "Skill deleted successfully"
     });
   } catch (error) {
     handleError(res, error, "Error deleting skill");
@@ -230,21 +230,21 @@ exports.deleteSkill = async (req, res) => {
 exports.getSkillCategories = async (req, res) => {
   try {
     const usedCategories = await Skill.distinct("category", {
-      user: req.user.id,
+      user: req.user.id
     });
 
     const userCategories = await Category.find({
       user: req.user.id,
-      type: "skills",
+      type: "skills"
     });
 
     const allCategories = [
-      ...new Set([...usedCategories, ...userCategories.map((cat) => cat.name)]),
-    ];
+    ...new Set([...usedCategories, ...userCategories.map((cat) => cat.name)])];
+
 
     res.json({
       success: true,
-      categories: allCategories,
+      categories: allCategories
     });
   } catch (error) {
     handleError(res, error, "Error getting skill categories");
@@ -269,24 +269,24 @@ exports.getSkillStats = async (req, res) => {
           statusDistribution: {
             completed: 0,
             inProgress: 0,
-            upcoming: 0,
-          },
-        },
+            upcoming: 0
+          }
+        }
       });
     }
 
     const stats = {
       total: skills.length,
       completed: skills.filter((skill) => skill.status === "completed").length,
-      inProgress: skills.filter((skill) => skill.status === "in-progress")
-        .length,
-      upcoming: skills.filter((skill) => skill.status === "upcoming").length,
+      inProgress: skills.filter((skill) => skill.status === "in-progress").
+      length,
+      upcoming: skills.filter((skill) => skill.status === "upcoming").length
     };
 
-    stats.completionRate = (stats.completed / stats.total) * 100;
+    stats.completionRate = stats.completed / stats.total * 100;
 
     stats.averageProgress =
-      skills.reduce((sum, skill) => sum + skill.progress, 0) / stats.total;
+    skills.reduce((sum, skill) => sum + skill.progress, 0) / stats.total;
 
     stats.categoryCounts = skills.reduce((acc, skill) => {
       acc[skill.category] = (acc[skill.category] || 0) + 1;
@@ -296,12 +296,12 @@ exports.getSkillStats = async (req, res) => {
     stats.statusDistribution = {
       completed: stats.completed,
       inProgress: stats.inProgress,
-      upcoming: stats.upcoming,
+      upcoming: stats.upcoming
     };
 
     res.json({
       success: true,
-      stats,
+      stats
     });
   } catch (error) {
     handleError(res, error, "Error getting skill statistics");
@@ -315,7 +315,7 @@ exports.reorderSkills = async (req, res) => {
     if (!skills || !Array.isArray(skills) || skills.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "Skills array is required for reordering",
+        message: "Skills array is required for reordering"
       });
     }
 
@@ -328,7 +328,7 @@ exports.reorderSkills = async (req, res) => {
 
       const skill = await Skill.findOne({
         _id: id,
-        user: req.user.id,
+        user: req.user.id
       });
 
       if (!skill) {
@@ -343,7 +343,7 @@ exports.reorderSkills = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Skills reordered successfully",
+      message: "Skills reordered successfully"
     });
   } catch (error) {
     handleError(res, error, "Error reordering skills");

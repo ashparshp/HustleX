@@ -7,7 +7,8 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "init-all": "node scripts/initAllData.js",
-    "init-migrate": "node scripts/dataMigration.js"
+    "init-migrate": "node scripts/dataMigration.js",
+    "strip-comments": "node scripts/removeComments.js"
   },
   "dependencies": {
     "@google/genai": "^1.21.0",
@@ -26,6 +27,9 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
+    "@babel/generator": "^7.26.0",
+    "@babel/parser": "^7.26.2",
+    "glob": "^10.4.5",
     "nodemon": "^2.0.22"
   },
   "engines": {

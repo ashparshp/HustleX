@@ -15,7 +15,7 @@ const defaultStats = {
   totalTasks: 0,
   currentStreak: 0,
   topCategory: "",
-  categoryCount: 0,
+  categoryCount: 0
 };
 
 const useSchedules = () => {
@@ -49,11 +49,11 @@ const useSchedules = () => {
     );
     const completedItems = scheduleData.reduce(
       (acc, s) =>
-        acc + (s.items ? s.items.filter((item) => item.completed).length : 0),
+      acc + (s.items ? s.items.filter((item) => item.completed).length : 0),
       0
     );
     const completionRate =
-      totalItems > 0 ? (completedItems / totalItems) * 100 : 0;
+    totalItems > 0 ? completedItems / totalItems * 100 : 0;
 
     const totalHours = scheduleData.reduce((acc, schedule) => {
       if (!schedule.items) return acc;
@@ -66,16 +66,16 @@ const useSchedules = () => {
           const start = new Date(`2000-01-01T${item.startTime}`);
           const end = new Date(`2000-01-01T${item.endTime}`);
           return itemAcc + (end - start) / (1000 * 60 * 60);
-        }, 0)
-      );
+        }, 0));
+
     }, 0);
 
     const highPriorityTasks = scheduleData.reduce(
       (acc, s) =>
-        acc +
-        (s.items
-          ? s.items.filter((item) => item.priority === "High").length
-          : 0),
+      acc + (
+      s.items ?
+      s.items.filter((item) => item.priority === "High").length :
+      0),
       0
     );
 
@@ -91,7 +91,7 @@ const useSchedules = () => {
     });
 
     const topCategory =
-      Object.entries(categories).sort((a, b) => b[1] - a[1])[0]?.[0] || "";
+    Object.entries(categories).sort((a, b) => b[1] - a[1])[0]?.[0] || "";
 
     setStats({
       todayItems,
@@ -105,7 +105,7 @@ const useSchedules = () => {
       totalTasks: totalItems,
       currentStreak: 0,
       topCategory,
-      categoryCount: Object.keys(categories).length,
+      categoryCount: Object.keys(categories).length
     });
   }, []);
 
@@ -157,7 +157,7 @@ const useSchedules = () => {
 
         const formattedData = {
           ...scheduleData,
-          date: new Date(scheduleData.date).toISOString(),
+          date: new Date(scheduleData.date).toISOString()
         };
 
         const response = await apiClient.post("/schedules", formattedData);
@@ -194,13 +194,13 @@ const useSchedules = () => {
         const updatedSchedule = response.data || {};
 
         setSchedules((prev) =>
-          prev.map((schedule) =>
-            schedule._id === id ? updatedSchedule : schedule
-          )
+        prev.map((schedule) =>
+        schedule._id === id ? updatedSchedule : schedule
+        )
         );
         calculateStats(
           schedules.map((schedule) =>
-            schedule._id === id ? updatedSchedule : schedule
+          schedule._id === id ? updatedSchedule : schedule
           )
         );
 
@@ -258,13 +258,13 @@ const useSchedules = () => {
         const updatedSchedule = response.data || {};
 
         setSchedules((prev) =>
-          prev.map((schedule) =>
-            schedule._id === scheduleId ? updatedSchedule : schedule
-          )
+        prev.map((schedule) =>
+        schedule._id === scheduleId ? updatedSchedule : schedule
+        )
         );
         calculateStats(
           schedules.map((schedule) =>
-            schedule._id === scheduleId ? updatedSchedule : schedule
+          schedule._id === scheduleId ? updatedSchedule : schedule
           )
         );
 
@@ -295,13 +295,13 @@ const useSchedules = () => {
         const updatedSchedule = response.data || {};
 
         setSchedules((prev) =>
-          prev.map((schedule) =>
-            schedule._id === scheduleId ? updatedSchedule : schedule
-          )
+        prev.map((schedule) =>
+        schedule._id === scheduleId ? updatedSchedule : schedule
+        )
         );
         calculateStats(
           schedules.map((schedule) =>
-            schedule._id === scheduleId ? updatedSchedule : schedule
+          schedule._id === scheduleId ? updatedSchedule : schedule
           )
         );
 
@@ -330,13 +330,13 @@ const useSchedules = () => {
         const updatedSchedule = response.data || {};
 
         setSchedules((prev) =>
-          prev.map((schedule) =>
-            schedule._id === scheduleId ? updatedSchedule : schedule
-          )
+        prev.map((schedule) =>
+        schedule._id === scheduleId ? updatedSchedule : schedule
+        )
         );
         calculateStats(
           schedules.map((schedule) =>
-            schedule._id === scheduleId ? updatedSchedule : schedule
+          schedule._id === scheduleId ? updatedSchedule : schedule
           )
         );
 
@@ -365,12 +365,12 @@ const useSchedules = () => {
 
         if (!targetSchedule) {
           const dayType =
-            formattedDate.getDay() % 6 === 0 ? "Weekend" : "Weekday";
+          formattedDate.getDay() % 6 === 0 ? "Weekend" : "Weekday";
           const newScheduleData = {
             date: formattedDate.toISOString(),
             dayType,
             items: [],
-            status: "Planned",
+            status: "Planned"
           };
 
           const response = await apiClient.post("/schedules", newScheduleData);
@@ -388,11 +388,11 @@ const useSchedules = () => {
         );
 
         setSchedules((prev) =>
-          prev.map((schedule) =>
-            schedule._id === targetSchedule._id
-              ? updatedSchedule.data
-              : schedule
-          )
+        prev.map((schedule) =>
+        schedule._id === targetSchedule._id ?
+        updatedSchedule.data :
+        schedule
+        )
         );
 
         calculateStats([...schedules]);
@@ -427,7 +427,7 @@ const useSchedules = () => {
           await apiClient.delete(`/schedules/${existingSchedule._id}`);
 
           setSchedules((prev) =>
-            prev.filter((s) => s._id !== existingSchedule._id)
+          prev.filter((s) => s._id !== existingSchedule._id)
           );
         }
 
@@ -440,9 +440,9 @@ const useSchedules = () => {
 
             return {
               ...itemWithoutId,
-              completed: false,
+              completed: false
             };
-          }),
+          })
         };
 
         const response = await apiClient.post("/schedules", newScheduleData);
@@ -451,9 +451,9 @@ const useSchedules = () => {
         setSchedules((prev) => [...prev, newSchedule]);
 
         calculateStats([
-          ...schedules.filter((s) => s._id !== existingSchedule?._id),
-          newSchedule,
-        ]);
+        ...schedules.filter((s) => s._id !== existingSchedule?._id),
+        newSchedule]
+        );
 
         toast.success("Schedule copied successfully");
         return newSchedule;
@@ -485,20 +485,20 @@ const useSchedules = () => {
       } else if (response && response.data && Array.isArray(response.data)) {
         extractedCategories = response.data.map((cat) => cat.name);
       } else if (
-        response &&
-        response.categories &&
-        Array.isArray(response.categories)
-      ) {
+      response &&
+      response.categories &&
+      Array.isArray(response.categories))
+      {
         extractedCategories = response.categories;
       } else {
         extractedCategories = [
-          "DSA",
-          "System Design",
-          "Development",
-          "Learning",
-          "Problem Solving",
-          "Other",
-        ];
+        "DSA",
+        "System Design",
+        "Development",
+        "Learning",
+        "Problem Solving",
+        "Other"];
+
       }
 
       setCategories(extractedCategories);
@@ -507,13 +507,13 @@ const useSchedules = () => {
       console.error("Error fetching schedule categories:", err);
 
       const defaultCats = [
-        "DSA",
-        "System Design",
-        "Development",
-        "Learning",
-        "Problem Solving",
-        "Other",
-      ];
+      "DSA",
+      "System Design",
+      "Development",
+      "Learning",
+      "Problem Solving",
+      "Other"];
+
 
       setCategories(defaultCats);
       return defaultCats;
@@ -526,7 +526,7 @@ const useSchedules = () => {
     if (isAuthenticated) {
       fetchSchedules();
     }
-  }, [isAuthenticated]); // Remove fetchSchedules to prevent infinite loop
+  }, [isAuthenticated]);
 
   return {
     schedules,
@@ -543,7 +543,7 @@ const useSchedules = () => {
     deleteScheduleItem,
     fetchCategories,
     copyScheduleItem,
-    copySchedule,
+    copySchedule
   };
 };
 

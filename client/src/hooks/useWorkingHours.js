@@ -8,7 +8,7 @@ const defaultStats = {
   totalAchievedHours: 0,
   totalTargetHours: 0,
   moodDistribution: { Productive: 0, Normal: 0, Distracted: 0 },
-  categoryBreakdown: {},
+  categoryBreakdown: {}
 };
 
 const useWorkingHours = () => {
@@ -57,7 +57,7 @@ const useWorkingHours = () => {
       try {
         const formattedData = {
           ...data,
-          date: new Date(data.date).toISOString(),
+          date: new Date(data.date).toISOString()
         };
 
         const response = await apiClient.post("/working-hours", formattedData);
@@ -133,7 +133,7 @@ const useWorkingHours = () => {
         if (endDate) params.endDate = endDate;
 
         const response = await apiClient.get("/working-hours/stats", {
-          params,
+          params
         });
         return response;
       } catch (err) {
@@ -164,7 +164,7 @@ const useWorkingHours = () => {
       fetchWorkingHours();
       fetchCategories();
     }
-  }, [isAuthenticated]); // Remove function dependencies to prevent infinite loop
+  }, [isAuthenticated]);
 
   return {
     workingHours,
@@ -177,7 +177,7 @@ const useWorkingHours = () => {
     updateWorkingHours,
     deleteWorkingHours,
     getStats,
-    fetchCategories,
+    fetchCategories
   };
 };
 

@@ -11,12 +11,12 @@ const toastConfig = {
       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
       borderRadius: "8px",
       fontSize: "14px",
-      fontWeight: "500",
+      fontWeight: "500"
     },
     iconTheme: {
       primary: "white",
-      secondary: "#10B981",
-    },
+      secondary: "#10B981"
+    }
   },
   error: {
     duration: 3000,
@@ -27,12 +27,12 @@ const toastConfig = {
       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
       borderRadius: "8px",
       fontSize: "14px",
-      fontWeight: "500",
+      fontWeight: "500"
     },
     iconTheme: {
       primary: "white",
-      secondary: "#EF4444",
-    },
+      secondary: "#EF4444"
+    }
   },
   info: {
     duration: 1000,
@@ -43,13 +43,13 @@ const toastConfig = {
       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
       borderRadius: "8px",
       fontSize: "14px",
-      fontWeight: "500",
+      fontWeight: "500"
     },
     iconTheme: {
       primary: "white",
-      secondary: "#3B82F6",
-    },
-  },
+      secondary: "#3B82F6"
+    }
+  }
 };
 
 const showToast = {
@@ -57,18 +57,18 @@ const showToast = {
   error: (message) => toast.error(message, toastConfig.error),
   info: (message) => toast(message, toastConfig.info),
   loading: (message) =>
-    toast.loading(message, {
-      style: {
-        background: "#6B7280",
-        color: "white",
-        padding: "16px",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        borderRadius: "8px",
-        fontSize: "14px",
-        fontWeight: "500",
-      },
-    }),
-  dismiss: () => toast.dismiss(),
+  toast.loading(message, {
+    style: {
+      background: "#6B7280",
+      color: "white",
+      padding: "16px",
+      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+      borderRadius: "8px",
+      fontSize: "14px",
+      fontWeight: "500"
+    }
+  }),
+  dismiss: () => toast.dismiss()
 };
 
 const AuthContext = createContext();
@@ -99,8 +99,8 @@ export const AuthProvider = ({ children }) => {
       try {
         const response = await fetch(`${API_URL}/api/auth/me`, {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         });
 
         if (!response.ok) {
@@ -128,10 +128,10 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(userData),
-        credentials: "include",
+        credentials: "include"
       });
 
       const data = await response.json();
@@ -163,10 +163,10 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(credentials),
-        credentials: "include",
+        credentials: "include"
       });
 
       const data = await response.json();
@@ -194,9 +194,9 @@ export const AuthProvider = ({ children }) => {
         await fetch(`${API_URL}/api/auth/logout`, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`
           },
-          credentials: "include",
+          credentials: "include"
         });
       }
     } catch (err) {
@@ -218,9 +218,9 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email })
       });
 
       const data = await response.json();
@@ -253,9 +253,9 @@ export const AuthProvider = ({ children }) => {
         {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
-          body: JSON.stringify({ password }),
+          body: JSON.stringify({ password })
         }
       );
 
@@ -287,7 +287,7 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch(
         `${API_URL}/api/auth/verify-email/${token}`,
         {
-          method: "GET",
+          method: "GET"
         }
       );
 
@@ -325,9 +325,9 @@ export const AuthProvider = ({ children }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify(userData)
       });
 
       const data = await response.json();
@@ -338,7 +338,7 @@ export const AuthProvider = ({ children }) => {
 
       setCurrentUser({
         ...currentUser,
-        ...data.data,
+        ...data.data
       });
 
       toast.dismiss(loadingToast);
@@ -369,9 +369,9 @@ export const AuthProvider = ({ children }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(passwordData),
+        body: JSON.stringify(passwordData)
       });
 
       const data = await response.json();
@@ -408,9 +408,9 @@ export const AuthProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ verificationCode }),
+        body: JSON.stringify({ verificationCode })
       });
 
       const data = await response.json();
@@ -421,7 +421,7 @@ export const AuthProvider = ({ children }) => {
 
       setCurrentUser({
         ...currentUser,
-        isPhoneVerified: true,
+        isPhoneVerified: true
       });
 
       toast.dismiss(loadingToast);
@@ -451,8 +451,8 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch(`${API_URL}/api/auth/resend-verification`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       });
 
       const data = await response.json();
@@ -490,8 +490,8 @@ export const AuthProvider = ({ children }) => {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         }
       );
 
@@ -530,7 +530,7 @@ export const AuthProvider = ({ children }) => {
     verifyPhone,
     resendEmailVerification,
     resendPhoneVerification,
-    isAuthenticated: !!token,
+    isAuthenticated: !!token
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

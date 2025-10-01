@@ -1,6 +1,6 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Request deduplication cache
+
 const pendingRequests = new Map();
 
 const apiClient = async (endpoint, options = {}) => {
@@ -8,7 +8,7 @@ const apiClient = async (endpoint, options = {}) => {
   const token = localStorage.getItem("token");
   const headers = {
     "Content-Type": "application/json",
-    ...options.headers,
+    ...options.headers
   };
 
   if (token) {
@@ -18,22 +18,22 @@ const apiClient = async (endpoint, options = {}) => {
   const config = {
     ...options,
     headers,
-    credentials: "include",
+    credentials: "include"
   };
 
   if (options.body && !(options.body instanceof FormData)) {
     config.body = JSON.stringify(options.body);
   }
 
-  // Create a unique key for this request
+
   const requestKey = `${config.method || "GET"}:${url}:${JSON.stringify(
     config.params || {}
   )}`;
 
-  // For GET requests, check if there's already a pending identical request
+
   if (!config.method || config.method === "GET") {
     if (pendingRequests.has(requestKey)) {
-      // Return the existing promise
+
       return pendingRequests.get(requestKey);
     }
   }
@@ -72,20 +72,20 @@ const apiClient = async (endpoint, options = {}) => {
       }
 
       if (
-        error.name === "TypeError" &&
-        error.message.includes("NetworkError")
-      ) {
+      error.name === "TypeError" &&
+      error.message.includes("NetworkError"))
+      {
         throw new Error("Network error. Please check your connection.");
       }
 
       throw error;
     } finally {
-      // Clean up the pending request
+
       pendingRequests.delete(requestKey);
     }
   })();
 
-  // Store the promise for GET requests
+
   if (!config.method || config.method === "GET") {
     pendingRequests.set(requestKey, requestPromise);
   }
@@ -94,18 +94,18 @@ const apiClient = async (endpoint, options = {}) => {
 };
 
 apiClient.get = (endpoint, options = {}) =>
-  apiClient(endpoint, { ...options, method: "GET" });
+apiClient(endpoint, { ...options, method: "GET" });
 
 apiClient.post = (endpoint, body, options = {}) =>
-  apiClient(endpoint, { ...options, method: "POST", body });
+apiClient(endpoint, { ...options, method: "POST", body });
 
 apiClient.put = (endpoint, body, options = {}) =>
-  apiClient(endpoint, { ...options, method: "PUT", body });
+apiClient(endpoint, { ...options, method: "PUT", body });
 
 apiClient.patch = (endpoint, body, options = {}) =>
-  apiClient(endpoint, { ...options, method: "PATCH", body });
+apiClient(endpoint, { ...options, method: "PATCH", body });
 
 apiClient.delete = (endpoint, options = {}) =>
-  apiClient(endpoint, { ...options, method: "DELETE" });
+apiClient(endpoint, { ...options, method: "DELETE" });
 
 export default apiClient;

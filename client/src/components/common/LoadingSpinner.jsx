@@ -5,13 +5,13 @@ const LoadingSpinner = ({
   color = "indigo",
   text = "Loading...",
   showText = true,
-  fullPage = true,
+  fullPage = true
 }) => {
   const sizeMap = {
     sm: { spinner: "h-6 w-6", container: "h-6 w-6", text: "text-sm" },
     small: { spinner: "h-6 w-6", container: "h-6 w-6", text: "text-sm" },
     medium: { spinner: "h-10 w-10", container: "h-10 w-10", text: "text-base" },
-    large: { spinner: "h-16 w-16", container: "h-16 w-16", text: "text-lg" },
+    large: { spinner: "h-16 w-16", container: "h-16 w-16", text: "text-lg" }
   };
 
   const colorMap = {
@@ -21,7 +21,7 @@ const LoadingSpinner = ({
     red: "border-red-500 text-red-700",
     purple: "border-purple-500 text-purple-700",
     pink: "border-pink-500 text-pink-700",
-    teal: "border-teal-500 text-teal-700",
+    teal: "border-teal-500 text-teal-700"
   };
 
   const containerVariants = {
@@ -31,17 +31,17 @@ const LoadingSpinner = ({
       scale: 1,
       transition: {
         duration: 0.3,
-        ease: "easeOut",
-      },
+        ease: "easeOut"
+      }
     },
     exit: {
       opacity: 0,
       scale: 0.8,
       transition: {
         duration: 0.2,
-        ease: "easeIn",
-      },
-    },
+        ease: "easeIn"
+      }
+    }
   };
 
   const spinnerVariants = {
@@ -50,9 +50,9 @@ const LoadingSpinner = ({
       transition: {
         repeat: Infinity,
         duration: 1,
-        ease: "linear",
-      },
-    },
+        ease: "linear"
+      }
+    }
   };
 
   const pulseVariants = {
@@ -62,9 +62,9 @@ const LoadingSpinner = ({
       transition: {
         repeat: Infinity,
         duration: 2,
-        ease: "easeInOut",
-      },
-    },
+        ease: "easeInOut"
+      }
+    }
   };
 
   const textVariants = {
@@ -74,12 +74,12 @@ const LoadingSpinner = ({
       y: 0,
       transition: {
         delay: 0.3,
-        duration: 0.4,
-      },
-    },
+        duration: 0.4
+      }
+    }
   };
 
-  // Get the actual size config, fallback to medium if not found
+
   const currentSize = sizeMap[size] || sizeMap.medium;
   const currentColor = colorMap[color] || colorMap.indigo;
 
@@ -90,42 +90,42 @@ const LoadingSpinner = ({
       exit="exit"
       variants={containerVariants}
       className={`flex flex-col items-center justify-center gap-4 ${
-        fullPage ? "min-h-[500px]" : ""
-      }`}
+      fullPage ? "min-h-[500px]" : ""}`
+      }
       aria-label="Content is loading"
-      role="status"
-    >
+      role="status">
+
       <div className="relative">
-        {/* Main spinner */}
+        {}
         <motion.div
           variants={spinnerVariants}
           className={`${
-            currentSize.spinner
-          } rounded-full border-4 border-t-4 border-gray-200 ${
-            currentColor.split(" ")[0]
-          }`}
-        />
+          currentSize.spinner} rounded-full border-4 border-t-4 border-gray-200 ${
 
-        {/* Pulse effect behind the spinner */}
+          currentColor.split(" ")[0]}`
+          } />
+
+
+        {}
         <motion.div
           variants={pulseVariants}
-          className={`absolute inset-0 ${currentSize.spinner} rounded-full border-4 border-gray-100 opacity-30`}
-        />
+          className={`absolute inset-0 ${currentSize.spinner} rounded-full border-4 border-gray-100 opacity-30`} />
+
       </div>
 
-      {/* Loading text */}
-      {showText && (
-        <motion.p
-          variants={textVariants}
-          className={`${currentSize.text} font-medium ${
-            currentColor.split(" ")[1]
-          }`}
-        >
+      {}
+      {showText &&
+      <motion.p
+        variants={textVariants}
+        className={`${currentSize.text} font-medium ${
+        currentColor.split(" ")[1]}`
+        }>
+
           {text}
         </motion.p>
-      )}
-    </motion.div>
-  );
+      }
+    </motion.div>);
+
 };
 
 export default LoadingSpinner;

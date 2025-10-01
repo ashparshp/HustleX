@@ -9,7 +9,7 @@ export const formatDisplayDate = (date) => {
     weekday: "short",
     month: "short",
     day: "numeric",
-    year: "numeric",
+    year: "numeric"
   });
 };
 
@@ -24,7 +24,7 @@ export const formatTimeDisplay = (timeString) => {
     return date.toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "2-digit",
-      hour12: true,
+      hour12: true
     });
   } catch (error) {
     console.error("Error formatting time:", error);
@@ -59,7 +59,7 @@ export const getCurrentWeekDates = () => {
 
   return {
     startDate: monday,
-    endDate: sunday,
+    endDate: sunday
   };
 };
 
@@ -146,14 +146,14 @@ export const isSameDay = (date1, date2) => {
   return (
     d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate()
-  );
+    d1.getDate() === d2.getDate());
+
 };
 
 export const getDayOfWeek = (date, short = false) => {
   const d = date instanceof Date ? date : new Date(date);
   return d.toLocaleDateString("en-US", {
-    weekday: short ? "short" : "long",
+    weekday: short ? "short" : "long"
   });
 };
 

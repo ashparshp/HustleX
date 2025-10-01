@@ -9,7 +9,7 @@ const ConfirmDialog = ({
   message,
   confirmText = "Delete",
   cancelText = "Cancel",
-  type = "danger",
+  type = "danger"
 }) => {
   const { isDark } = useTheme();
 
@@ -17,13 +17,13 @@ const ConfirmDialog = ({
 
   const getTypeStyles = () => {
     if (type === "danger") {
-      return isDark
-        ? "bg-red-600 text-white hover:bg-red-700"
-        : "bg-red-500 text-white hover:bg-red-600";
+      return isDark ?
+      "bg-red-600 text-white hover:bg-red-700" :
+      "bg-red-500 text-white hover:bg-red-600";
     }
-    return isDark
-      ? "bg-indigo-600 text-white hover:bg-indigo-700"
-      : "bg-indigo-500 text-white hover:bg-indigo-600";
+    return isDark ?
+    "bg-indigo-600 text-white hover:bg-indigo-700" :
+    "bg-indigo-500 text-white hover:bg-indigo-600";
   };
 
   return (
@@ -34,24 +34,24 @@ const ConfirmDialog = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black/50"
-          onClick={onClose}
-        />
+          onClick={onClose} />
+
 
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           className={`relative z-50 p-6 rounded-lg shadow-xl max-w-md w-full mx-4 ${
-            isDark
-              ? "bg-gray-900 border border-gray-800"
-              : "bg-white border border-gray-200"
-          }`}
-        >
+          isDark ?
+          "bg-gray-900 border border-gray-800" :
+          "bg-white border border-gray-200"}`
+          }>
+
           <h3
             className={`text-xl font-semibold mb-4 ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
-          >
+            isDark ? "text-white" : "text-gray-900"}`
+            }>
+
             {title}
           </h3>
 
@@ -63,25 +63,25 @@ const ConfirmDialog = ({
             <button
               onClick={onClose}
               className={`px-4 py-2 rounded-lg transition-colors ${
-                isDark
-                  ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-            >
+              isDark ?
+              "bg-gray-800 text-gray-300 hover:bg-gray-700" :
+              "bg-gray-200 text-gray-700 hover:bg-gray-300"}`
+              }>
+
               {cancelText}
             </button>
 
             <button
               onClick={onConfirm}
-              className={`px-4 py-2 rounded-lg transition-colors ${getTypeStyles()}`}
-            >
+              className={`px-4 py-2 rounded-lg transition-colors ${getTypeStyles()}`}>
+
               {confirmText}
             </button>
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
-  );
+    </AnimatePresence>);
+
 };
 
 export default ConfirmDialog;

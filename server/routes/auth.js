@@ -1,4 +1,4 @@
-// server/routes/auth.js
+
 const express = require('express');
 const router = express.Router();
 const {
@@ -18,14 +18,14 @@ const {
 
 const { protect } = require('../middleware/auth');
 
-// Public routes
+
 router.post('/register', register);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 router.put('/reset-password/:token', resetPassword);
 router.get('/verify-email/:token', verifyEmail);
 
-// Protected routes
+
 router.get('/logout', protect, logout);
 router.get('/me', protect, getMe);
 router.put('/update-details', protect, updateDetails);

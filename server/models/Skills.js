@@ -19,7 +19,7 @@ const skillSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["upcoming", "in-progress", "completed"],
-      default: "upcoming",
+      default: "upcoming"
     },
     startDate: Date,
     completionDate: Date,
@@ -27,23 +27,23 @@ const skillSchema = new mongoose.Schema(
       type: Number,
       default: 0,
       min: 0,
-      max: 100,
+      max: 100
     },
     description: {
       type: String,
       trim: true
     },
     resources: [
-      {
-        title: String,
-        url: String,
-        type: {
-          type: String,
-          enum: ["course", "documentation", "tutorial", "video", "book", "other"],
-          default: "other"
-        }
+    {
+      title: String,
+      url: String,
+      type: {
+        type: String,
+        enum: ["course", "documentation", "tutorial", "video", "book", "other"],
+        default: "other"
       }
-    ],
+    }],
+
     priority: {
       type: String,
       enum: ["high", "medium", "low"],
@@ -57,7 +57,7 @@ const skillSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Compound index to prevent duplicate skills for the same user
+
 skillSchema.index({ user: 1, name: 1, category: 1 }, { unique: true });
 
 module.exports = mongoose.model("Skill", skillSchema);

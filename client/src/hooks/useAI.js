@@ -18,7 +18,7 @@ export const useAI = () => {
       console.error("useAI: Error in getInsights:", err);
       console.error("useAI: Error response:", err.response);
       const errorMessage =
-        err.response?.data?.message || "Failed to generate insights";
+      err.response?.data?.message || "Failed to generate insights";
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -31,12 +31,12 @@ export const useAI = () => {
     setError(null);
     try {
       const response = await apiClient.post("/ai/recommendations", {
-        focusArea,
+        focusArea
       });
       return response.data;
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message || "Failed to generate recommendations";
+      err.response?.data?.message || "Failed to generate recommendations";
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -52,7 +52,7 @@ export const useAI = () => {
       return response.data;
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message || "Failed to process query";
+      err.response?.data?.message || "Failed to process query";
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -68,7 +68,7 @@ export const useAI = () => {
       return response.data;
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message || "Failed to send message";
+      err.response?.data?.message || "Failed to send message";
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -84,8 +84,8 @@ export const useAI = () => {
       return response.data;
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message ||
-        "Failed to generate schedule suggestions";
+      err.response?.data?.message ||
+      "Failed to generate schedule suggestions";
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -101,7 +101,7 @@ export const useAI = () => {
       return response.data;
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message || "Failed to analyze skills";
+      err.response?.data?.message || "Failed to analyze skills";
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -115,12 +115,12 @@ export const useAI = () => {
     try {
       const response = await apiClient.post("/ai/weekly-report", {
         startDate,
-        endDate,
+        endDate
       });
       return response.data;
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message || "Failed to generate weekly report";
+      err.response?.data?.message || "Failed to generate weekly report";
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -137,6 +137,6 @@ export const useAI = () => {
     chat,
     getScheduleSuggestions,
     analyzeSkills,
-    getWeeklyReport,
+    getWeeklyReport
   };
 };

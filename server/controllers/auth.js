@@ -3,7 +3,7 @@ const User = require("../models/User");
 const { sendTokenResponse } = require("../utils/jwtUtils");
 const {
   sendVerificationEmail,
-  sendResetPasswordEmail,
+  sendResetPasswordEmail
 } = require("../utils/emailUtils");
 const { sendVerificationSMS } = require("../utils/smsUtils");
 
@@ -15,7 +15,7 @@ exports.register = async (req, res, next) => {
     if (emailExists) {
       return res.status(400).json({
         success: false,
-        message: "Email is already registered",
+        message: "Email is already registered"
       });
     }
 
@@ -23,7 +23,7 @@ exports.register = async (req, res, next) => {
       name,
       email,
       phoneNumber,
-      password,
+      password
     });
 
     const verificationToken = user.getEmailVerificationToken();
@@ -55,7 +55,7 @@ exports.register = async (req, res, next) => {
 
       return res.status(500).json({
         success: false,
-        message: "Email could not be sent",
+        message: "Email could not be sent"
       });
     }
   } catch (error) {
@@ -70,7 +70,7 @@ exports.login = async (req, res, next) => {
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Please provide email and password",
+        message: "Please provide email and password"
       });
     }
 
@@ -78,16 +78,16 @@ exports.login = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials",
+        message: "Invalid credentials"
       });
     }
 
-    // Check if password matches
+
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials",
+        message: "Invalid credentials"
       });
     }
 
@@ -99,14 +99,14 @@ exports.login = async (req, res, next) => {
 
 exports.verifyEmail = async (req, res, next) => {
   try {
-    const emailVerificationToken = crypto
-      .createHash("sha256")
-      .update(req.params.token)
-      .digest("hex");
+    const emailVerificationToken = crypto.
+    createHash("sha256").
+    update(req.params.token).
+    digest("hex");
 
     const user = await User.findOne({
       emailVerificationToken,
-      emailVerificationExpire: { $gt: Date.now() },
+      emailVerificationExpire: { $gt: Date.now() }
     });
 
     if (!user) {
@@ -191,13 +191,13 @@ exports.verifyEmail = async (req, res, next) => {
       `);
     }
 
-    // Set email as verified
+
     user.isEmailVerified = true;
     user.emailVerificationToken = undefined;
     user.emailVerificationExpire = undefined;
     await user.save();
 
-    // Send a beautiful success HTML page
+
     return res.status(200).send(`
       <!DOCTYPE html>
       <html lang="en">
@@ -310,7 +310,7 @@ exports.verifyPhone = async (req, res, next) => {
     if (!verificationCode) {
       return res.status(400).json({
         success: false,
-        message: "Please provide verification code",
+        message: "Please provide verification code"
       });
     }
 
@@ -319,18 +319,18 @@ exports.verifyPhone = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "User not found"
       });
     }
 
     if (
-      !user.phoneVerificationCode ||
-      user.phoneVerificationCode !== verificationCode ||
-      user.phoneVerificationExpire < Date.now()
-    ) {
+    !user.phoneVerificationCode ||
+    user.phoneVerificationCode !== verificationCode ||
+    user.phoneVerificationExpire < Date.now())
+    {
       return res.status(400).json({
         success: false,
-        message: "Invalid or expired verification code",
+        message: "Invalid or expired verification code"
       });
     }
 
@@ -342,7 +342,7 @@ exports.verifyPhone = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      message: "Phone number verified successfully",
+      message: "Phone number verified successfully"
     });
   } catch (error) {
     next(error);
@@ -356,14 +356,14 @@ exports.resendVerification = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "User not found"
       });
     }
 
     if (user.isEmailVerified) {
       return res.status(400).json({
         success: false,
-        message: "Email already verified",
+        message: "Email already verified"
       });
     }
 
@@ -379,7 +379,7 @@ exports.resendVerification = async (req, res, next) => {
 
       return res.status(200).json({
         success: true,
-        message: "Verification email resent",
+        message: "Verification email resent"
       });
     } catch (err) {
       console.error("Email sending error:", err);
@@ -390,7 +390,7 @@ exports.resendVerification = async (req, res, next) => {
 
       return res.status(500).json({
         success: false,
-        message: "Email could not be sent",
+        message: "Email could not be sent"
       });
     }
   } catch (error) {
@@ -405,21 +405,21 @@ exports.resendPhoneVerification = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "User not found"
       });
     }
 
     if (!user.phoneNumber) {
       return res.status(400).json({
         success: false,
-        message: "No phone number associated with this account",
+        message: "No phone number associated with this account"
       });
     }
 
     if (user.isPhoneVerified) {
       return res.status(400).json({
         success: false,
-        message: "Phone number already verified",
+        message: "Phone number already verified"
       });
     }
 
@@ -431,7 +431,7 @@ exports.resendPhoneVerification = async (req, res, next) => {
 
       return res.status(200).json({
         success: true,
-        message: "Verification SMS resent",
+        message: "Verification SMS resent"
       });
     } catch (err) {
       console.error("SMS sending error:", err);
@@ -442,7 +442,7 @@ exports.resendPhoneVerification = async (req, res, next) => {
 
       return res.status(500).json({
         success: false,
-        message: "SMS could not be sent",
+        message: "SMS could not be sent"
       });
     }
   } catch (error) {
@@ -457,7 +457,7 @@ exports.forgotPassword = async (req, res, next) => {
     if (!email) {
       return res.status(400).json({
         success: false,
-        message: "Please provide your email",
+        message: "Please provide your email"
       });
     }
 
@@ -466,7 +466,7 @@ exports.forgotPassword = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "No user found with that email",
+        message: "No user found with that email"
       });
     }
 
@@ -481,7 +481,7 @@ exports.forgotPassword = async (req, res, next) => {
 
       return res.status(200).json({
         success: true,
-        message: "Password reset email sent",
+        message: "Password reset email sent"
       });
     } catch (err) {
       console.error("Email sending error:", err);
@@ -492,7 +492,7 @@ exports.forgotPassword = async (req, res, next) => {
 
       return res.status(500).json({
         success: false,
-        message: "Email could not be sent",
+        message: "Email could not be sent"
       });
     }
   } catch (error) {
@@ -502,20 +502,20 @@ exports.forgotPassword = async (req, res, next) => {
 
 exports.resetPassword = async (req, res, next) => {
   try {
-    const resetPasswordToken = crypto
-      .createHash("sha256")
-      .update(req.params.token)
-      .digest("hex");
+    const resetPasswordToken = crypto.
+    createHash("sha256").
+    update(req.params.token).
+    digest("hex");
 
     const user = await User.findOne({
       resetPasswordToken,
-      resetPasswordExpire: { $gt: Date.now() },
+      resetPasswordExpire: { $gt: Date.now() }
     });
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Invalid or expired token",
+        message: "Invalid or expired token"
       });
     }
 
@@ -537,7 +537,7 @@ exports.getMe = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: user,
+      data: user
     });
   } catch (error) {
     next(error);
@@ -547,7 +547,7 @@ exports.getMe = async (req, res, next) => {
 exports.updateDetails = async (req, res, next) => {
   try {
     const fieldsToUpdate = {
-      name: req.body.name,
+      name: req.body.name
     };
 
     if (req.body.phoneNumber !== undefined) {
@@ -572,12 +572,12 @@ exports.updateDetails = async (req, res, next) => {
 
     const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
       new: true,
-      runValidators: true,
+      runValidators: true
     });
 
     res.status(200).json({
       success: true,
-      data: user,
+      data: user
     });
   } catch (error) {
     next(error);
@@ -591,7 +591,7 @@ exports.updatePassword = async (req, res, next) => {
     if (!currentPassword || !newPassword) {
       return res.status(400).json({
         success: false,
-        message: "Please provide current and new passwords",
+        message: "Please provide current and new passwords"
       });
     }
 
@@ -601,7 +601,7 @@ exports.updatePassword = async (req, res, next) => {
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: "Current password is incorrect",
+        message: "Current password is incorrect"
       });
     }
 
@@ -618,12 +618,12 @@ exports.logout = async (req, res, next) => {
   try {
     res.cookie("token", "none", {
       expires: new Date(Date.now() + 10 * 1000),
-      httpOnly: true,
+      httpOnly: true
     });
 
     res.status(200).json({
       success: true,
-      data: {},
+      data: {}
     });
   } catch (error) {
     next(error);
