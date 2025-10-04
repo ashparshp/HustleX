@@ -112,7 +112,7 @@ const RegisterForm = () => {
         <LoadingSpinner
           size="large"
           color="indigo"
-          text="Setting things up..."
+          text="Creating your account..."
           showText={true}
           fullPage={true}
         />
