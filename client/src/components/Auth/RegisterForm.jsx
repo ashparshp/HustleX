@@ -14,7 +14,7 @@ const RegisterForm = () => {
     email: "",
     phoneNumber: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -48,7 +48,7 @@ const RegisterForm = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -65,9 +65,9 @@ const RegisterForm = () => {
     }
 
     if (
-    formData.phoneNumber &&
-    !/^\d{10,15}$/.test(formData.phoneNumber.replace(/[^0-9]/g, "")))
-    {
+      formData.phoneNumber &&
+      !/^\d{10,15}$/.test(formData.phoneNumber.replace(/[^0-9]/g, ""))
+    ) {
       setFormError("Please enter a valid phone number");
       return false;
     }
@@ -106,7 +106,7 @@ const RegisterForm = () => {
     }
   };
 
-  if (loading) {
+  if (isSubmitting) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <LoadingSpinner
@@ -114,10 +114,10 @@ const RegisterForm = () => {
           color="indigo"
           text="Setting things up..."
           showText={true}
-          fullPage={true} />
-
-      </div>);
-
+          fullPage={true}
+        />
+      </div>
+    );
   }
 
   return (
@@ -127,54 +127,54 @@ const RegisterForm = () => {
         className={`flex items-center justify-center px-4 pt-6 pb-6 sm:pb-8 
         ${isDark ? "bg-black" : "bg-gray-50"}
         `}
-        style={{ minHeight: "calc(100vh - 60px)" }}>
-
+        style={{ minHeight: "calc(100vh - 60px)" }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative group w-full max-w-md">
-
+          className="relative group w-full max-w-md"
+        >
           <div
             className={`relative p-8 rounded-lg border backdrop-blur-sm
           ${
-            isDark ?
-            "bg-black/80 border-indigo-500/30 group-hover:border-indigo-400" :
-            "bg-white/80 border-indigo-300/50 group-hover:border-indigo-500"}
+            isDark
+              ? "bg-black/80 border-indigo-500/30 group-hover:border-indigo-400"
+              : "bg-white/80 border-indigo-300/50 group-hover:border-indigo-500"
+          }
           transition-all duration-300
-        `
-            }>
-
+        `}
+          >
             <h2
               className={`text-2xl font-bold mb-6 text-center
             ${isDark ? "text-white" : "text-gray-900"}
-          `}>
-
+          `}
+            >
               Create an Account
             </h2>
 
-            {formError &&
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`p-3 rounded-lg mb-4 text-sm text-center
+            {formError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`p-3 rounded-lg mb-4 text-sm text-center
                 ${
-              isDark ?
-              "bg-red-500/10 text-red-400 border border-red-500/30" :
-              "bg-red-100 text-red-600 border border-red-200"}
-              `
-              }>
-
+                  isDark
+                    ? "bg-red-500/10 text-red-400 border border-red-500/30"
+                    : "bg-red-100 text-red-600 border border-red-200"
+                }
+              `}
+              >
                 {formError}
               </motion.div>
-            }
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="group/input">
                 <label
                   className={`block mb-2 text-sm font-medium
                 ${isDark ? "text-gray-300" : "text-gray-700"}
-              `}>
-
+              `}
+                >
                   Full Name
                 </label>
                 <div className="relative">
@@ -182,7 +182,8 @@ const RegisterForm = () => {
                     className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4
                   ${isDark ? "text-indigo-400" : "text-indigo-600"}
                   transition-transform duration-300 group-hover/input:scale-110
-                `} />
+                `}
+                  />
 
                   <input
                     type="text"
@@ -193,14 +194,14 @@ const RegisterForm = () => {
                     required
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg border text-sm
                     ${
-                    isDark ?
-                    "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 placeholder-indigo-500/70" :
-                    "bg-indigo-100/50 border-indigo-300/50 text-indigo-600 placeholder-indigo-600/50"}
+                      isDark
+                        ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 placeholder-indigo-500/70"
+                        : "bg-indigo-100/50 border-indigo-300/50 text-indigo-600 placeholder-indigo-600/50"
+                    }
                     focus:outline-none focus:ring-2 focus:ring-indigo-500/50
                     transition-all duration-300
-                  `
-                    } />
-
+                  `}
+                  />
                 </div>
               </div>
 
@@ -208,8 +209,8 @@ const RegisterForm = () => {
                 <label
                   className={`block mb-2 text-sm font-medium
                 ${isDark ? "text-gray-300" : "text-gray-700"}
-              `}>
-
+              `}
+                >
                   Email Address
                 </label>
                 <div className="relative">
@@ -217,7 +218,8 @@ const RegisterForm = () => {
                     className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4
                   ${isDark ? "text-indigo-400" : "text-indigo-600"}
                   transition-transform duration-300 group-hover/input:scale-110
-                `} />
+                `}
+                  />
 
                   <input
                     type="email"
@@ -228,14 +230,14 @@ const RegisterForm = () => {
                     required
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg border text-sm
                     ${
-                    isDark ?
-                    "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 placeholder-indigo-500/70" :
-                    "bg-indigo-100/50 border-indigo-300/50 text-indigo-600 placeholder-indigo-600/50"}
+                      isDark
+                        ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 placeholder-indigo-500/70"
+                        : "bg-indigo-100/50 border-indigo-300/50 text-indigo-600 placeholder-indigo-600/50"
+                    }
                     focus:outline-none focus:ring-2 focus:ring-indigo-500/50
                     transition-all duration-300
-                  `
-                    } />
-
+                  `}
+                  />
                 </div>
               </div>
 
@@ -243,8 +245,8 @@ const RegisterForm = () => {
                 <label
                   className={`block mb-2 text-sm font-medium
                 ${isDark ? "text-gray-300" : "text-gray-700"}
-              `}>
-
+              `}
+                >
                   Phone Number (Optional)
                 </label>
                 <div className="relative">
@@ -252,7 +254,8 @@ const RegisterForm = () => {
                     className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4
                   ${isDark ? "text-indigo-400" : "text-indigo-600"}
                   transition-transform duration-300 group-hover/input:scale-110
-                `} />
+                `}
+                  />
 
                   <input
                     type="tel"
@@ -262,14 +265,14 @@ const RegisterForm = () => {
                     placeholder="123-456-7890"
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg border text-sm
                     ${
-                    isDark ?
-                    "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 placeholder-indigo-500/70" :
-                    "bg-indigo-100/50 border-indigo-300/50 text-indigo-600 placeholder-indigo-600/50"}
+                      isDark
+                        ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 placeholder-indigo-500/70"
+                        : "bg-indigo-100/50 border-indigo-300/50 text-indigo-600 placeholder-indigo-600/50"
+                    }
                     focus:outline-none focus:ring-2 focus:ring-indigo-500/50
                     transition-all duration-300
-                  `
-                    } />
-
+                  `}
+                  />
                 </div>
               </div>
 
@@ -277,8 +280,8 @@ const RegisterForm = () => {
                 <label
                   className={`block mb-2 text-sm font-medium
                 ${isDark ? "text-gray-300" : "text-gray-700"}
-              `}>
-
+              `}
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -286,7 +289,8 @@ const RegisterForm = () => {
                     className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4
                   ${isDark ? "text-indigo-400" : "text-indigo-600"}
                   transition-transform duration-300 group-hover/input:scale-110
-                `} />
+                `}
+                  />
 
                   <input
                     type={showPassword ? "text" : "password"}
@@ -298,43 +302,43 @@ const RegisterForm = () => {
                     minLength={6}
                     className={`w-full pl-10 pr-10 py-2.5 rounded-lg border text-sm
                     ${
-                    isDark ?
-                    "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 placeholder-indigo-500/70" :
-                    "bg-indigo-100/50 border-indigo-300/50 text-indigo-600 placeholder-indigo-600/50"}
+                      isDark
+                        ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 placeholder-indigo-500/70"
+                        : "bg-indigo-100/50 border-indigo-300/50 text-indigo-600 placeholder-indigo-600/50"
+                    }
                     focus:outline-none focus:ring-2 focus:ring-indigo-500/50
                     transition-all duration-300
-                  `
-                    } />
+                  `}
+                  />
 
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 
-                    transition-transform duration-300 hover:scale-110">
-
-
-                    {showPassword ?
-                    <EyeOff
-                      size={18}
-                      className={
-                      isDark ? "text-indigo-400" : "text-indigo-600"
-                      } /> :
-
-
-                    <Eye
-                      size={18}
-                      className={
-                      isDark ? "text-indigo-400" : "text-indigo-600"
-                      } />
-
-                    }
+                    transition-transform duration-300 hover:scale-110"
+                  >
+                    {showPassword ? (
+                      <EyeOff
+                        size={18}
+                        className={
+                          isDark ? "text-indigo-400" : "text-indigo-600"
+                        }
+                      />
+                    ) : (
+                      <Eye
+                        size={18}
+                        className={
+                          isDark ? "text-indigo-400" : "text-indigo-600"
+                        }
+                      />
+                    )}
                   </button>
                 </div>
                 <p
                   className={`text-xs mt-1 
                 ${isDark ? "text-gray-500" : "text-gray-600"}
-              `}>
-
+              `}
+                >
                   At least 6 characters
                 </p>
               </div>
@@ -343,8 +347,8 @@ const RegisterForm = () => {
                 <label
                   className={`block mb-2 text-sm font-medium
                 ${isDark ? "text-gray-300" : "text-gray-700"}
-              `}>
-
+              `}
+                >
                   Confirm Password
                 </label>
                 <div className="relative">
@@ -352,7 +356,8 @@ const RegisterForm = () => {
                     className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4
                   ${isDark ? "text-indigo-400" : "text-indigo-600"}
                   transition-transform duration-300 group-hover/input:scale-110
-                `} />
+                `}
+                  />
 
                   <input
                     type={showConfirmPassword ? "text" : "password"}
@@ -363,36 +368,36 @@ const RegisterForm = () => {
                     required
                     className={`w-full pl-10 pr-10 py-2.5 rounded-lg border text-sm
                     ${
-                    isDark ?
-                    "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 placeholder-indigo-500/70" :
-                    "bg-indigo-100/50 border-indigo-300/50 text-indigo-600 placeholder-indigo-600/50"}
+                      isDark
+                        ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 placeholder-indigo-500/70"
+                        : "bg-indigo-100/50 border-indigo-300/50 text-indigo-600 placeholder-indigo-600/50"
+                    }
                     focus:outline-none focus:ring-2 focus:ring-indigo-500/50
                     transition-all duration-300
-                  `
-                    } />
+                  `}
+                  />
 
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 
-                    transition-transform duration-300 hover:scale-110">
-
-
-                    {showConfirmPassword ?
-                    <EyeOff
-                      size={18}
-                      className={
-                      isDark ? "text-indigo-400" : "text-indigo-600"
-                      } /> :
-
-
-                    <Eye
-                      size={18}
-                      className={
-                      isDark ? "text-indigo-400" : "text-indigo-600"
-                      } />
-
-                    }
+                    transition-transform duration-300 hover:scale-110"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff
+                        size={18}
+                        className={
+                          isDark ? "text-indigo-400" : "text-indigo-600"
+                        }
+                      />
+                    ) : (
+                      <Eye
+                        size={18}
+                        className={
+                          isDark ? "text-indigo-400" : "text-indigo-600"
+                        }
+                      />
+                    )}
                   </button>
                 </div>
               </div>
@@ -404,30 +409,31 @@ const RegisterForm = () => {
                 disabled={isSubmitting}
                 className={`w-full py-2.5 rounded-lg flex items-center justify-center gap-2 group
                 ${
-                isDark ?
-                "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/30" :
-                "bg-emerald-100/50 text-emerald-600 hover:bg-emerald-200/70 border border-emerald-300/50"}
-                ${
-                isSubmitting ? "opacity-70 cursor-not-allowed" : ""}
+                  isDark
+                    ? "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/30"
+                    : "bg-emerald-100/50 text-emerald-600 hover:bg-emerald-200/70 border border-emerald-300/50"
+                }
+                ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}
                 transition-all duration-300
-              `}>
-
-                {isSubmitting ?
-                <div className="flex items-center justify-center">
+              `}
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center justify-center">
                     <LoadingSpinner
-                    size="small"
-                    color="green"
-                    showText={false}
-                    fullPage={false} />
+                      size="small"
+                      color="green"
+                      showText={false}
+                      fullPage={false}
+                    />
 
                     <span className="ml-2">Creating...</span>
-                  </div> :
-
-                <>
+                  </div>
+                ) : (
+                  <>
                     Create Account
                     <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </>
-                }
+                )}
               </motion.button>
             </form>
 
@@ -435,29 +441,29 @@ const RegisterForm = () => {
               <span
                 className={`text-sm
               ${isDark ? "text-gray-400" : "text-gray-600"}
-            `}>
-
+            `}
+              >
                 Already have an account?{" "}
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-block">
-
+                  className="inline-block"
+                >
                   <Link
                     to="/login"
                     className={`font-medium transition-colors duration-300 inline-flex items-center gap-1
                     ${
-                    isDark ?
-                    "text-indigo-400 hover:text-indigo-300" :
-                    "text-indigo-600 hover:text-indigo-700"}
-                  `
-                    }>
-
+                      isDark
+                        ? "text-indigo-400 hover:text-indigo-300"
+                        : "text-indigo-600 hover:text-indigo-700"
+                    }
+                  `}
+                  >
                     Log In
                     <ArrowRight
                       size={16}
-                      className="ml-1 inline-block transition-transform duration-300 group-hover:translate-x-1" />
-
+                      className="ml-1 inline-block transition-transform duration-300 group-hover:translate-x-1"
+                    />
                   </Link>
                 </motion.div>
               </span>
@@ -465,8 +471,8 @@ const RegisterForm = () => {
           </div>
         </motion.div>
       </div>
-    </>);
-
+    </>
+  );
 };
 
 export default RegisterForm;
