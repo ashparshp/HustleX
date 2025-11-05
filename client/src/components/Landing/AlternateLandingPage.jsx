@@ -42,55 +42,16 @@ const AlternateLandingPage = () => {
               : "bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50"
           }`}
         >
-          {/* Square Grid Pattern Background */}
-          <div className="absolute inset-0 overflow-hidden opacity-10">
-            <svg
-              className="absolute inset-0 w-full h-full"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <pattern
-                  id="squares-dashboard"
-                  x="0"
-                  y="0"
-                  width="60"
-                  height="60"
-                  patternUnits="userSpaceOnUse"
-                >
-                  <rect
-                    x="1"
-                    y="1"
-                    width="20"
-                    height="20"
-                    stroke={isDark ? "#4f4f4f" : "#cbd5e1"}
-                    strokeWidth="1"
-                    fill="none"
-                  />
-                  <rect
-                    x="31"
-                    y="31"
-                    width="15"
-                    height="15"
-                    stroke={isDark ? "#4f4f4f" : "#cbd5e1"}
-                    strokeWidth="1"
-                    fill="none"
-                  />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#squares-dashboard)" />
-            </svg>
-          </div>
-
-          {/* Bottom fade gradient */}
+          {/* Background Overlay (grid texture) */}
           <div
-            className={`absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t to-transparent pointer-events-none ${
-              isDark ? "from-black" : "from-slate-50"
+            className={`absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_20%,#000_70%,transparent_110%)] ${
+              isDark ? "opacity-100" : "opacity-30"
             }`}
           />
 
-          {/* Top fade gradient */}
+          {/* Bottom fade gradient */}
           <div
-            className={`absolute top-0 left-0 right-0 h-40 bg-gradient-to-b to-transparent pointer-events-none ${
+            className={`absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t to-transparent ${
               isDark ? "from-black" : "from-slate-50"
             }`}
           />
