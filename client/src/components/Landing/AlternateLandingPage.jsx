@@ -42,30 +42,42 @@ const AlternateLandingPage = () => {
               : "bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50"
           }`}
         >
-          {/* Zigzag Pattern Background */}
-          <div className="absolute inset-0 overflow-hidden opacity-20">
+          {/* Square Grid Pattern Background */}
+          <div className="absolute inset-0 overflow-hidden opacity-10">
             <svg
               className="absolute inset-0 w-full h-full"
               xmlns="http://www.w3.org/2000/svg"
             >
               <defs>
                 <pattern
-                  id="zigzag-dashboard"
+                  id="squares-dashboard"
                   x="0"
                   y="0"
-                  width="40"
-                  height="40"
+                  width="60"
+                  height="60"
                   patternUnits="userSpaceOnUse"
                 >
-                  <path
-                    d="M0 20 L10 10 L20 20 L30 10 L40 20"
+                  <rect
+                    x="1"
+                    y="1"
+                    width="20"
+                    height="20"
+                    stroke={isDark ? "#4f4f4f" : "#cbd5e1"}
+                    strokeWidth="1"
+                    fill="none"
+                  />
+                  <rect
+                    x="31"
+                    y="31"
+                    width="15"
+                    height="15"
                     stroke={isDark ? "#4f4f4f" : "#cbd5e1"}
                     strokeWidth="1"
                     fill="none"
                   />
                 </pattern>
               </defs>
-              <rect width="100%" height="100%" fill="url(#zigzag-dashboard)" />
+              <rect width="100%" height="100%" fill="url(#squares-dashboard)" />
             </svg>
           </div>
 
