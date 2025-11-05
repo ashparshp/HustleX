@@ -15,16 +15,43 @@ const AlternateHero = () => {
           : "bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50"
       }`}
     >
-      {/* Background Overlay (grid texture) */}
-      <div
-        className={`absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_20%,#000_70%,transparent_110%)] ${
-          isDark ? "opacity-100" : "opacity-30"
-        }`}
-      />
+      {/* Zigzag Pattern Background */}
+      <div className="absolute inset-0 overflow-hidden opacity-20">
+        <svg
+          className="absolute inset-0 w-full h-full"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <pattern
+              id="zigzag-hero"
+              x="0"
+              y="0"
+              width="40"
+              height="40"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M0 20 L10 10 L20 20 L30 10 L40 20"
+                stroke={isDark ? "#4f4f4f" : "#cbd5e1"}
+                strokeWidth="1"
+                fill="none"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#zigzag-hero)" />
+        </svg>
+      </div>
 
       {/* Bottom fade gradient */}
       <div
-        className={`absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t to-transparent ${
+        className={`absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t to-transparent pointer-events-none ${
+          isDark ? "from-black" : "from-slate-50"
+        }`}
+      />
+
+      {/* Top fade gradient */}
+      <div
+        className={`absolute top-0 left-0 right-0 h-40 bg-gradient-to-b to-transparent pointer-events-none ${
           isDark ? "from-black" : "from-slate-50"
         }`}
       />
@@ -121,9 +148,11 @@ const AlternateHero = () => {
             className="w-full sm:w-auto"
           >
             <Link to="/register" className="w-full">
-              <button className={`w-full sm:min-w-[240px] flex items-center justify-center gap-3 rounded-xl bg-black px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl ${
-                isDark ? "border-2 border-gray-700 hover:border-gray-500" : ""
-              }`}>
+              <button
+                className={`w-full sm:min-w-[240px] flex items-center justify-center gap-3 rounded-xl bg-black px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl ${
+                  isDark ? "border-2 border-gray-700 hover:border-gray-500" : ""
+                }`}
+              >
                 <UserPlus className="w-5 h-5" />
                 <span>Create Your Account</span>
               </button>
