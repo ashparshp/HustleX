@@ -89,15 +89,22 @@ const AlternateLandingPage = () => {
             }`}
           />
 
-          <div className="relative z-10 max-w-7xl mx-auto px-6 py-20">
+          {/* Bottom fade gradient */}
+          <div
+            className={`absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t to-transparent ${
+              isDark ? "from-black" : "from-slate-50"
+            }`}
+          />
+
+          <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 pb-32">
             {/* Welcome Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-center mb-16"
+              className="text-center mb-20"
             >
-              <div className="mb-4">
+              <div className="mb-6">
                 <span
                   className={`text-sm font-medium uppercase tracking-wider ${
                     isDark ? "text-indigo-400" : "text-indigo-600"
@@ -107,7 +114,7 @@ const AlternateLandingPage = () => {
                 </span>
               </div>
               <h1
-                className={`text-5xl md:text-6xl font-bold mb-6 leading-tight bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent`}
+                className={`text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent`}
                 style={{
                   fontFamily: "'Allura', 'Pacifico', 'Dancing Script', cursive",
                 }}
@@ -125,12 +132,28 @@ const AlternateLandingPage = () => {
               </p>
             </motion.div>
 
+            {/* Divider */}
+            <motion.div
+              initial={{ opacity: 0, scaleX: 0 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="mb-16"
+            >
+              <div
+                className={`h-px w-full max-w-3xl mx-auto bg-gradient-to-r ${
+                  isDark
+                    ? "from-transparent via-gray-700 to-transparent"
+                    : "from-transparent via-gray-300 to-transparent"
+                }`}
+              />
+            </motion.div>
+
             {/* Quick Actions Grid */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
             >
               {quickActions.map((action, index) => {
                 const Icon = action.icon;
@@ -154,7 +177,7 @@ const AlternateLandingPage = () => {
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                    transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -181,12 +204,28 @@ const AlternateLandingPage = () => {
               })}
             </motion.div>
 
+            {/* Divider */}
+            <motion.div
+              initial={{ opacity: 0, scaleX: 0 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="mb-16"
+            >
+              <div
+                className={`h-px w-full max-w-3xl mx-auto bg-gradient-to-r ${
+                  isDark
+                    ? "from-transparent via-gray-700 to-transparent"
+                    : "from-transparent via-gray-300 to-transparent"
+                }`}
+              />
+            </motion.div>
+
             {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
+              transition={{ duration: 0.6, delay: 0.9 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20"
             >
               <Link
                 to="/timetable"
@@ -205,6 +244,22 @@ const AlternateLandingPage = () => {
                 <BarChart3 className="w-5 h-5" />
                 View Progress
               </Link>
+            </motion.div>
+
+            {/* Divider */}
+            <motion.div
+              initial={{ opacity: 0, scaleX: 0 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              transition={{ duration: 0.8, delay: 1.1 }}
+              className="mb-16"
+            >
+              <div
+                className={`h-px w-full max-w-3xl mx-auto bg-gradient-to-r ${
+                  isDark
+                    ? "from-transparent via-gray-700 to-transparent"
+                    : "from-transparent via-gray-300 to-transparent"
+                }`}
+              />
             </motion.div>
 
             {/* Quick Stats Preview */}
