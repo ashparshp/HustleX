@@ -8,17 +8,10 @@ import {
 import { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 
-
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
-
-import SEOHead from "./components/SEO/SEOHead";
-import { PAGE_SEO } from "./utils/seoConfig";
-
-
 import Navbar from "./components/Layout/Navbar";
-
 
 import LoginForm from "./components/Auth/LoginForm";
 import RegisterForm from "./components/Auth/RegisterForm";
@@ -27,8 +20,6 @@ import ResetPassword from "./components/Auth/ResetPassword";
 import EmailVerificationNotice from "./components/Auth/EmailVerificationNotice";
 import EmailVerification from "./components/Auth/EmailVerification";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
-
-
 import UserProfile from "./components/Profile/UserProfile";
 import ChangePassword from "./components/Profile/ChangePassword";
 
@@ -40,7 +31,8 @@ import TimetablePage from "./pages/TimetablePage";
 import AIPage from "./pages/AIPage";
 
 
-import LandingPage from "./components/Landing/LandingPage";
+import AlternateLandingPage from "./components/Landing/AlternateLandingPage";
+import AlternateHero from "./components/Landing/AlternateHero";
 
 function AppContent() {
   const { isDark } = useTheme();
@@ -176,7 +168,7 @@ function AppContent() {
             } />
 
 
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<AlternateLandingPage />} />
 
           <Route
             path="*"
