@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { BarChart3, ArrowRight, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import AlternateHero from "./AlternateHero";
-import QuickStatsPreview from "./QuickStatsPreview";
 
 const AlternateLandingPage = () => {
   const { isDark } = useTheme();
@@ -118,25 +117,6 @@ const AlternateLandingPage = () => {
                 View Progress
               </Link>
             </motion.div>
-
-            {/* Divider */}
-            <motion.div
-              initial={{ opacity: 0, scaleX: 0 }}
-              animate={{ opacity: 1, scaleX: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="mb-16"
-            >
-              <div
-                className={`h-px w-full max-w-3xl mx-auto bg-gradient-to-r ${
-                  isDark
-                    ? "from-transparent via-gray-700 to-transparent"
-                    : "from-transparent via-gray-300 to-transparent"
-                }`}
-              />
-            </motion.div>
-
-            {/* Quick Stats Preview */}
-            <QuickStatsPreview isDark={isDark} showWelcomeInstead={false} />
           </div>
         </section>
       )}
