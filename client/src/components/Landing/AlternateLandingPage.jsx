@@ -112,8 +112,8 @@ const AlternateLandingPage = () => {
                   }}
                 >
                   Your productivity empire awaits. Craft perfect schedules,
-                  master your time, and unlock your full potential—all in one
-                  place.
+                  master your time, and unlock your full potential in one
+                  unified space.
                 </motion.p>
               </motion.div>
 
