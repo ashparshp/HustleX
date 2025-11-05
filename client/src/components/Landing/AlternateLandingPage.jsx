@@ -2,15 +2,7 @@ import React from "react";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
-import {
-  Calendar,
-  Clock,
-  TrendingUp,
-  Target,
-  BarChart3,
-  ArrowRight,
-  Zap,
-} from "lucide-react";
+import { BarChart3, ArrowRight, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import AlternateHero from "./AlternateHero";
 import QuickStatsPreview from "./QuickStatsPreview";
@@ -18,37 +10,6 @@ import QuickStatsPreview from "./QuickStatsPreview";
 const AlternateLandingPage = () => {
   const { isDark } = useTheme();
   const { isAuthenticated, currentUser } = useAuth();
-
-  const quickActions = [
-    {
-      title: "View Timetables",
-      description: "Check your weekly schedules",
-      icon: Calendar,
-      link: "/timetable",
-      color: "indigo",
-    },
-    {
-      title: "Track Working Hours",
-      description: "Log your productive time",
-      icon: Clock,
-      link: "/working-hours",
-      color: "blue",
-    },
-    {
-      title: "Skills Progress",
-      description: "Monitor your development",
-      icon: TrendingUp,
-      link: "/skills",
-      color: "emerald",
-    },
-    {
-      title: "Schedule Management",
-      description: "Organize your activities",
-      icon: Target,
-      link: "/schedule",
-      color: "purple",
-    },
-  ];
 
   const containerStyle = isDark
     ? "bg-black min-h-screen"
@@ -132,99 +93,11 @@ const AlternateLandingPage = () => {
               </p>
             </motion.div>
 
-            {/* Divider */}
-            <motion.div
-              initial={{ opacity: 0, scaleX: 0 }}
-              animate={{ opacity: 1, scaleX: 1 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="mb-16"
-            >
-              <div
-                className={`h-px w-full max-w-3xl mx-auto bg-gradient-to-r ${
-                  isDark
-                    ? "from-transparent via-gray-700 to-transparent"
-                    : "from-transparent via-gray-300 to-transparent"
-                }`}
-              />
-            </motion.div>
-
-            {/* Quick Actions Grid */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
-            >
-              {quickActions.map((action, index) => {
-                const Icon = action.icon;
-                const colorClasses = {
-                  indigo: isDark
-                    ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 hover:bg-indigo-500/20 hover:border-indigo-500/40"
-                    : "bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100 hover:border-indigo-300",
-                  blue: isDark
-                    ? "bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40"
-                    : "bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 hover:border-blue-300",
-                  emerald: isDark
-                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40"
-                    : "bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300",
-                  purple: isDark
-                    ? "bg-purple-500/10 text-purple-400 border-purple-500/20 hover:bg-purple-500/20 hover:border-purple-500/40"
-                    : "bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100 hover:border-purple-300",
-                };
-
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Link
-                      to={action.link}
-                      className={`p-6 rounded-xl border-2 transition-all duration-300 hover:shadow-xl block ${
-                        colorClasses[action.color]
-                      }`}
-                    >
-                      <Icon className="w-8 h-8 mb-3" />
-                      <h3 className="font-semibold text-lg mb-2">
-                        {action.title}
-                      </h3>
-                      <p
-                        className={`text-sm ${
-                          isDark ? "text-gray-400" : "text-gray-600"
-                        }`}
-                      >
-                        {action.description}
-                      </p>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-
-            {/* Divider */}
-            <motion.div
-              initial={{ opacity: 0, scaleX: 0 }}
-              animate={{ opacity: 1, scaleX: 1 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="mb-16"
-            >
-              <div
-                className={`h-px w-full max-w-3xl mx-auto bg-gradient-to-r ${
-                  isDark
-                    ? "from-transparent via-gray-700 to-transparent"
-                    : "from-transparent via-gray-300 to-transparent"
-                }`}
-              />
-            </motion.div>
-
             {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.9 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20"
             >
               <Link
@@ -250,7 +123,7 @@ const AlternateLandingPage = () => {
             <motion.div
               initial={{ opacity: 0, scaleX: 0 }}
               animate={{ opacity: 1, scaleX: 1 }}
-              transition={{ duration: 0.8, delay: 1.1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
               className="mb-16"
             >
               <div
