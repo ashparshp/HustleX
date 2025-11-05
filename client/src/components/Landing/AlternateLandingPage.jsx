@@ -111,9 +111,9 @@ const AlternateLandingPage = () => {
                     fontSize: "clamp(1.25rem, 2.5vw, 1.8rem)",
                   }}
                 >
-                  Jump back into your productivity journey. Check your
-                  timetables, track your hours, or continue developing your
-                  skills.
+                  Your productivity empire awaits. Craft perfect schedules,
+                  master your time, and unlock your full potential—all in one
+                  place.
                 </motion.p>
               </motion.div>
 

@@ -302,8 +302,8 @@ const LandingPage = () => {
               <p
                 className={`text-lg mb-10 max-w-lg leading-relaxed ${textColorMuted}`}
               >
-                Jump back into your productivity journey. Check your timetables,
-                track your hours, or continue developing your skills.
+                Your productivity empire awaits. Craft perfect schedules, master
+                your time, and unlock your full potential—all in one place.
               </p>
 
               <div className="grid grid-cols-2 gap-4 mb-8">
