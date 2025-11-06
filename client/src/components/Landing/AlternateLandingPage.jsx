@@ -21,12 +21,12 @@ const AlternateLandingPage = () => {
     : "bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 hover:from-indigo-600 hover:via-indigo-700 hover:to-indigo-800";
 
   const buttonSecondaryBorder = isDark
-    ? "border-gray-700 hover:border-gray-600"
-    : "border-indigo-700 hover:border-indigo-900";
+    ? "border-indigo-700 hover:border-indigo-900"
+    : "border-gray-700 hover:border-gray-600";
 
   const buttonSecondaryText = isDark
-    ? "text-gray-300 hover:text-white"
-    : "text-indigo-700 hover:text-indigo-900";
+    ? "text-indigo-700 hover:text-indigo-900"
+    : "text-gray-300 hover:text-white";
 
   return (
     <div className={containerStyle}>
