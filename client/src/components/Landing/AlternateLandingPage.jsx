@@ -138,8 +138,10 @@ const AlternateLandingPage = () => {
                 </Link>
                 <Link to="/working-hours" className="w-full sm:w-auto">
                   <button
-                    className={`w-full sm:min-w-[200px] flex items-center justify-center gap-3 rounded-xl px-4 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${buttonSecondaryBorder} ${buttonSecondaryText} ${
-                      isDark ? "bg-white/50" : "bg-gray-900/50"
+                    className={`w-full sm:min-w-[200px] flex items-center justify-center gap-3 rounded-xl px-4 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
+                      isDark
+                        ? "border-2 border-gray-700 bg-gradient-to-r from-indigo-600 via-indigo-700 to-indigo-800 text-white"
+                        : "border border-indigo-200 bg-gradient-to-r from-indigo-50 to-indigo-100 text-indigo-700"
                     }`}
                     aria-label="View Progress"
                   >
