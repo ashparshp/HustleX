@@ -50,20 +50,43 @@ const AlternateHero = () => {
             HustleX
           </h1>
 
-          {/* Underline */}
+          {/* Underline - responsive: narrow SVG for phones, wider for sm+ */}
+          {/* Phone (base) - narrow underline that won't exceed text width */}
+          <motion.svg
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.6 }}
+            transition={{ duration: 1.2, delay: 0.6, ease: "easeInOut" }}
+            className="absolute left-1/2 -translate-x-1/2 -bottom-2 sm:hidden w-[140px] h-auto"
+            width="200"
+            height="20"
+            viewBox="0 0 200 20"
+            style={{ transformOrigin: "50% 50%" }}
+          >
+            <motion.path
+              d="M 5 14 Q 25 7, 50 13 T 100 11 Q 125 9, 150 14 T 195 13"
+              stroke="rgba(59, 130, 246, 0.6)"
+              strokeWidth="1"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </motion.svg>
+
+          {/* Larger screens - wider underline */}
           <motion.svg
             initial={{ pathLength: 0, opacity: 0 }}
             animate={{ pathLength: 1, opacity: 0.6 }}
             transition={{ duration: 1.5, delay: 0.8, ease: "easeInOut" }}
-            className="absolute left-1/2 -translate-x-1/2 -bottom-3 md:-bottom-6 w-[260px] md:w-[400px] h-auto"
+            className="hidden sm:block absolute left-1/2 -translate-x-1/2 sm:-bottom-3 md:-bottom-6 w-[260px] md:w-[400px] h-auto"
             width="400"
             height="30"
             viewBox="0 0 400 30"
+            style={{ transformOrigin: "50% 50%" }}
           >
             <motion.path
               d="M 10 20 Q 50 10, 100 18 T 200 15 Q 250 12, 300 20 T 390 18"
               stroke="rgba(59, 130, 246, 0.6)"
-              strokeWidth="1.5"
+              strokeWidth="1.2"
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
