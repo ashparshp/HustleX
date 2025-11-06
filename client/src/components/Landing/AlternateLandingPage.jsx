@@ -124,22 +124,26 @@ const AlternateLandingPage = () => {
                 transition={{ duration: 0.6, delay: 0.5 }}
                 className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center items-center pb-24 md:pb-32 lg:pb-40 px-4"
               >
-                <Link
-                  to="/timetable"
-                  className={`w-full sm:w-auto ${buttonPrimaryBg} text-white font-semibold py-3 md:py-4 px-6 md:px-10 rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-3 hover:shadow-2xl transform hover:scale-105`}
-                >
-                  <Zap className="w-4 md:w-5 h-4 md:h-5" />
-                  <span className="text-sm md:text-base">Continue Journey</span>
-                  <ArrowRight className="w-4 md:w-5 h-4 md:h-5" />
+                <Link to="/timetable" className="w-full sm:w-auto">
+                  <button
+                    className={`${buttonPrimaryBg} text-white font-semibold w-full sm:min-w-[200px] flex items-center justify-center gap-3 rounded-xl px-4 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 shadow-lg transition-all duration-300 hover:shadow-2xl transform hover:scale-105`}
+                    aria-label="Continue Journey"
+                  >
+                    <Zap className="w-4 sm:w-5 h-4 sm:h-5" />
+                    <span className="text-sm sm:text-base">Continue Journey</span>
+                    <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5" />
+                  </button>
                 </Link>
-                <Link
-                  to="/working-hours"
-                  className={`w-full sm:w-auto border-2 py-3 md:py-4 px-6 md:px-10 rounded-xl font-semibold transition-all duration-300 ${buttonSecondaryBorder} ${buttonSecondaryText} flex items-center justify-center gap-3 transform hover:scale-105 hover:shadow-xl ${
-                    isDark ? "bg-gray-900/50" : "bg-white/50"
-                  }`}
-                >
-                  <BarChart3 className="w-4 md:w-5 h-4 md:h-5" />
-                  <span className="text-sm md:text-base">View Progress</span>
+                <Link to="/working-hours" className="w-full sm:w-auto">
+                  <button
+                    className={`w-full sm:min-w-[200px] flex items-center justify-center gap-3 rounded-xl px-4 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${buttonSecondaryBorder} ${buttonSecondaryText} ${
+                      isDark ? "bg-gray-900/50" : "bg-white/50"
+                    }`}
+                    aria-label="View Progress"
+                  >
+                    <BarChart3 className="w-4 sm:w-5 h-4 sm:h-5" />
+                    <span className="text-sm sm:text-base">View Progress</span>
+                  </button>
                 </Link>
               </motion.div>
             </div>
