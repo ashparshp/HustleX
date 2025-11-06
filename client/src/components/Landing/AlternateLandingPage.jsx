@@ -139,7 +139,7 @@ const AlternateLandingPage = () => {
                 <Link to="/working-hours" className="w-full sm:w-auto">
                   <button
                     className={`w-full sm:min-w-[200px] flex items-center justify-center gap-3 rounded-xl px-4 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${buttonSecondaryBorder} ${buttonSecondaryText} ${
-                      isDark ? "bg-gray-900/50" : "bg-white/50"
+                      isDark ? "bg-white/50" : "bg-gray-900/50"
                     }`}
                     aria-label="View Progress"
                   >
