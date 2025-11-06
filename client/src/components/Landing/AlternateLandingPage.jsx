@@ -130,7 +130,9 @@ const AlternateLandingPage = () => {
                     aria-label="Continue Journey"
                   >
                     <Zap className="w-4 sm:w-5 h-4 sm:h-5" />
-                    <span className="text-sm sm:text-base">Continue Journey</span>
+                    <span className="text-sm sm:text-base">
+                      Continue Journey
+                    </span>
                     <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5" />
                   </button>
                 </Link>
