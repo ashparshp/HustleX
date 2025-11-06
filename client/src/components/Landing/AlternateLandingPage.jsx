@@ -126,20 +126,20 @@ const AlternateLandingPage = () => {
               >
                 <Link
                   to="/timetable"
-                  className={`w-full sm:w-auto ${buttonPrimaryBg} text-white font-semibold py-4 md:py-5 px-10 md:px-12 rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-3 hover:shadow-2xl transform hover:scale-105`}
+                  className={`w-full sm:w-auto ${buttonPrimaryBg} text-white font-semibold py-3 md:py-4 px-6 md:px-10 rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-3 hover:shadow-2xl transform hover:scale-105`}
                 >
-                  <Zap className="w-5 md:w-6 h-5 md:h-6" />
-                  <span className="text-base md:text-lg">Continue Journey</span>
+                  <Zap className="w-4 md:w-5 h-4 md:h-5" />
+                  <span className="text-sm md:text-base">Continue Journey</span>
                   <ArrowRight className="w-4 md:w-5 h-4 md:h-5" />
                 </Link>
                 <Link
                   to="/working-hours"
-                  className={`w-full sm:w-auto border-2 py-4 md:py-5 px-10 md:px-12 rounded-xl font-semibold transition-all duration-300 ${buttonSecondaryBorder} ${buttonSecondaryText} flex items-center justify-center gap-3 transform hover:scale-105 hover:shadow-xl ${
+                  className={`w-full sm:w-auto border-2 py-3 md:py-4 px-6 md:px-10 rounded-xl font-semibold transition-all duration-300 ${buttonSecondaryBorder} ${buttonSecondaryText} flex items-center justify-center gap-3 transform hover:scale-105 hover:shadow-xl ${
                     isDark ? "bg-gray-900/50" : "bg-white/50"
                   }`}
                 >
-                  <BarChart3 className="w-5 md:w-6 h-5 md:h-6" />
-                  <span className="text-base md:text-lg">View Progress</span>
+                  <BarChart3 className="w-4 md:w-5 h-4 md:h-5" />
+                  <span className="text-sm md:text-base">View Progress</span>
                 </Link>
               </motion.div>
             </div>

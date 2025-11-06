@@ -39,7 +39,7 @@ const AlternateHero = () => {
           className="mb-16 relative"
         >
           <h1
-            className="text-7xl md:text-8xl lg:text-9xl font-bold bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent relative inline-block"
+            className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent relative inline-block"
             style={{
               fontFamily: "'Allura', 'Pacifico', 'Dancing Script', cursive",
               textShadow: "0 0 30px rgba(59, 130, 246, 0.3)",
@@ -55,7 +55,7 @@ const AlternateHero = () => {
             initial={{ pathLength: 0, opacity: 0 }}
             animate={{ pathLength: 1, opacity: 0.6 }}
             transition={{ duration: 1.5, delay: 0.8, ease: "easeInOut" }}
-            className="absolute left-1/2 -translate-x-1/2 -bottom-4 md:-bottom-6"
+            className="absolute left-1/2 -translate-x-1/2 -bottom-3 md:-bottom-6 w-[260px] md:w-[400px] h-auto"
             width="400"
             height="30"
             viewBox="0 0 400 30"
@@ -63,7 +63,7 @@ const AlternateHero = () => {
             <motion.path
               d="M 10 20 Q 50 10, 100 18 T 200 15 Q 250 12, 300 20 T 390 18"
               stroke="rgba(59, 130, 246, 0.6)"
-              strokeWidth="2"
+              strokeWidth="1.5"
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -107,8 +107,8 @@ const AlternateHero = () => {
             className="w-full sm:w-auto"
           >
             <Link to="/login" className="w-full">
-              <button className="w-full sm:min-w-[240px] flex items-center justify-center gap-3 rounded-xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-indigo-100 px-8 py-4 text-lg font-semibold text-indigo-700 shadow-md transition-all duration-300 hover:shadow-lg hover:from-indigo-100 hover:to-indigo-200">
-                <LogIn className="w-5 h-5" />
+              <button className="w-full sm:min-w-[200px] flex items-center justify-center gap-3 rounded-xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-indigo-100 px-4 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 font-semibold text-indigo-700 shadow-md transition-all duration-300 hover:shadow-lg hover:from-indigo-100 hover:to-indigo-200">
+                <LogIn className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Login to Continue</span>
               </button>
             </Link>
@@ -122,11 +122,11 @@ const AlternateHero = () => {
           >
             <Link to="/register" className="w-full">
               <button
-                className={`w-full sm:min-w-[240px] flex items-center justify-center gap-3 rounded-xl bg-black px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl ${
+                className={`w-full sm:min-w-[200px] flex items-center justify-center gap-3 rounded-xl bg-black px-4 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl ${
                   isDark ? "border-2 border-gray-700 hover:border-gray-500" : ""
                 }`}
               >
-                <UserPlus className="w-5 h-5" />
+                <UserPlus className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Create Your Account</span>
               </button>
             </Link>
