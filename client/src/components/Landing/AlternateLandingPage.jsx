@@ -124,18 +124,6 @@ const AlternateLandingPage = () => {
                 transition={{ duration: 0.6, delay: 0.5 }}
                 className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center items-center pb-24 md:pb-32 lg:pb-40 px-4"
               >
-                <Link to="/timetable" className="w-full sm:w-auto">
-                  <button
-                    className={`${buttonPrimaryBg} text-white font-semibold w-full sm:min-w-[200px] flex items-center justify-center gap-3 rounded-xl px-4 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 shadow-lg transition-all duration-300 hover:shadow-2xl transform hover:scale-105`}
-                    aria-label="Continue Journey"
-                  >
-                    <Zap className="w-4 sm:w-5 h-4 sm:h-5" />
-                    <span className="text-sm sm:text-base">
-                      Continue Journey
-                    </span>
-                    <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5" />
-                  </button>
-                </Link>
                 <Link to="/working-hours" className="w-full sm:w-auto">
                   <button
                     className={`w-full sm:min-w-[200px] flex items-center justify-center gap-3 rounded-xl px-4 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
