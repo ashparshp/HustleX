@@ -4,16 +4,11 @@ const Skills = require("../models/Skills");
 const Timetable = require("../models/Timetable");
 const WorkingHours = require("../models/WorkingHours");
 
-
 const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-
-
 
 const getUserData = async (userId, options = {}) => {
   try {
     const { startDate, endDate, includeHistory = true } = options;
-
 
     const dateFilter = {};
     if (startDate || endDate) {
@@ -23,21 +18,21 @@ const getUserData = async (userId, options = {}) => {
     }
 
     const [schedules, skills, timetables, workingHours] = await Promise.all([
-    Schedule.find({ user: userId, ...dateFilter }).
-    sort({ date: -1 }).
-    lean(),
-    Skills.find({ user: userId }).lean(),
-    Timetable.find({ user: userId }).lean(),
-    WorkingHours.find({ user: userId, ...dateFilter }).
-    sort({ date: -1 }).
-    lean()]
-    );
+      Schedule.find({ user: userId, ...dateFilter })
+        .sort({ date: -1 })
+        .lean(),
+      Skills.find({ user: userId }).lean(),
+      Timetable.find({ user: userId }).lean(),
+      WorkingHours.find({ user: userId, ...dateFilter })
+        .sort({ date: -1 })
+        .lean(),
+    ]);
 
     return {
       schedules,
       skills,
       timetables,
-      workingHours
+      workingHours,
     };
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -45,13 +40,9 @@ const getUserData = async (userId, options = {}) => {
   }
 };
 
-
-
-
 const generateDataSummary = (userData) => {
   const { schedules, skills, timetables, workingHours } = userData;
   let summary = "=== DATA SUMMARY & KEY INSIGHTS ===\n\n";
-
 
   if (schedules && schedules.length > 0) {
     const completedSchedules = schedules.filter(
@@ -66,15 +57,14 @@ const generateDataSummary = (userData) => {
       0
     );
     const taskCompletionRate =
-    totalTasks > 0 ? (completedTasks / totalTasks * 100).toFixed(1) : 0;
+      totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(1) : 0;
 
     summary += `SCHEDULE INSIGHTS:\n`;
     summary += `- Total Schedules: ${schedules.length} (${completedSchedules} completed)\n`;
     summary += `- Task Completion Rate: ${taskCompletionRate}% (${completedTasks}/${totalTasks} tasks)\n`;
     summary += `- Average Tasks per Day: ${(
-    totalTasks / schedules.length).
-    toFixed(1)}\n`;
-
+      totalTasks / schedules.length
+    ).toFixed(1)}\n`;
 
     const recent = schedules.slice(0, 7);
     const recentCompleted = recent.reduce(
@@ -87,13 +77,12 @@ const generateDataSummary = (userData) => {
     );
     if (recentTotal > 0) {
       summary += `- Recent 7-day Completion: ${(
-      recentCompleted / recentTotal *
-      100).
-      toFixed(1)}%\n`;
+        (recentCompleted / recentTotal) *
+        100
+      ).toFixed(1)}%\n`;
     }
     summary += "\n";
   }
-
 
   if (skills && skills.length > 0) {
     const completed = skills.filter(
@@ -107,17 +96,17 @@ const generateDataSummary = (userData) => {
     ).length;
     const highPriorityUpcoming = skills.filter(
       (s) =>
-      (s.status === "upcoming" || s.status === "not-started") &&
-      s.priority === "high"
+        (s.status === "upcoming" || s.status === "not-started") &&
+        s.priority === "high"
     ).length;
 
     const avgProgress =
-    skills.length > 0 ?
-    (
-    skills.reduce((sum, s) => sum + (s.progress || 0), 0) /
-    skills.length).
-    toFixed(1) :
-    0;
+      skills.length > 0
+        ? (
+            skills.reduce((sum, s) => sum + (s.progress || 0), 0) /
+            skills.length
+          ).toFixed(1)
+        : 0;
 
     summary += `SKILLS INSIGHTS:\n`;
     summary += `- Total Skills: ${skills.length}\n`;
@@ -129,14 +118,12 @@ const generateDataSummary = (userData) => {
       summary += `- ⚠️ WARNING: ${highPriorityUpcoming} high-priority upcoming skills may cause decision paralysis\n`;
     }
 
-
     const stalledSkills = skills.filter(
       (s) => s.status === "in-progress" && s.progress < 20
     );
     if (stalledSkills.length > 0) {
       summary += `- ⚠️ ${stalledSkills.length} stalled skills (in-progress but <20% complete)\n`;
     }
-
 
     const nearlyComplete = skills.filter(
       (s) => s.progress >= 80 && s.progress < 100 && s.status !== "completed"
@@ -146,7 +133,6 @@ const generateDataSummary = (userData) => {
     }
     summary += "\n";
   }
-
 
   if (timetables && timetables.length > 0) {
     timetables.forEach((tt) => {
@@ -169,7 +155,6 @@ const generateDataSummary = (userData) => {
           ).length;
           summary += `- Activities: ${perfect} perfect (100%), ${failed} not started (0%)\n`;
 
-
           const sorted = [...week.activities].sort(
             (a, b) => b.completionRate - a.completionRate
           );
@@ -177,26 +162,24 @@ const generateDataSummary = (userData) => {
             summary += `- Best: ${sorted[0].activity.name} (${sorted[0].completionRate}%)\n`;
             if (sorted[sorted.length - 1].completionRate < 50) {
               summary += `- Needs attention: ${
-              sorted[sorted.length - 1].activity.name} (${
-              sorted[sorted.length - 1].completionRate}%)\n`;
+                sorted[sorted.length - 1].activity.name
+              } (${sorted[sorted.length - 1].completionRate}%)\n`;
             }
           }
         }
         summary += "\n";
       }
 
-
       if (tt.history && tt.history.length >= 2) {
         const recent = tt.history.slice(-2);
         const trend =
-        recent[1].overallCompletionRate - recent[0].overallCompletionRate;
+          recent[1].overallCompletionRate - recent[0].overallCompletionRate;
         summary += `- Trend: ${
-        trend > 0 ? "📈 Improving" : trend < 0 ? "📉 Declining" : "➡️ Stable"} (${
-        trend > 0 ? "+" : ""}${trend.toFixed(1)}% vs previous week)\n\n`;
+          trend > 0 ? "📈 Improving" : trend < 0 ? "📉 Declining" : "➡️ Stable"
+        } (${trend > 0 ? "+" : ""}${trend.toFixed(1)}% vs previous week)\n\n`;
       }
     });
   }
-
 
   if (workingHours && workingHours.length > 0) {
     const totalTarget = workingHours.reduce(
@@ -208,12 +191,11 @@ const generateDataSummary = (userData) => {
       0
     );
     const overallRate =
-    totalTarget > 0 ? (totalAchieved / totalTarget * 100).toFixed(1) : 0;
+      totalTarget > 0 ? ((totalAchieved / totalTarget) * 100).toFixed(1) : 0;
 
     summary += `WORKING HOURS INSIGHTS:\n`;
     summary += `- Total Records: ${workingHours.length} days\n`;
     summary += `- Overall Achievement: ${overallRate}% (${totalAchieved}h / ${totalTarget}h)\n`;
-
 
     const recent = workingHours.slice(0, 7);
     const recentTarget = recent.reduce(
@@ -226,11 +208,10 @@ const generateDataSummary = (userData) => {
     );
     if (recentTarget > 0) {
       summary += `- Recent 7-day Achievement: ${(
-      recentAchieved / recentTarget *
-      100).
-      toFixed(1)}%\n`;
+        (recentAchieved / recentTarget) *
+        100
+      ).toFixed(1)}%\n`;
     }
-
 
     const moods = workingHours.filter((w) => w.mood).map((w) => w.mood);
     if (moods.length > 0) {
@@ -238,27 +219,22 @@ const generateDataSummary = (userData) => {
         (m) => m === "great" || m === "good"
       ).length;
       summary += `- Positive Mood Days: ${(
-      goodMoods / moods.length *
-      100).
-      toFixed(0)}%\n`;
+        (goodMoods / moods.length) *
+        100
+      ).toFixed(0)}%\n`;
     }
     summary += "\n";
   }
-
 
   summary += generateDataValidation(userData);
 
   return summary + "=================================\n\n";
 };
 
-
-
-
 const generateDataValidation = (userData) => {
   const { schedules, timetables, workingHours } = userData;
   let validation = "DATA QUALITY CHECKS:\n";
   let issuesFound = false;
-
 
   if (timetables.length > 0 && workingHours.length > 0) {
     timetables.forEach((tt) => {
@@ -274,10 +250,10 @@ const generateDataValidation = (userData) => {
         if (whInSamePeriod.length > 0) {
           const ttCompletion = tt.currentWeek.overallCompletionRate;
           const whCompletion =
-          whInSamePeriod.reduce(
-            (sum, w) => sum + (w.achievedHours / w.targetHours * 100 || 0),
-            0
-          ) / whInSamePeriod.length;
+            whInSamePeriod.reduce(
+              (sum, w) => sum + ((w.achievedHours / w.targetHours) * 100 || 0),
+              0
+            ) / whInSamePeriod.length;
 
           const discrepancy = Math.abs(ttCompletion - whCompletion);
           if (discrepancy > 30) {
@@ -291,7 +267,6 @@ const generateDataValidation = (userData) => {
     });
   }
 
-
   if (userData.skills) {
     const inconsistentSkills = userData.skills.filter(
       (s) => s.status === "completed" && s.progress < 100
@@ -301,7 +276,6 @@ const generateDataValidation = (userData) => {
       issuesFound = true;
     }
   }
-
 
   if (userData.skills) {
     const unmarkedComplete = userData.skills.filter(
@@ -320,17 +294,12 @@ const generateDataValidation = (userData) => {
   return validation + "\n";
 };
 
-
-
-
 const formatUserDataForAI = (userData) => {
   const { schedules, skills, timetables, workingHours } = userData;
 
   let context = "User's Productivity Data:\n\n";
 
-
   context += generateDataSummary(userData);
-
 
   if (schedules && schedules.length > 0) {
     context += "SCHEDULES:\n";
@@ -352,10 +321,8 @@ const formatUserDataForAI = (userData) => {
     });
   }
 
-
   if (skills && skills.length > 0) {
     context += "SKILLS:\n";
-
 
     const completedSkills = skills.filter(
       (s) => s.status === "completed" || s.progress === 100
@@ -398,7 +365,6 @@ const formatUserDataForAI = (userData) => {
     }
 
     if (upcomingSkills.length > 0) {
-
       const highPriority = upcomingSkills.filter((s) => s.priority === "high");
       const mediumPriority = upcomingSkills.filter(
         (s) => s.priority === "medium"
@@ -414,15 +380,15 @@ const formatUserDataForAI = (userData) => {
           context += `    ${index + 1}. ${skill.name} (${skill.category})`;
           if (skill.description) {
             context += ` - ${skill.description.substring(0, 80)}${
-            skill.description.length > 80 ? "..." : ""}`;
-
+              skill.description.length > 80 ? "..." : ""
+            }`;
           }
           context += "\n";
         });
         if (highPriority.length > 10) {
           context += `    ... and ${
-          highPriority.length - 10} more high priority skills\n`;
-
+            highPriority.length - 10
+          } more high priority skills\n`;
         }
       }
 
@@ -437,7 +403,6 @@ const formatUserDataForAI = (userData) => {
     }
   }
 
-
   if (timetables && timetables.length > 0) {
     context += "TIMETABLES:\n";
     timetables.forEach((timetable, index) => {
@@ -446,7 +411,6 @@ const formatUserDataForAI = (userData) => {
       if (timetable.description) {
         context += `   Description: ${timetable.description}\n`;
       }
-
 
       if (timetable.currentWeek) {
         const week = timetable.currentWeek;
@@ -466,7 +430,6 @@ const formatUserDataForAI = (userData) => {
           });
         }
       }
-
 
       if (timetable.history && timetable.history.length > 0) {
         context += `   Historical Data (${timetable.history.length} past weeks):\n`;
@@ -494,7 +457,6 @@ const formatUserDataForAI = (userData) => {
     });
   }
 
-
   if (workingHours && workingHours.length > 0) {
     context += "WORKING HOURS:\n";
     workingHours.forEach((wh, index) => {
@@ -504,9 +466,9 @@ const formatUserDataForAI = (userData) => {
       context += `   Category: ${wh.category}\n`;
       context += `   Target: ${wh.targetHours}h, Achieved: ${wh.achievedHours}h\n`;
       context += `   Progress: ${(
-      wh.achievedHours / wh.targetHours *
-      100).
-      toFixed(0)}%\n`;
+        (wh.achievedHours / wh.targetHours) *
+        100
+      ).toFixed(0)}%\n`;
       context += `   Mood: ${wh.mood}\n`;
       if (wh.notes) {
         context += `   Notes: ${wh.notes}\n`;
@@ -518,14 +480,10 @@ const formatUserDataForAI = (userData) => {
   return context;
 };
 
-
-
-
 const generateInsights = async (userId, detailLevel = "detailed") => {
   try {
     const userData = await getUserData(userId);
     const context = formatUserDataForAI(userData);
-
 
     let promptInstructions = "";
 
@@ -550,7 +508,6 @@ Keep it concise and focused on the most important insights.`;
 
 Provide extensive, personalized analysis with specific data references and examples.`;
     } else {
-
       promptInstructions = `Based on the above productivity data and the DATA SUMMARY insights, provide a comprehensive analysis with the following:
 
 1. **Productivity Patterns**: Identify patterns in their work habits, schedule completion rates, and time management. Reference specific data points and trends from the summary.
@@ -575,8 +532,8 @@ Provide a detailed, personalized analysis in a clear, structured format.`;
 ${promptInstructions}`;
 
     const result = await genAI.models.generateContent({
-      model: "gemini-2.0-flash-exp",
-      contents: prompt
+      model: "gemini-2.5-flash",
+      contents: prompt,
     });
 
     const insights = result.text;
@@ -587,17 +544,14 @@ ${promptInstructions}`;
         totalSchedules: userData.schedules.length,
         totalSkills: userData.skills.length,
         totalTimetables: userData.timetables.length,
-        totalWorkingHourRecords: userData.workingHours.length
-      }
+        totalWorkingHourRecords: userData.workingHours.length,
+      },
     };
   } catch (error) {
     console.error("Error generating insights:", error);
     throw error;
   }
 };
-
-
-
 
 const getRecommendations = async (userId, focusArea = null) => {
   try {
@@ -652,12 +606,11 @@ ${focusArea ? `- Primary: ${focusArea}` : ""}
 Make every recommendation specific, data-backed, and immediately actionable.`;
 
     const result = await genAI.models.generateContent({
-      model: "gemini-2.0-flash-exp",
-      contents: prompt
+      model: "gemini-2.5-flash",
+      contents: prompt,
     });
 
     const recommendations = result.text;
-
 
     const validation = validateRecommendationResponse(
       recommendations,
@@ -667,16 +620,13 @@ Make every recommendation specific, data-backed, and immediately actionable.`;
     return {
       recommendations,
       focusArea: focusArea || "general productivity",
-      quality: validation
+      quality: validation,
     };
   } catch (error) {
     console.error("Error generating recommendations:", error);
     throw error;
   }
 };
-
-
-
 
 const validateRecommendationResponse = (text, userData) => {
   const validation = {
@@ -685,57 +635,46 @@ const validateRecommendationResponse = (text, userData) => {
     hasActionableSteps: false,
     hasExpectedImpact: false,
     score: 0,
-    warnings: []
+    warnings: [],
   };
-
 
   const hasPercentages = /\d+%/.test(text);
   const hasSkillMentions = userData.skills.some((s) =>
-  text.toLowerCase().includes(s.name.toLowerCase().substring(0, 15))
+    text.toLowerCase().includes(s.name.toLowerCase().substring(0, 15))
   );
   const hasTimetableMentions = userData.timetables.some((t) =>
-  t.currentWeek?.activities?.some((a) =>
-  text.toLowerCase().includes(a.activity.name.toLowerCase())
-  )
+    t.currentWeek?.activities?.some((a) =>
+      text.toLowerCase().includes(a.activity.name.toLowerCase())
+    )
   );
 
   validation.hasDataReferences =
-  hasPercentages || hasSkillMentions || hasTimetableMentions;
-  if (validation.hasDataReferences) validation.score += 25;else
-  validation.warnings.push("Missing specific data references");
-
+    hasPercentages || hasSkillMentions || hasTimetableMentions;
+  if (validation.hasDataReferences) validation.score += 25;
+  else validation.warnings.push("Missing specific data references");
 
   validation.hasSpecificDates =
-  /week \d+|september|october|9\/\d+\/|last \d+ (days|weeks)/i.test(text);
-  if (validation.hasSpecificDates) validation.score += 25;else
-  validation.warnings.push("Missing specific dates or time periods");
-
+    /week \d+|september|october|9\/\d+\/|last \d+ (days|weeks)/i.test(text);
+  if (validation.hasSpecificDates) validation.score += 25;
+  else validation.warnings.push("Missing specific dates or time periods");
 
   validation.hasActionableSteps = /how to implement|step \d+|^\d+\./m.test(
     text
   );
-  if (validation.hasActionableSteps) validation.score += 25;else
-  validation.warnings.push("Missing clear implementation steps");
-
+  if (validation.hasActionableSteps) validation.score += 25;
+  else validation.warnings.push("Missing clear implementation steps");
 
   validation.hasExpectedImpact =
-  /expected impact|benefit|improve|increase|reduce/i.test(text);
-  if (validation.hasExpectedImpact) validation.score += 25;else
-  validation.warnings.push("Missing expected impact statements");
+    /expected impact|benefit|improve|increase|reduce/i.test(text);
+  if (validation.hasExpectedImpact) validation.score += 25;
+  else validation.warnings.push("Missing expected impact statements");
 
   return validation;
 };
 
-
-
-
-
-
-
 const extractDateRangeFromQuestion = (question) => {
   const now = new Date();
   const lowerQuestion = question.toLowerCase();
-
 
   const weeksMatch = lowerQuestion.match(/last (\d+) weeks?/);
   const daysMatch = lowerQuestion.match(/last (\d+) days?/);
@@ -762,7 +701,6 @@ const extractDateRangeFromQuestion = (question) => {
     return { startDate, endDate: now };
   }
 
-
   if (lowerQuestion.includes("this week")) {
     const startDate = new Date(now);
     startDate.setDate(startDate.getDate() - now.getDay());
@@ -774,14 +712,12 @@ const extractDateRangeFromQuestion = (question) => {
     return { startDate, endDate: now };
   }
 
-
   if (
-  lowerQuestion.includes("history") ||
-  lowerQuestion.includes("past") ||
-  lowerQuestion.includes("previous") ||
-  lowerQuestion.includes("summary"))
-  {
-
+    lowerQuestion.includes("history") ||
+    lowerQuestion.includes("past") ||
+    lowerQuestion.includes("previous") ||
+    lowerQuestion.includes("summary")
+  ) {
     const startDate = new Date(now);
     startDate.setDate(startDate.getDate() - 30);
     return { startDate, endDate: now };
@@ -790,14 +726,10 @@ const extractDateRangeFromQuestion = (question) => {
   return null;
 };
 
-
-
-
 const queryUserData = async (userId, question) => {
   try {
     console.log("queryUserData: Starting for user:", userId);
     console.log("queryUserData: Question:", question);
-
 
     const dateRange = extractDateRangeFromQuestion(question);
     console.log("queryUserData: Extracted date range:", dateRange);
@@ -807,12 +739,11 @@ const queryUserData = async (userId, question) => {
       schedules: userData.schedules?.length || 0,
       skills: userData.skills?.length || 0,
       timetables: userData.timetables?.length || 0,
-      workingHours: userData.workingHours?.length || 0
+      workingHours: userData.workingHours?.length || 0,
     });
 
     const context = formatUserDataForAI(userData);
     console.log("queryUserData: Context formatted, length:", context.length);
-
 
     let dateContext = "";
     if (dateRange) {
@@ -824,7 +755,8 @@ const queryUserData = async (userId, question) => {
 User Question: ${question}
 
 Based on the above productivity data${
-    dateRange ? " for the specified time period" : ""}, please answer the user's question accurately and helpfully. 
+      dateRange ? " for the specified time period" : ""
+    }, please answer the user's question accurately and helpfully. 
 
 IMPORTANT:
 - If asked for historical data (last X weeks/months), analyze trends and patterns across the time period
@@ -836,11 +768,10 @@ IMPORTANT:
 
 Answer:`;
 
-
     console.log("queryUserData: Sending to Gemini...");
     const result = await genAI.models.generateContent({
-      model: "gemini-2.0-flash-exp",
-      contents: prompt
+      model: "gemini-2.5-flash",
+      contents: prompt,
     });
     console.log("queryUserData: Gemini response received");
 
@@ -853,25 +784,46 @@ Answer:`;
 
     return {
       question,
-      answer
+      answer,
     };
   } catch (error) {
     console.error("Error querying user data:", error);
     console.error("Error details:", error.message);
     console.error("Error stack:", error.stack);
+    // Normalize quota exceeded / rate limit errors so controllers can map status codes
+    const status = error.status || error.code;
+    if (
+      status === 429 ||
+      error.message?.includes("Quota") ||
+      error.message?.includes("RESOURCE_EXHAUSTED")
+    ) {
+      const normalized = new Error(
+        "AI quota exceeded. Please retry after a short delay or upgrade your plan."
+      );
+      normalized.name = "QuotaExceededError";
+      normalized.status = 429;
+      // Attempt to extract retry delay if present
+      try {
+        const details = error.error?.details || error.details;
+        if (Array.isArray(details)) {
+          const retryInfo = details.find(
+            (d) => d.retryDelay || d["@type"]?.includes("RetryInfo")
+          );
+          if (retryInfo?.retryDelay) {
+            normalized.retryAfter = retryInfo.retryDelay;
+          }
+        }
+      } catch (_) {}
+      throw normalized;
+    }
     throw error;
   }
 };
-
-
-
 
 const generateScheduleSuggestions = async (userId) => {
   try {
     const userData = await getUserData(userId);
     const context = formatUserDataForAI(userData);
-
-
 
     const prompt = `${context}
 
@@ -891,14 +843,14 @@ Format as a clear, actionable list.`;
 
     const result = await genAI.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: prompt
+      contents: prompt,
     });
 
     const suggestions = result.text;
 
     return {
       suggestions,
-      generatedAt: new Date()
+      generatedAt: new Date(),
     };
   } catch (error) {
     console.error("Error generating schedule suggestions:", error);
@@ -906,15 +858,10 @@ Format as a clear, actionable list.`;
   }
 };
 
-
-
-
 const analyzeSkillProgress = async (userId) => {
   try {
     const userData = await getUserData(userId);
     const context = formatUserDataForAI(userData);
-
-
 
     const prompt = `${context}
 
@@ -930,7 +877,7 @@ Provide detailed, actionable guidance.`;
 
     const result = await genAI.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: prompt
+      contents: prompt,
     });
 
     const analysis = result.text;
@@ -938,7 +885,7 @@ Provide detailed, actionable guidance.`;
     return {
       analysis,
       skillCount: userData.skills.length,
-      analyzedAt: new Date()
+      analyzedAt: new Date(),
     };
   } catch (error) {
     console.error("Error analyzing skill progress:", error);
@@ -946,27 +893,23 @@ Provide detailed, actionable guidance.`;
   }
 };
 
-
-
-
 const generateWeeklyReport = async (userId, startDate, endDate) => {
   try {
     const userData = await getUserData(userId);
 
-
     const filteredSchedules = userData.schedules.filter((s) => {
       const scheduleDate = new Date(s.date);
       return (
-        scheduleDate >= new Date(startDate) && scheduleDate <= new Date(endDate));
-
+        scheduleDate >= new Date(startDate) && scheduleDate <= new Date(endDate)
+      );
     });
 
     const filteredTimetables = userData.timetables.filter((t) => {
       const timetableDate = new Date(t.date);
       return (
         timetableDate >= new Date(startDate) &&
-        timetableDate <= new Date(endDate));
-
+        timetableDate <= new Date(endDate)
+      );
     });
 
     const filteredWorkingHours = userData.workingHours.filter((wh) => {
@@ -978,12 +921,10 @@ const generateWeeklyReport = async (userId, startDate, endDate) => {
       schedules: filteredSchedules,
       skills: userData.skills,
       timetables: filteredTimetables,
-      workingHours: filteredWorkingHours
+      workingHours: filteredWorkingHours,
     };
 
     const context = formatUserDataForAI(filteredData);
-
-
 
     const prompt = `${context}
 
@@ -1001,7 +942,7 @@ Provide a detailed, motivating report with specific metrics and insights.`;
 
     const result = await genAI.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: prompt
+      contents: prompt,
     });
 
     const report = result.text;
@@ -1016,8 +957,8 @@ Provide a detailed, motivating report with specific metrics and insights.`;
         totalHours: filteredWorkingHours.reduce(
           (sum, wh) => sum + (wh.totalHours || 0),
           0
-        )
-      }
+        ),
+      },
     };
   } catch (error) {
     console.error("Error generating weekly report:", error);
@@ -1031,5 +972,5 @@ module.exports = {
   queryUserData,
   generateScheduleSuggestions,
   analyzeSkillProgress,
-  generateWeeklyReport
+  generateWeeklyReport,
 };
