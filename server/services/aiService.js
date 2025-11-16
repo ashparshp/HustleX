@@ -488,43 +488,76 @@ const generateInsights = async (userId, detailLevel = "detailed") => {
     let promptInstructions = "";
 
     if (detailLevel === "brief") {
-      promptInstructions = `Based on the above productivity data, provide a BRIEF analysis (max 300 words) covering:
+      promptInstructions = `You are an expert productivity analyst.
+    Format STRICTLY using ONLY these section headings (markdown level 3):
+    ### Executive Summary
+    ### Productivity Patterns
+    ### Strengths
+    ### Areas for Improvement
+    ### Action Plan
 
-1. **Key Productivity Pattern**: One main observation about their work habits
-2. **Top Strength**: What they're doing best
-3. **Main Area for Improvement**: The most critical thing to fix
-4. **Priority Recommendation**: 1-2 specific, actionable recommendations
+    Rules:
+    - Executive Summary: 3-5 bullets summarizing the most critical metrics (use * **Metric:** value format).
+    - Use only bullets that start with: * **Label:** content
+    - Reference concrete data (dates, percentages, activity or skill names) already present in the context.
+    - No additional headings, no numbered lists, no generic fluff.
+    - Action Plan: Provide 3 numbered steps (1., 2., 3.) each <= 2 sentences and data-linked.
 
-Keep it concise and focused on the most important insights.`;
+    Content Constraints:
+    - Total output max ~250 words.
+    - Avoid repeating the same metric across sections.
+    - Do NOT invent data; only use what exists.
+
+    Return only the formatted markdown.`;
     } else if (detailLevel === "comprehensive") {
-      promptInstructions = `Based on the above productivity data, provide an IN-DEPTH, COMPREHENSIVE analysis covering:
+      promptInstructions = `You are an executive productivity coach. Produce a structured, deeply analytical report.
+    MANDATORY SECTION ORDER (markdown level 3 headings only):
+    ### Executive Summary
+    ### Productivity Patterns
+    ### Strengths
+    ### Areas for Improvement
+    ### Skill Development
+    ### Time Management
+    ### Discrepancies & Data Quality
+    ### 30-60-90 Day Roadmap
+    ### Next 7-Day Focus
 
-1. **Productivity Patterns**: Detailed analysis of work habits, schedule completion rates, time management, consistency, and behavioral trends
-2. **Strengths**: What they're doing well, including specific examples and data points
-3. **Areas for Improvement**: Detailed breakdown of weaknesses with specific examples
-4. **Skill Development**: Deep analysis of skill progress, learning patterns, and strategic recommendations
-5. **Time Management**: Comprehensive insights on working hours, schedule effectiveness, and optimization opportunities
-6. **Actionable Recommendations**: 5-7 specific, detailed, actionable recommendations with implementation steps
+    Formatting Rules:
+    - Each section uses bullets: * **Label:** content (except Roadmap and Next 7-Day Focus which may use numbered steps 1., 2., 3.).
+    - Executive Summary: 5-7 bullets combining high-impact metrics & one critical risk, no explanations longer than one sentence.
+    - Roadmap: Group into 30 Days, 60 Days, 90 Days with numbered items.
+    - Next 7-Day Focus: Provide exactly 5 items prioritized (1.=highest). Include one quick win and one data cleanup task.
+    - Discrepancies section must list any warnings or data integrity issues from the context; if none, state * **Integrity:** No major inconsistencies detected.
 
-Provide extensive, personalized analysis with specific data references and examples.`;
+    Analytical Requirements:
+    - Cite concrete data (dates, percentages, counts, names).
+    - Avoid generic advice; tie every improvement to a referenced data point.
+    - Merge related issues; avoid redundancy.
+    - Do NOT invent new metrics.
+
+    Return ONLY the markdown, no commentary.`;
     } else {
-      promptInstructions = `Based on the above productivity data and the DATA SUMMARY insights, provide a comprehensive analysis with the following:
+      promptInstructions = `Produce a structured productivity analysis.
+    SECTION ORDER (markdown level 3 headings):
+    ### Executive Summary
+    ### Productivity Patterns
+    ### Strengths
+    ### Areas for Improvement
+    ### Skill Development
+    ### Time Management
+    ### Action Plan
 
-1. **Productivity Patterns**: Identify patterns in their work habits, schedule completion rates, and time management. Reference specific data points and trends from the summary.
+    Formatting:
+    - Use ONLY bullets in form * **Label:** content (except Action Plan which can use numbered steps 1., 2., 3.).
+    - Executive Summary: 4-6 bullets mixing achievement + risk + momentum.
+    - Action Plan: 3-5 prioritized steps; each includes a measurable target (e.g., "raise stalled skill to >20%", "mark 2 completed skills").
 
-2. **Strengths**: What are they doing well? Highlight specific achievements, consistent activities, and positive trends with actual data.
+    Rules:
+    - Every improvement bullet must cite a concrete data point (date, %, count, name) from context.
+    - No invented data or extra headings.
+    - Keep total length ~500-650 words.
 
-3. **Areas for Improvement**: Where can they improve? Reference specific issues from the data quality checks, declining trends, or underperforming areas.
-
-4. **Skill Development**: Analyze their skill progress and provide recommendations. Address any stalled skills, skills needing status updates, and prioritization issues.
-
-5. **Time Management**: Insights on their working hours and schedule effectiveness. Address any discrepancies between different tracking methods.
-
-6. **Actionable Recommendations**: 3-5 specific, actionable recommendations to improve productivity. Each should be data-driven and reference specific records.
-
-IMPORTANT: Use actual data points, dates, percentages, and specific activity/skill names from their records. Make insights concrete and actionable, not generic.
-
-Provide a detailed, personalized analysis in a clear, structured format.`;
+    Return ONLY markdown.`;
     }
 
     const prompt = `${context}
