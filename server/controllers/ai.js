@@ -1,10 +1,5 @@
 const aiService = require("../services/aiService");
 
-
-
-
-
-
 exports.getInsights = async (req, res) => {
   try {
     const { detailLevel = "detailed" } = req.body;
@@ -12,22 +7,17 @@ exports.getInsights = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: insights
+      data: insights,
     });
   } catch (error) {
     console.error("Error in getInsights:", error);
     res.status(500).json({
       success: false,
       message: "Failed to generate insights",
-      error: error.message
+      error: error.message,
     });
   }
 };
-
-
-
-
-
 
 exports.getRecommendations = async (req, res) => {
   try {
@@ -39,22 +29,17 @@ exports.getRecommendations = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: recommendations
+      data: recommendations,
     });
   } catch (error) {
     console.error("Error in getRecommendations:", error);
     res.status(500).json({
       success: false,
       message: "Failed to generate recommendations",
-      error: error.message
+      error: error.message,
     });
   }
 };
-
-
-
-
-
 
 exports.queryData = async (req, res) => {
   try {
@@ -63,7 +48,7 @@ exports.queryData = async (req, res) => {
     if (!question) {
       return res.status(400).json({
         success: false,
-        message: "Question is required"
+        message: "Question is required",
       });
     }
 
@@ -71,22 +56,25 @@ exports.queryData = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: result
+      data: result,
     });
   } catch (error) {
     console.error("Error in queryData:", error);
+    if (error.status === 429 || error.name === "QuotaExceededError") {
+      return res.status(429).json({
+        success: false,
+        code: "AI_QUOTA_EXCEEDED",
+        message: error.message,
+        retryAfter: error.retryAfter || null,
+      });
+    }
     res.status(500).json({
       success: false,
       message: "Failed to process query",
-      error: error.message
+      error: error.message,
     });
   }
 };
-
-
-
-
-
 
 exports.getScheduleSuggestions = async (req, res) => {
   try {
@@ -96,22 +84,17 @@ exports.getScheduleSuggestions = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: suggestions
+      data: suggestions,
     });
   } catch (error) {
     console.error("Error in getScheduleSuggestions:", error);
     res.status(500).json({
       success: false,
       message: "Failed to generate schedule suggestions",
-      error: error.message
+      error: error.message,
     });
   }
 };
-
-
-
-
-
 
 exports.analyzeSkills = async (req, res) => {
   try {
@@ -119,22 +102,17 @@ exports.analyzeSkills = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: analysis
+      data: analysis,
     });
   } catch (error) {
     console.error("Error in analyzeSkills:", error);
     res.status(500).json({
       success: false,
       message: "Failed to analyze skills",
-      error: error.message
+      error: error.message,
     });
   }
 };
-
-
-
-
-
 
 exports.getWeeklyReport = async (req, res) => {
   try {
@@ -143,7 +121,7 @@ exports.getWeeklyReport = async (req, res) => {
     if (!startDate || !endDate) {
       return res.status(400).json({
         success: false,
-        message: "Start date and end date are required"
+        message: "Start date and end date are required",
       });
     }
 
@@ -155,22 +133,17 @@ exports.getWeeklyReport = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: report
+      data: report,
     });
   } catch (error) {
     console.error("Error in getWeeklyReport:", error);
     res.status(500).json({
       success: false,
       message: "Failed to generate weekly report",
-      error: error.message
+      error: error.message,
     });
   }
 };
-
-
-
-
-
 
 exports.chat = async (req, res) => {
   try {
@@ -179,13 +152,12 @@ exports.chat = async (req, res) => {
     if (!message) {
       return res.status(400).json({
         success: false,
-        message: "Message is required"
+        message: "Message is required",
       });
     }
 
     console.log("Chat controller: Processing message:", message);
     console.log("Chat controller: User ID:", req.user.id);
-
 
     const result = await aiService.queryUserData(req.user.id, message);
 
@@ -195,16 +167,24 @@ exports.chat = async (req, res) => {
       success: true,
       data: {
         userMessage: message,
-        aiResponse: result.answer
-      }
+        aiResponse: result.answer,
+      },
     });
   } catch (error) {
     console.error("Error in chat:", error);
     console.error("Error stack:", error.stack);
+    if (error.status === 429 || error.name === "QuotaExceededError") {
+      return res.status(429).json({
+        success: false,
+        code: "AI_QUOTA_EXCEEDED",
+        message: error.message,
+        retryAfter: error.retryAfter || null,
+      });
+    }
     res.status(500).json({
       success: false,
       message: "Failed to process chat message",
-      error: error.message
+      error: error.message,
     });
   }
 };
