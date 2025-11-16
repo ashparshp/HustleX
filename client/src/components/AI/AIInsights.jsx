@@ -40,68 +40,97 @@ const AIInsights = ({ insights, isLoading }) => {
 
   }
 
-  const toggleSection = (index) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
-  };
-
   const parseInsights = (insightsText) => {
+    if (!insightsText || typeof insightsText !== "string") return [];
+
     const sections = [];
     const lines = insightsText.split("\n");
     let currentSection = null;
     let currentSubsection = null;
 
+    const startNewSection = (rawTitle) => {
+      const title = rawTitle.replace(/\*\*/g, "").trim();
+      currentSection = { title, items: [], type: "main" };
+      sections.push(currentSection);
+      currentSubsection = null;
+    };
+
     lines.forEach((line) => {
       const trimmedLine = line.trim();
+      if (!trimmedLine) return;
 
+      // Normalize bullet character variants
+      const normalized = trimmedLine.replace(/^•\s*/, "* ");
 
-      if (trimmedLine.match(/^#{1,3}\s+(.+)/)) {
-        const title = trimmedLine.
-        replace(/^#{1,3}\s+/, "").
-        replace(/\*\*/g, "");
-        currentSection = { title, items: [], type: "main" };
-        sections.push(currentSection);
-        currentSubsection = null;
-      } else if (trimmedLine.match(/^\d+\.\s+\*\*(.+?)\*\*/)) {
-        const match = trimmedLine.match(/^\d+\.\s+\*\*(.+?)\*\*/);
-        const title = match[1];
-        currentSection = { title, items: [], type: "main" };
-        sections.push(currentSection);
-        currentSubsection = null;
-      } else
+      // Headings: support 1-4 #'s and optional leading enumerations (e.g., #### 1. Productivity Patterns)
+      const headingMatch = normalized.match(/^#{1,4}\s+(?:\d+\.\s+)?(.+)/);
+      if (headingMatch) {
+        startNewSection(headingMatch[1]);
+        return;
+      }
 
-      if (trimmedLine.match(/^\*\s+\*\*(.+?)\*\*:?\s*(.*)/)) {
-        const match = trimmedLine.match(/^\*\s+\*\*(.+?)\*\*:?\s*(.*)/);
-        const bulletTitle = match[1];
-        const bulletContent = match[2];
+      // Numbered bold heading fallback (e.g., 1. **Strengths**)
+      const numberedBold = normalized.match(/^\d+\.\s+\*\*(.+?)\*\*/);
+      if (numberedBold) {
+        startNewSection(numberedBold[1]);
+        return;
+      }
+
+      // Bullet with bold title pattern: * **Title:** content OR * **Title**: content
+      const bulletWithTitle = normalized.match(/^\*\s+\*\*(.+?)\*\*:?\s*(.*)$/);
+      if (bulletWithTitle) {
+        const bulletTitle = bulletWithTitle[1].trim();
+        const bulletContent = bulletWithTitle[2].trim();
         currentSubsection = {
           title: bulletTitle,
-          content: [bulletContent],
+          content: bulletContent ? [bulletContent] : [],
           type: "bullet"
         };
-        if (currentSection) {
-          currentSection.items.push(currentSubsection);
-        }
-      } else
+        if (currentSection) currentSection.items.push(currentSubsection);
+        return;
+      }
 
-      if (trimmedLine.match(/^\d+\.\s+(.+)/)) {
-        const content = trimmedLine.
-        replace(/^\d+\.\s+/, "").
-        replace(/\*\*/g, "");
+      // Generic bullet line (capture as text under current section or subsection)
+      const genericBullet = normalized.match(/^\*\s+(.*)$/);
+      if (genericBullet) {
+        const content = genericBullet[1].replace(/\*\*/g, "").trim();
         if (currentSubsection) {
           currentSubsection.content.push(content);
         } else if (currentSection) {
           currentSection.items.push({ type: "text", content });
         }
-      } else
+        return;
+      }
 
-      if (trimmedLine.length > 0 && trimmedLine !== "---") {
-        const content = trimmedLine.replace(/\*\*/g, "");
+      // Numbered line content (inside subsection or section)
+      const numberedLine = normalized.match(/^\d+\.\s+(.+)/);
+      if (numberedLine) {
+        const content = numberedLine[1].replace(/\*\*/g, "").trim();
         if (currentSubsection) {
           currentSubsection.content.push(content);
         } else if (currentSection) {
+          currentSection.items.push({ type: "text", content });
+        }
+        return;
+      }
+
+      // Fallback: plain text line
+      if (trimmedLine !== "---") {
+        const content = normalized.replace(/\*\*/g, "").trim();
+        if (currentSubsection) {
+          currentSubsection.content.push(content);
+        } else if (currentSection) {
+          currentSection.items.push({ type: "text", content });
+        } else {
+          // Create an implicit section if none exists yet
+          startNewSection("Summary");
+          currentSection.items.push({ type: "text", content });
+        }
+      }
+    });
+
+    return sections.filter((s) => s.items.length > 0);
+  };
           currentSection.items.push({ type: "text", content });
         }
       }
