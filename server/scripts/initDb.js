@@ -2,43 +2,38 @@ const mongoose = require("mongoose");
 const Skill = require("../models/Skills");
 
 const defaultSkills = [
-{
-  category: "MERN Stack",
-  name: "React",
-  status: "in-progress"
-},
-{
-  category: "MERN Stack",
-  name: "Node.js",
-  status: "completed"
-},
-{
-  category: "Java & Ecosystem",
-  name: "Spring Boot",
-  status: "upcoming"
-},
-{
-  category: "DevOps",
-  name: "Docker",
-  status: "in-progress"
-}];
-
+  {
+    category: "MERN Stack",
+    name: "React",
+    status: "in-progress",
+  },
+  {
+    category: "MERN Stack",
+    name: "Node.js",
+    status: "completed",
+  },
+  {
+    category: "Java & Ecosystem",
+    name: "Spring Boot",
+    status: "upcoming",
+  },
+  {
+    category: "DevOps",
+    name: "Docker",
+    status: "in-progress",
+  },
+];
 
 async function initDb() {
   try {
-    await mongoose.connect(
-      "MONGODB_URI",
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-      }
-    );
+    await mongoose.connect("MONGODB_URI", {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log("Connected to MongoDB");
-
 
     await Skill.deleteMany({});
     console.log("Cleared existing skills");
-
 
     await Skill.insertMany(defaultSkills);
     console.log("Inserted default skills");

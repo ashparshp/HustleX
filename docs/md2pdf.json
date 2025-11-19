@@ -1,0 +1,7 @@
+{
+  "pdf_options": {
+    "format": "A4",
+    "margin": "20mm",
+    "printBackground": true
+  }
+}

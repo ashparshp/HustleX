@@ -4,22 +4,22 @@ const skillSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
+      ref: "User",
+      required: true,
     },
     category: {
       type: String,
-      required: true
+      required: true,
     },
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     status: {
       type: String,
       enum: ["upcoming", "in-progress", "completed"],
-      default: "upcoming"
+      default: "upcoming",
     },
     startDate: Date,
     completionDate: Date,
@@ -27,36 +27,43 @@ const skillSchema = new mongoose.Schema(
       type: Number,
       default: 0,
       min: 0,
-      max: 100
+      max: 100,
     },
     description: {
       type: String,
-      trim: true
+      trim: true,
     },
     resources: [
-    {
-      title: String,
-      url: String,
-      type: {
-        type: String,
-        enum: ["course", "documentation", "tutorial", "video", "book", "other"],
-        default: "other"
-      }
-    }],
+      {
+        title: String,
+        url: String,
+        type: {
+          type: String,
+          enum: [
+            "course",
+            "documentation",
+            "tutorial",
+            "video",
+            "book",
+            "other",
+          ],
+          default: "other",
+        },
+      },
+    ],
 
     priority: {
       type: String,
       enum: ["high", "medium", "low"],
-      default: "medium"
+      default: "medium",
     },
     orderIndex: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   { timestamps: true }
 );
-
 
 skillSchema.index({ user: 1, name: 1, category: 1 }, { unique: true });
 

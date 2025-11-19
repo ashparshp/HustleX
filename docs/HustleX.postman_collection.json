@@ -1,0 +1,323 @@
+{
+  "info": {
+    "name": "HustleX API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "cd0c0da9-8c7c-45a1-b1d0-hustlex"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [{ "key": "baseUrl", "value": "{{baseUrl}}" }],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /api/health",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/health" }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /api/auth/register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"phoneNumber\": \"\",\n  \"password\": \"secret123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"secret123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /api/auth/me",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/auth/me" }
+        },
+        {
+          "name": "GET /api/auth/logout",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/auth/logout" }
+        },
+        {
+          "name": "PUT /api/auth/update-details",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/update-details",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated User\",\n  \"phoneNumber\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT /api/auth/update-password",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/update-password",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"secret123\",\n  \"newPassword\": \"secret456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/forgot-password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/forgot-password",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "GET /api/categories?type=working-hours",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/categories?type=working-hours"
+          }
+        },
+        {
+          "name": "POST /api/categories",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/categories",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Coding\",\n  \"type\": \"working-hours\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /api/categories/defaults/:type",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/categories/defaults/working-hours"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Working Hours",
+      "item": [
+        {
+          "name": "GET /api/working-hours",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/working-hours?startDate=2025-11-01&endDate=2025-11-17"
+          }
+        },
+        {
+          "name": "POST /api/working-hours",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/working-hours",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2025-11-17\",\n  \"targetHours\": 6,\n  \"achievedHours\": 5,\n  \"category\": \"Coding\",\n  \"mood\": \"Productive\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Skills",
+      "item": [
+        {
+          "name": "GET /api/skills",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/skills" }
+        },
+        {
+          "name": "POST /api/skills",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/skills",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"MERN Fundamentals\",\n  \"category\": \"MERN Stack\",\n  \"status\": \"in-progress\",\n  \"progress\": 10\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /api/skills/categories",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/skills/categories"
+          }
+        },
+        {
+          "name": "GET /api/skills/stats",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/skills/stats" }
+        },
+        {
+          "name": "POST /api/skills/reorder",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/skills/reorder",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skills\": [ { \"id\": \"<skillId>\", \"orderIndex\": 0 } ]\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Schedule",
+      "item": [
+        {
+          "name": "GET /api/schedules",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/schedules" }
+        },
+        {
+          "name": "POST /api/schedules",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/schedules",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2025-11-18\",\n  \"items\": []\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /api/schedules/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/schedules/{{scheduleId}}"
+          }
+        },
+        {
+          "name": "POST /api/schedules/:id/items",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/schedules/{{scheduleId}}/items",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"DSA Practice\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"12:00\",\n  \"category\": \"Development\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Timetable",
+      "item": [
+        {
+          "name": "GET /api/timetables",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/timetables" }
+        },
+        {
+          "name": "POST /api/timetables",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/timetables",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Default Timetable\",\n  \"defaultActivities\": [ { \"name\": \"DS & Algo\", \"time\": \"18:00-00:00\", \"category\": \"Core\" } ]\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /api/timetables/:id/current-week",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/timetables/{{timetableId}}/current-week"
+          }
+        },
+        {
+          "name": "GET /api/timetables/:id/stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/timetables/{{timetableId}}/stats"
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI",
+      "item": [
+        {
+          "name": "POST /api/ai/insights",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/ai/insights",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"detailLevel\": \"comprehensive\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /api/ai/recommendations",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/ai/recommendations",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"focusArea\": \"skills\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /api/ai/query",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/ai/query",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What changed in the last 2 weeks?\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /api/ai/weekly-report",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/ai/weekly-report",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"2025-11-10\",\n  \"endDate\": \"2025-11-17\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
