@@ -7,7 +7,7 @@ const {
   deleteSkill,
   getSkillCategories,
   getSkillStats,
-  reorderSkills
+  reorderSkills,
 } = require("../controllers/skills");
 const { protect } = require("../middleware/auth");
 

@@ -29,8 +29,8 @@ exports.getTimetables = async (req, res) => {
         createdAt: timetable.createdAt,
         updatedAt: timetable.updatedAt,
         activitiesCount: timetable.defaultActivities.length,
-        completionRate: timetable.currentWeek.overallCompletionRate
-      }))
+        completionRate: timetable.currentWeek.overallCompletionRate,
+      })),
     });
   } catch (error) {
     handleError(res, error, "Error getting timetables");
@@ -46,19 +46,19 @@ exports.createTimetable = async (req, res) => {
     if (!name) {
       return res.status(400).json({
         success: false,
-        message: "Name is required"
+        message: "Name is required",
       });
     }
 
     const existingTimetable = await Timetable.findOne({
       user: req.user.id,
-      name: name.trim()
+      name: name.trim(),
     });
 
     if (existingTimetable) {
       return res.status(400).json({
         success: false,
-        message: "A timetable with this name already exists"
+        message: "A timetable with this name already exists",
       });
     }
 
@@ -69,7 +69,7 @@ exports.createTimetable = async (req, res) => {
       name: name.trim(),
       description,
       defaultActivities: activities,
-      isActive: req.body.isActive !== undefined ? req.body.isActive : true
+      isActive: req.body.isActive !== undefined ? req.body.isActive : true,
     });
 
     await timetable.startNewWeek();
@@ -86,12 +86,12 @@ exports.createTimetable = async (req, res) => {
     console.log("Created new timetable:", {
       id: timetable._id,
       name: timetable.name,
-      isActive: timetable.isActive
+      isActive: timetable.isActive,
     });
 
     res.status(201).json({
       success: true,
-      data: timetable
+      data: timetable,
     });
   } catch (error) {
     console.error("Error creating timetable:", error);
@@ -105,19 +105,19 @@ exports.getTimetable = async (req, res) => {
 
     const timetable = await Timetable.findOne({
       _id: req.params.id,
-      user: req.user.id
+      user: req.user.id,
     });
 
     if (!timetable) {
       return res.status(404).json({
         success: false,
-        message: "Timetable not found or not authorized"
+        message: "Timetable not found or not authorized",
       });
     }
 
     res.json({
       success: true,
-      data: timetable
+      data: timetable,
     });
   } catch (error) {
     handleError(res, error, "Error getting timetable");
@@ -132,13 +132,13 @@ exports.updateTimetable = async (req, res) => {
 
     const timetable = await Timetable.findOne({
       _id: req.params.id,
-      user: req.user.id
+      user: req.user.id,
     });
 
     if (!timetable) {
       return res.status(404).json({
         success: false,
-        message: "Timetable not found or not authorized"
+        message: "Timetable not found or not authorized",
       });
     }
 
@@ -146,13 +146,13 @@ exports.updateTimetable = async (req, res) => {
       const existingTimetable = await Timetable.findOne({
         user: req.user.id,
         name: name.trim(),
-        _id: { $ne: req.params.id }
+        _id: { $ne: req.params.id },
       });
 
       if (existingTimetable) {
         return res.status(400).json({
           success: false,
-          message: "A timetable with this name already exists"
+          message: "A timetable with this name already exists",
         });
       }
 
@@ -178,7 +178,7 @@ exports.updateTimetable = async (req, res) => {
 
     res.json({
       success: true,
-      data: timetable
+      data: timetable,
     });
   } catch (error) {
     handleError(res, error, "Error updating timetable");
@@ -191,13 +191,13 @@ exports.deleteTimetable = async (req, res) => {
 
     const timetable = await Timetable.findOne({
       _id: req.params.id,
-      user: req.user.id
+      user: req.user.id,
     });
 
     if (!timetable) {
       return res.status(404).json({
         success: false,
-        message: "Timetable not found or not authorized"
+        message: "Timetable not found or not authorized",
       });
     }
 
@@ -206,14 +206,14 @@ exports.deleteTimetable = async (req, res) => {
     if (count <= 1) {
       return res.status(400).json({
         success: false,
-        message: "Cannot delete the only timetable. Create another one first."
+        message: "Cannot delete the only timetable. Create another one first.",
       });
     }
 
     if (timetable.isActive) {
       const anotherTimetable = await Timetable.findOne({
         user: req.user.id,
-        _id: { $ne: req.params.id }
+        _id: { $ne: req.params.id },
       });
 
       if (anotherTimetable) {
@@ -226,7 +226,7 @@ exports.deleteTimetable = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Timetable deleted successfully"
+      message: "Timetable deleted successfully",
     });
   } catch (error) {
     handleError(res, error, "Error deleting timetable");
@@ -242,19 +242,19 @@ exports.getCurrentWeek = async (req, res) => {
     if (req.params.id) {
       timetable = await Timetable.findOne({
         _id: req.params.id,
-        user: req.user.id
+        user: req.user.id,
       });
 
       if (!timetable) {
         return res.status(404).json({
           success: false,
-          message: "Timetable not found or not authorized"
+          message: "Timetable not found or not authorized",
         });
       }
     } else {
       timetable = await Timetable.findOne({
         user: req.user.id,
-        isActive: true
+        isActive: true,
       });
 
       if (!timetable) {
@@ -265,12 +265,20 @@ exports.getCurrentWeek = async (req, res) => {
             user: req.user.id,
             name: "Default Timetable",
             defaultActivities: [
-            { name: "DS & Algo", time: "18:00-00:00", category: "Core" },
-            { name: "MERN Stack", time: "00:00-05:00", category: "Frontend" },
-            { name: "Go Backend", time: "10:00-12:00", category: "Backend" },
-            { name: "Java & Spring", time: "12:00-14:00", category: "Backend" },
-            { name: "Mobile Development", time: "14:00-17:00", category: "Mobile" }]
-
+              { name: "DS & Algo", time: "18:00-00:00", category: "Core" },
+              { name: "MERN Stack", time: "00:00-05:00", category: "Frontend" },
+              { name: "Go Backend", time: "10:00-12:00", category: "Backend" },
+              {
+                name: "Java & Spring",
+                time: "12:00-14:00",
+                category: "Backend",
+              },
+              {
+                name: "Mobile Development",
+                time: "14:00-17:00",
+                category: "Mobile",
+              },
+            ],
           });
         }
 
@@ -281,8 +289,8 @@ exports.getCurrentWeek = async (req, res) => {
     const now = new Date();
 
     const needsNewWeek =
-    !timetable.currentWeek ||
-    now > new Date(timetable.currentWeek.weekEndDate);
+      !timetable.currentWeek ||
+      now > new Date(timetable.currentWeek.weekEndDate);
 
     if (needsNewWeek) {
       console.log("Week has ended or no current week, starting new week");
@@ -297,7 +305,7 @@ exports.getCurrentWeek = async (req, res) => {
       success: true,
       timetableId: timetable._id,
       timetableName: timetable.name,
-      data: timetable.currentWeek
+      data: timetable.currentWeek,
     });
   } catch (error) {
     handleError(res, error, "Error getting current week");
@@ -312,13 +320,13 @@ exports.getHistory = async (req, res) => {
 
     const timetable = await Timetable.findOne({
       _id: req.params.id,
-      user: req.user.id
+      user: req.user.id,
     });
 
     if (!timetable) {
       return res.status(404).json({
         success: false,
-        message: "Timetable not found or not authorized"
+        message: "Timetable not found or not authorized",
       });
     }
 
@@ -328,7 +336,7 @@ exports.getHistory = async (req, res) => {
         history: [],
         currentPage: 1,
         totalPages: 0,
-        totalWeeks: 0
+        totalWeeks: 0,
       });
     }
 
@@ -341,7 +349,7 @@ exports.getHistory = async (req, res) => {
       history: paginatedHistory,
       currentPage: parseInt(page),
       totalPages: Math.ceil(timetable.history.length / parseInt(limit)),
-      totalWeeks: timetable.history.length
+      totalWeeks: timetable.history.length,
     });
   } catch (error) {
     handleError(res, error, "Error getting history");
@@ -357,19 +365,19 @@ exports.toggleActivityStatus = async (req, res) => {
     if (dayIndex < 0 || dayIndex > 6) {
       return res.status(400).json({
         success: false,
-        message: "Day index must be between 0 and 6"
+        message: "Day index must be between 0 and 6",
       });
     }
 
     const timetable = await Timetable.findOne({
       _id: req.params.id,
-      user: req.user.id
+      user: req.user.id,
     });
 
     if (!timetable) {
       return res.status(404).json({
         success: false,
-        message: "Timetable not found or not authorized"
+        message: "Timetable not found or not authorized",
       });
     }
 
@@ -378,7 +386,7 @@ exports.toggleActivityStatus = async (req, res) => {
     if (!activity) {
       return res.status(404).json({
         success: false,
-        message: "Activity not found"
+        message: "Activity not found",
       });
     }
 
@@ -387,7 +395,7 @@ exports.toggleActivityStatus = async (req, res) => {
 
     res.json({
       success: true,
-      data: timetable.currentWeek
+      data: timetable.currentWeek,
     });
   } catch (error) {
     handleError(res, error, "Error toggling activity status");
@@ -403,7 +411,7 @@ exports.updateDefaultActivities = async (req, res) => {
     if (!Array.isArray(req.body.activities)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid input: activities must be an array"
+        message: "Invalid input: activities must be an array",
       });
     }
 
@@ -411,20 +419,20 @@ exports.updateDefaultActivities = async (req, res) => {
       if (!activity.name || !activity.time || !activity.category) {
         return res.status(400).json({
           success: false,
-          message: "Each activity must have name, time, and category"
+          message: "Each activity must have name, time, and category",
         });
       }
     }
 
     const timetable = await Timetable.findOne({
       _id: req.params.id,
-      user: req.user.id
+      user: req.user.id,
     });
 
     if (!timetable) {
       return res.status(404).json({
         success: false,
-        message: "Timetable not found or not authorized"
+        message: "Timetable not found or not authorized",
       });
     }
 
@@ -437,19 +445,19 @@ exports.updateDefaultActivities = async (req, res) => {
         (newActivity) => {
           const matchingPreviousActivity = currentActivities.find(
             (prevActivity) =>
-            prevActivity.activity.name === newActivity.name &&
-            prevActivity.activity.time === newActivity.time &&
-            prevActivity.activity.category === newActivity.category
+              prevActivity.activity.name === newActivity.name &&
+              prevActivity.activity.time === newActivity.time &&
+              prevActivity.activity.category === newActivity.category
           );
 
           return {
             activity: newActivity,
-            dailyStatus: matchingPreviousActivity ?
-            matchingPreviousActivity.dailyStatus :
-            [false, false, false, false, false, false, false],
-            completionRate: matchingPreviousActivity ?
-            matchingPreviousActivity.completionRate :
-            0
+            dailyStatus: matchingPreviousActivity
+              ? matchingPreviousActivity.dailyStatus
+              : [false, false, false, false, false, false, false],
+            completionRate: matchingPreviousActivity
+              ? matchingPreviousActivity.completionRate
+              : 0,
           };
         }
       );
@@ -461,15 +469,15 @@ exports.updateDefaultActivities = async (req, res) => {
       success: true,
       data: {
         defaultActivities: timetable.defaultActivities,
-        currentWeek: timetable.currentWeek
-      }
+        currentWeek: timetable.currentWeek,
+      },
     });
   } catch (error) {
     console.error("Error updating activities:", error);
     res.status(500).json({
       success: false,
       message: error.message || "Failed to update activities",
-      error: error.toString()
+      error: error.toString(),
     });
   }
 };
@@ -480,27 +488,27 @@ exports.getStats = async (req, res) => {
 
     const timetable = await Timetable.findOne({
       _id: req.params.id,
-      user: req.user.id
+      user: req.user.id,
     });
 
     if (!timetable) {
       return res.status(404).json({
         success: false,
-        message: "Timetable not found or not authorized"
+        message: "Timetable not found or not authorized",
       });
     }
 
     const stats = {
       currentWeek: {
         completionRate: timetable.currentWeek.overallCompletionRate,
-        byCategory: {}
+        byCategory: {},
       },
       overall: {
         totalWeeks: timetable.history.length + 1,
         averageCompletionRate: 0,
         bestWeek: null,
-        worstWeek: null
-      }
+        worstWeek: null,
+      },
     };
 
     timetable.currentWeek.activities.forEach((activity) => {
@@ -509,27 +517,27 @@ exports.getStats = async (req, res) => {
       if (!stats.currentWeek.byCategory[category]) {
         stats.currentWeek.byCategory[category] = {
           total: 0,
-          completed: 0
+          completed: 0,
         };
       }
 
       stats.currentWeek.byCategory[category].total += 7;
       stats.currentWeek.byCategory[category].completed +=
-      activity.dailyStatus.filter((status) => status).length;
+        activity.dailyStatus.filter((status) => status).length;
     });
 
     Object.keys(stats.currentWeek.byCategory).forEach((category) => {
       const categoryStats = stats.currentWeek.byCategory[category];
       categoryStats.completionRate =
-      categoryStats.completed / categoryStats.total * 100;
+        (categoryStats.completed / categoryStats.total) * 100;
     });
 
     const allWeeks = [...timetable.history, timetable.currentWeek];
 
     if (allWeeks.length > 0) {
       stats.overall.averageCompletionRate =
-      allWeeks.reduce((sum, week) => sum + week.overallCompletionRate, 0) /
-      allWeeks.length;
+        allWeeks.reduce((sum, week) => sum + week.overallCompletionRate, 0) /
+        allWeeks.length;
 
       const sortedWeeks = [...allWeeks].sort(
         (a, b) => b.overallCompletionRate - a.overallCompletionRate
@@ -537,19 +545,19 @@ exports.getStats = async (req, res) => {
 
       stats.overall.bestWeek = {
         weekStartDate: sortedWeeks[0].weekStartDate,
-        completionRate: sortedWeeks[0].overallCompletionRate
+        completionRate: sortedWeeks[0].overallCompletionRate,
       };
 
       stats.overall.worstWeek = {
         weekStartDate: sortedWeeks[sortedWeeks.length - 1].weekStartDate,
         completionRate:
-        sortedWeeks[sortedWeeks.length - 1].overallCompletionRate
+          sortedWeeks[sortedWeeks.length - 1].overallCompletionRate,
       };
     }
 
     res.json({
       success: true,
-      data: stats
+      data: stats,
     });
   } catch (error) {
     handleError(res, error, "Error getting stats");
@@ -562,13 +570,13 @@ exports.startNewWeek = async (req, res) => {
 
     const timetable = await Timetable.findOne({
       _id: req.params.id,
-      user: req.user.id
+      user: req.user.id,
     });
 
     if (!timetable) {
       return res.status(404).json({
         success: false,
-        message: "Timetable not found or not authorized"
+        message: "Timetable not found or not authorized",
       });
     }
 
@@ -577,7 +585,7 @@ exports.startNewWeek = async (req, res) => {
     res.json({
       success: true,
       message: "New week started successfully",
-      data: timetable.currentWeek
+      data: timetable.currentWeek,
     });
   } catch (error) {
     handleError(res, error, "Error starting new week");
@@ -596,9 +604,9 @@ exports.getCategories = async (req, res) => {
 
     timetables.forEach((timetable) => {
       if (
-      timetable.defaultActivities &&
-      Array.isArray(timetable.defaultActivities))
-      {
+        timetable.defaultActivities &&
+        Array.isArray(timetable.defaultActivities)
+      ) {
         timetable.defaultActivities.forEach((activity) => {
           if (activity.category) {
             categoriesSet.add(activity.category);
@@ -609,7 +617,7 @@ exports.getCategories = async (req, res) => {
 
     const userCategories = await Category.find({
       user: req.user.id,
-      type: "timetable"
+      type: "timetable",
     });
 
     userCategories.forEach((category) => {
@@ -622,13 +630,13 @@ exports.getCategories = async (req, res) => {
 
     res.json({
       success: true,
-      categories
+      categories,
     });
   } catch (error) {
     console.error("Error getting categories:", error);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to get categories"
+      message: error.message || "Failed to get categories",
     });
   }
 };
