@@ -1,9 +1,71 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ExternalLink, Calendar } from "lucide-react";
+import { ExternalLink, Calendar, Copy, Check } from "lucide-react";
 
-const FormattedMessage = ({ content = "" }) => {
+const CodeBlock = ({ inline, className, children, ...props }) => {
+  const [copied, setCopied] = useState(false);
+  const match = /language-(\w+)/.exec(className || "");
+  const language = match ? match[1] : "text";
+  const code = String(children).replace(/\n$/, "");
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (inline) {
+    return (
+      <code
+        className="px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-mono text-xs font-medium border border-gray-200 dark:border-gray-700"
+        {...props}
+      >
+        {children}
+      </code>
+    );
+  }
+
+  return (
+    <div className="relative my-4 rounded-xl overflow-hidden bg-[#1e1e1e] border border-gray-800 shadow-lg group">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-[#252526] border-b border-gray-800">
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50" />
+            <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
+            <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50" />
+          </div>
+          <span className="ml-2 text-xs font-medium text-gray-400 uppercase tracking-wider">
+            {language}
+          </span>
+        </div>
+        <button
+          onClick={handleCopy}
+          className="p-1.5 rounded-md hover:bg-gray-700/50 text-gray-400 hover:text-white transition-colors"
+          title="Copy code"
+        >
+          {copied ? (
+            <Check className="w-3.5 h-3.5 text-green-400" />
+          ) : (
+            <Copy className="w-3.5 h-3.5" />
+          )}
+        </button>
+      </div>
+      <div className="p-4 overflow-x-auto">
+        <pre className="text-gray-300 text-xs font-mono leading-relaxed">
+          <code className={className} {...props}>
+            {children}
+          </code>
+        </pre>
+      </div>
+    </div>
+  );
+};
+
+const FormattedMessage = ({
+  content = "",
+  className = "text-sm leading-relaxed",
+}) => {
   const formatText = (text) => {
     if (typeof text !== "string") return text;
 
@@ -63,14 +125,14 @@ const FormattedMessage = ({ content = "" }) => {
   };
 
   return (
-    <div className="text-sm leading-relaxed">
+    <div className={className}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
           // Headings
           h1: ({ node, ...props }) => (
             <h1
-              className="text-xl font-bold mt-6 mb-3 text-gray-900 dark:text-white first:mt-0"
+              className="text-2xl font-bold mt-8 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white first:mt-0"
               {...props}
             >
               {processChildren(props.children)}
@@ -78,7 +140,7 @@ const FormattedMessage = ({ content = "" }) => {
           ),
           h2: ({ node, ...props }) => (
             <h2
-              className="text-lg font-semibold mt-5 mb-2 text-gray-900 dark:text-white"
+              className="text-xl font-semibold mt-6 mb-3 pb-1 border-b border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white"
               {...props}
             >
               {processChildren(props.children)}
@@ -86,7 +148,7 @@ const FormattedMessage = ({ content = "" }) => {
           ),
           h3: ({ node, ...props }) => (
             <h3
-              className="text-base font-semibold mt-4 mb-2 text-gray-900 dark:text-white"
+              className="text-lg font-semibold mt-5 mb-2 text-gray-900 dark:text-white"
               {...props}
             >
               {processChildren(props.children)}
@@ -96,7 +158,7 @@ const FormattedMessage = ({ content = "" }) => {
           // Paragraphs
           p: ({ node, ...props }) => (
             <p
-              className="mb-3 last:mb-0 text-gray-700 dark:text-gray-300"
+              className="mb-4 last:mb-0 text-gray-700 dark:text-gray-300 leading-7"
               {...props}
             >
               {processChildren(props.children)}
@@ -106,13 +168,13 @@ const FormattedMessage = ({ content = "" }) => {
           // Lists
           ul: ({ node, ...props }) => (
             <ul
-              className="list-disc pl-5 mb-3 space-y-1 text-gray-700 dark:text-gray-300"
+              className="list-disc pl-6 mb-4 space-y-2 text-gray-700 dark:text-gray-300 marker:text-indigo-500"
               {...props}
             />
           ),
           ol: ({ node, ...props }) => (
             <ol
-              className="list-decimal pl-5 mb-3 space-y-1 text-gray-700 dark:text-gray-300"
+              className="list-decimal pl-6 mb-4 space-y-2 text-gray-700 dark:text-gray-300 marker:text-indigo-500 marker:font-medium"
               {...props}
             />
           ),
@@ -125,7 +187,7 @@ const FormattedMessage = ({ content = "" }) => {
           // Blockquotes
           blockquote: ({ node, ...props }) => (
             <blockquote
-              className="border-l-4 border-indigo-500 pl-4 py-1 my-3 bg-gray-50 dark:bg-gray-800/50 rounded-r italic text-gray-600 dark:text-gray-400"
+              className="border-l-4 border-indigo-500 pl-4 py-2 my-4 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-r-lg italic text-gray-700 dark:text-gray-300"
               {...props}
             >
               {processChildren(props.children)}
@@ -133,34 +195,11 @@ const FormattedMessage = ({ content = "" }) => {
           ),
 
           // Code
-          code: ({ node, inline, className, children, ...props }) => {
-            const match = /language-(\w+)/.exec(className || "");
-            return !inline ? (
-              <div className="relative my-4 rounded-lg overflow-hidden bg-gray-900 dark:bg-black border border-gray-800">
-                <div className="flex items-center justify-between px-4 py-2 bg-gray-800/50 border-b border-gray-700">
-                  <span className="text-xs font-medium text-gray-400">
-                    {match ? match[1] : "Code"}
-                  </span>
-                </div>
-                <pre className="p-4 overflow-x-auto text-gray-300 text-xs font-mono">
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                </pre>
-              </div>
-            ) : (
-              <code
-                className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-mono text-xs font-medium"
-                {...props}
-              >
-                {children}
-              </code>
-            );
-          },
+          code: CodeBlock,
 
           // Tables
           table: ({ node, ...props }) => (
-            <div className="overflow-x-auto my-4 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="overflow-x-auto my-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
               <table
                 className="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
                 {...props}
@@ -168,7 +207,7 @@ const FormattedMessage = ({ content = "" }) => {
             </div>
           ),
           thead: ({ node, ...props }) => (
-            <thead className="bg-gray-50 dark:bg-gray-800" {...props} />
+            <thead className="bg-gray-50 dark:bg-gray-800/50" {...props} />
           ),
           tbody: ({ node, ...props }) => (
             <tbody
@@ -176,10 +215,15 @@ const FormattedMessage = ({ content = "" }) => {
               {...props}
             />
           ),
-          tr: ({ node, ...props }) => <tr className="" {...props} />,
+          tr: ({ node, ...props }) => (
+            <tr
+              className="transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-800/50"
+              {...props}
+            />
+          ),
           th: ({ node, ...props }) => (
             <th
-              className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+              className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
               {...props}
             >
               {processChildren(props.children)}
@@ -197,20 +241,20 @@ const FormattedMessage = ({ content = "" }) => {
           // Links
           a: ({ node, ...props }) => (
             <a
-              className="text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1"
+              className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium hover:underline inline-flex items-center gap-0.5 transition-colors"
               target="_blank"
               rel="noopener noreferrer"
               {...props}
             >
               {props.children}
-              <ExternalLink className="w-3 h-3" />
+              <ExternalLink className="w-3 h-3 opacity-70" />
             </a>
           ),
 
           // Horizontal Rule
           hr: ({ node, ...props }) => (
             <hr
-              className="my-6 border-gray-200 dark:border-gray-700"
+              className="my-8 border-gray-200 dark:border-gray-700"
               {...props}
             />
           ),
