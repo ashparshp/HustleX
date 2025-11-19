@@ -497,10 +497,9 @@ const generateInsights = async (userId, detailLevel = "detailed") => {
     ### Action Plan
 
     Rules:
-    - Executive Summary: 3-5 bullets summarizing the most critical metrics (use * **Metric:** value format).
-    - Use only bullets that start with: * **Label:** content
+    - Executive Summary: 3-5 bullets summarizing the most critical metrics. Use bold for metrics (e.g., **Metric:** value).
+    - Use blockquotes (>) for key insights or warnings.
     - Reference concrete data (dates, percentages, activity or skill names) already present in the context.
-    - No additional headings, no numbered lists, no generic fluff.
     - Action Plan: Provide 3 numbered steps (1., 2., 3.) each <= 2 sentences and data-linked.
 
     Content Constraints:
@@ -523,11 +522,12 @@ const generateInsights = async (userId, detailLevel = "detailed") => {
     ### Next 7-Day Focus
 
     Formatting Rules:
-    - Each section uses bullets: * **Label:** content (except Roadmap and Next 7-Day Focus which may use numbered steps 1., 2., 3.).
-    - Executive Summary: 5-7 bullets combining high-impact metrics & one critical risk, no explanations longer than one sentence.
-    - Roadmap: Group into 30 Days, 60 Days, 90 Days with numbered items.
+    - Use Markdown tables for data comparisons where appropriate (e.g., Week vs Week).
+    - Use blockquotes (>) for critical insights or "Aha!" moments.
+    - Executive Summary: 5-7 bullets combining high-impact metrics & one critical risk.
+    - Roadmap: Group into **30 Days**, **60 Days**, **90 Days** with numbered items.
     - Next 7-Day Focus: Provide exactly 5 items prioritized (1.=highest). Include one quick win and one data cleanup task.
-    - Discrepancies section must list any warnings or data integrity issues from the context; if none, state * **Integrity:** No major inconsistencies detected.
+    - Discrepancies section must list any warnings or data integrity issues from the context.
 
     Analytical Requirements:
     - Cite concrete data (dates, percentages, counts, names).
@@ -548,9 +548,10 @@ const generateInsights = async (userId, detailLevel = "detailed") => {
     ### Action Plan
 
     Formatting:
-    - Use ONLY bullets in form * **Label:** content (except Action Plan which can use numbered steps 1., 2., 3.).
+    - Use Markdown tables to summarize key metrics if applicable.
+    - Use blockquotes (>) for important takeaways.
     - Executive Summary: 4-6 bullets mixing achievement + risk + momentum.
-    - Action Plan: 3-5 prioritized steps; each includes a measurable target (e.g., "raise stalled skill to >20%", "mark 2 completed skills").
+    - Action Plan: 3-5 prioritized steps; each includes a measurable target.
 
     Rules:
     - Every improvement bullet must cite a concrete data point (date, %, count, name) from context.
@@ -618,7 +619,7 @@ FORMAT EACH RECOMMENDATION EXACTLY AS FOLLOWS:
 - Why this matters for their goals]
 
 **Expected Impact:**
-[1-2 sentences on the specific benefits, quantified if possible]
+> [1-2 sentences on the specific benefits, quantified if possible]
 
 **How to Implement It:**
 1. [Specific first step with details]
@@ -636,7 +637,7 @@ ${focusArea ? `- Primary: ${focusArea}` : ""}
 - Stalled in-progress skills (<20% progress)
 - Declining completion trends
 
-Make every recommendation specific, data-backed, and immediately actionable.`;
+Make every recommendation specific, data-backed, and immediately actionable. Use Markdown formatting effectively.`;
 
     const result = await genAI.models.generateContent({
       model: "gemini-2.5-flash",
@@ -791,13 +792,13 @@ Based on the above productivity data${
       dateRange ? " for the specified time period" : ""
     }, please answer the user's question accurately and helpfully. 
 
-IMPORTANT:
-- If asked for historical data (last X weeks/months), analyze trends and patterns across the time period
-- Provide specific dates, numbers, and data points from the records
-- If the data is insufficient, explain what information is available and what's missing
-- For timetable questions, look at the activities, completion rates, and time periods
-- For schedule questions, analyze actual entries and completion patterns
-- Be concise but specific with actual data references
+IMPORTANT FORMATTING RULES:
+- Use **Markdown** for all formatting.
+- Use **Bold** for key metrics, dates, and important terms.
+- Use **Lists** (bulleted or numbered) to break down complex information.
+- Use **Tables** if comparing data points (e.g., "Activity | Completion %").
+- Use **Blockquotes** (>) for summaries or key takeaways.
+- Be concise but specific with actual data references.
 
 Answer:`;
 
@@ -867,12 +868,17 @@ Based on the user's past schedules, skills, and working patterns, suggest 3-5 op
 - Work-life balance
 
 For each suggestion, provide:
-1. Schedule title
-2. Recommended time blocks
-3. Priority tasks to include
-4. Rationale for this schedule
+### [Schedule Title]
+**Rationale:** [Why this schedule works]
 
-Format as a clear, actionable list.`;
+| Time Block | Activity | Priority |
+| :--- | :--- | :--- |
+| [Time] | [Task/Activity] | [High/Med/Low] |
+| ... | ... | ... |
+
+**Key Focus:** [Main goal for this schedule]
+
+Format as a clear, actionable list using Markdown tables.`;
 
     const result = await genAI.models.generateContent({
       model: "gemini-2.5-flash",
@@ -900,13 +906,25 @@ const analyzeSkillProgress = async (userId) => {
 
 Analyze the user's skill development progress and provide:
 
-1. **Current Skill Assessment**: Evaluate their current skill levels and progress
-2. **Learning Path**: Suggest a personalized learning path for skill improvement
-3. **Time Allocation**: Recommend how much time to spend on each skill
-4. **Skill Gaps**: Identify missing skills that would complement their current skill set
-5. **Milestone Suggestions**: Propose specific milestones for the next 30, 60, and 90 days
+### 1. Current Skill Assessment
+Evaluate their current skill levels and progress. Use a table:
+| Skill | Status | Progress | Assessment |
+| :--- | :--- | :--- | :--- |
+| ... | ... | ... | ... |
 
-Provide detailed, actionable guidance.`;
+### 2. Learning Path
+Suggest a personalized learning path for skill improvement.
+
+### 3. Time Allocation
+Recommend how much time to spend on each skill.
+
+### 4. Skill Gaps
+Identify missing skills that would complement their current skill set.
+
+### 5. Milestone Suggestions
+Propose specific milestones for the next 30, 60, and 90 days.
+
+Provide detailed, actionable guidance using Markdown formatting.`;
 
     const result = await genAI.models.generateContent({
       model: "gemini-2.5-flash",
@@ -964,14 +982,25 @@ const generateWeeklyReport = async (userId, startDate, endDate) => {
 Generate a comprehensive weekly productivity report for the period ${startDate} to ${endDate}.
 
 Include:
-1. **Week Summary**: Overall productivity assessment
-2. **Key Achievements**: What was accomplished
-3. **Time Analysis**: How time was spent
-4. **Completion Rate**: Schedule and task completion statistics
-5. **Challenges**: Identified obstacles or missed items
-6. **Next Week Planning**: Recommendations for the upcoming week
+### Week Summary
+Overall productivity assessment.
 
-Provide a detailed, motivating report with specific metrics and insights.`;
+### Key Achievements
+What was accomplished. Use bullet points.
+
+### Time Analysis
+How time was spent. Use a table if appropriate.
+
+### Completion Rate
+Schedule and task completion statistics.
+
+### Challenges
+Identified obstacles or missed items.
+
+### Next Week Planning
+Recommendations for the upcoming week.
+
+Provide a detailed, motivating report with specific metrics and insights using Markdown formatting.`;
 
     const result = await genAI.models.generateContent({
       model: "gemini-2.5-flash",
