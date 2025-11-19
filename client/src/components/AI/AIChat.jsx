@@ -125,16 +125,16 @@ const AIChat = ({ onSendMessage, messages = [], isLoading = false }) => {
               )}
 
               <div
-                className={`max-w-[85%] lg:max-w-[75%] rounded-2xl px-5 py-4 shadow-sm ${
+                className={`max-w-[85%] lg:max-w-[75%] rounded-2xl px-6 py-5 shadow-md ${
                   message.role === "user"
                     ? "bg-indigo-600 text-white"
                     : isDark
-                    ? "bg-gray-800/80 border border-gray-700 text-gray-100"
+                    ? "bg-gray-800 border border-gray-700 text-gray-100"
                     : "bg-white border border-gray-100 text-gray-900"
                 }`}
               >
                 {message.role === "user" ? (
-                  <p className="whitespace-pre-wrap text-sm">
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed">
                     {message.content}
                   </p>
                 ) : (
@@ -208,25 +208,25 @@ const AIChat = ({ onSendMessage, messages = [], isLoading = false }) => {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Ask me anything about your productivity..."
-            className={`flex-1 px-4 py-2 border rounded-lg resize-none focus:outline-none focus:ring-2 transition-all ${
+            className={`flex-1 px-5 py-3 border rounded-xl resize-none focus:outline-none focus:ring-2 transition-all ${
               isDark
                 ? "bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500"
-                : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500"
+                : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
             }`}
             rows="1"
             disabled={isLoading}
           />
 
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={!input.trim() || isLoading}
-            className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
+            className={`px-5 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-md ${
               isDark
-                ? "bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/30 hover:border-indigo-400"
-                : "bg-indigo-500 border border-indigo-500 text-white hover:bg-indigo-600"
-            } disabled:opacity-50 disabled:cursor-not-allowed`}
+                ? "bg-indigo-600 text-white hover:bg-indigo-500"
+                : "bg-indigo-600 text-white hover:bg-indigo-700"
+            } disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none`}
           >
             <Send className="w-5 h-5" />
           </motion.button>
