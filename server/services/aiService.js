@@ -790,15 +790,17 @@ User Question: ${question}
 
 Based on the above productivity data${
       dateRange ? " for the specified time period" : ""
-    }, please answer the user's question accurately and helpfully. 
+    }, please answer the user's question accurately and helpfully.
 
 IMPORTANT FORMATTING RULES:
-- Use **Markdown** for all formatting.
-- Use **Bold** for key metrics, dates, and important terms.
-- Use **Lists** (bulleted or numbered) to break down complex information.
-- Use **Tables** if comparing data points (e.g., "Activity | Completion %").
-- Use **Blockquotes** (>) for summaries or key takeaways.
-- Be concise but specific with actual data references.
+1. **Use Markdown Tables** for any data comparisons (e.g., "Date | Activity | Duration", "Skill | Progress | Status").
+2. **Use Bulleted Lists** for breaking down complex explanations.
+3. **Use Bold** for key metrics, dates, and important terms.
+4. **Use Blockquotes (> )** for summaries, key takeaways, or "Aha!" moments.
+5. **Be Concise:** Avoid fluff. Get straight to the data.
+
+If the user asks for a list or summary, ALWAYS use a table or a structured list.
+If the user asks for analysis, provide a brief summary followed by detailed points.
 
 Answer:`;
 
@@ -861,24 +863,25 @@ const generateScheduleSuggestions = async (userId) => {
 
     const prompt = `${context}
 
-Based on the user's past schedules, skills, and working patterns, suggest 3-5 optimized schedule templates for the upcoming week. Consider:
-- Their most productive time blocks
-- Skill development goals
-- Past schedule completion rates
-- Work-life balance
+Based on the user's past schedules, skills, and working patterns, suggest 3 optimized schedule templates for the upcoming week.
 
 For each suggestion, provide:
-### [Schedule Title]
-**Rationale:** [Why this schedule works]
 
-| Time Block | Activity | Priority |
-| :--- | :--- | :--- |
-| [Time] | [Task/Activity] | [High/Med/Low] |
-| ... | ... | ... |
+### [Schedule Name] (e.g., "Deep Work Focus", "Balanced Flow", "Skill Intensive")
+> **Theme:** [One sentence describing the vibe of this day]
 
-**Key Focus:** [Main goal for this schedule]
+**Why this works:** [2 sentences linking to their data, e.g., "You are most productive in the mornings..."]
 
-Format as a clear, actionable list using Markdown tables.`;
+| Time Block | Activity | Focus Area | Energy Required |
+| :--- | :--- | :--- | :--- |
+| [Time] | [Activity] | [Category] | [High/Med/Low] |
+| ... | ... | ... | ... |
+
+**Success Strategy:** [1 specific tip to stick to this schedule]
+
+---
+
+Format clearly using Markdown. Ensure the table columns align perfectly.`;
 
     const result = await genAI.models.generateContent({
       model: "gemini-2.5-flash",
@@ -904,25 +907,28 @@ const analyzeSkillProgress = async (userId) => {
 
     const prompt = `${context}
 
-Analyze the user's skill development progress and provide:
+Analyze the user's skill development progress and provide a structured report:
 
-### 1. Current Skill Assessment
-Evaluate their current skill levels and progress. Use a table:
-| Skill | Status | Progress | Assessment |
-| :--- | :--- | :--- | :--- |
-| ... | ... | ... | ... |
+### 1. Skill Portfolio Status
+| Skill Name | Category | Progress | Status | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| [Name] | [Cat] | [%] | [Status] | [High/Med/Low] |
 
-### 2. Learning Path
-Suggest a personalized learning path for skill improvement.
+### 2. Critical Gaps & Opportunities
+*Identify 3 specific gaps based on their current skills.*
+*   **Gap:** [Description] -> **Recommendation:** [New Skill to Add]
+*   ...
 
-### 3. Time Allocation
-Recommend how much time to spend on each skill.
+### 3. Personalized Learning Path (Next 30 Days)
+*Create a step-by-step plan for their highest priority skills.*
+1.  **Week 1-2:** [Specific Action] for [Skill Name]
+2.  **Week 3-4:** [Specific Action] for [Skill Name]
 
-### 4. Skill Gaps
-Identify missing skills that would complement their current skill set.
+### 4. Time Allocation Strategy
+> Recommendation: Spend **X hours/week** on High Priority skills.
 
-### 5. Milestone Suggestions
-Propose specific milestones for the next 30, 60, and 90 days.
+*   **High Priority:** [Specific Skills] (Daily practice)
+*   **Maintenance:** [Specific Skills] (Weekly review)
 
 Provide detailed, actionable guidance using Markdown formatting.`;
 
@@ -981,24 +987,32 @@ const generateWeeklyReport = async (userId, startDate, endDate) => {
 
 Generate a comprehensive weekly productivity report for the period ${startDate} to ${endDate}.
 
-Include:
-### Week Summary
-Overall productivity assessment.
+### 📊 Weekly Scorecard
+| Metric | Value | vs Last Week | Status |
+| :--- | :--- | :--- | :--- |
+| Schedule Completion | [%] | [+/- change] | [On Track/Needs Focus] |
+| Total Focus Hours | [Hours] | [+/- change] | ... |
+| Skills Advanced | [Count] | ... | ... |
 
-### Key Achievements
-What was accomplished. Use bullet points.
+### 🏆 Key Wins
+*List 3-5 specific achievements, completed tasks, or milestones hit.*
+*   **[Achievement 1]** - [Details]
+*   ...
 
-### Time Analysis
-How time was spent. Use a table if appropriate.
+### ⚠️ Misses & Challenges
+*List 2-3 areas where they fell short, with specific data.*
+*   **[Challenge 1]** - [Details]
 
-### Completion Rate
-Schedule and task completion statistics.
+### ⏱️ Time Analysis
+> **Insight:** [One sentence summary of how they spent their time]
 
-### Challenges
-Identified obstacles or missed items.
+*   **Most Productive Day:** [Day]
+*   **Top Category:** [Category Name]
 
-### Next Week Planning
-Recommendations for the upcoming week.
+### 🚀 Next Week's Game Plan
+1.  **Focus:** [One main goal]
+2.  **Fix:** [One thing to improve from this week]
+3.  **Maintain:** [One habit to keep up]
 
 Provide a detailed, motivating report with specific metrics and insights using Markdown formatting.`;
 
