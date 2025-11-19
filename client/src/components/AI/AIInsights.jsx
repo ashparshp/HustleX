@@ -37,22 +37,22 @@ const AIInsights = ({ insights, isLoading }) => {
             isDark ? "bg-gray-800 text-gray-600" : "bg-gray-100 text-gray-300"
           }`}
         >
-          <Zap className="w-10 h-10" />
+          <TrendingUp className="w-10 h-10" />
         </div>
         <h3
           className={`text-xl font-semibold mb-2 ${
             isDark ? "text-white" : "text-gray-900"
           }`}
         >
-          No insights yet
+          Productivity Insights
         </h3>
         <p
           className={`max-w-md mx-auto ${
             isDark ? "text-gray-400" : "text-gray-500"
           }`}
         >
-          Generate insights to get a deep dive into your productivity patterns
-          and performance.
+          Generate deep insights to understand your productivity patterns,
+          strengths, and areas for improvement.
         </p>
       </div>
     );

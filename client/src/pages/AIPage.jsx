@@ -435,24 +435,40 @@ const AIPage = () => {
             {activeTab === "schedule" && (
               <div>
                 {!scheduleSuggestions ? (
-                  <div className="text-center py-12">
+                  <div className="text-center py-16 px-4">
+                    <div
+                      className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 ${
+                        isDark
+                          ? "bg-gray-800 text-gray-600"
+                          : "bg-gray-100 text-gray-300"
+                      }`}
+                    >
+                      <Calendar className="w-10 h-10" />
+                    </div>
+                    <h3
+                      className={`text-xl font-semibold mb-2 ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      Smart Schedule Generation
+                    </h3>
                     <p
-                      className={`mb-6 ${
+                      className={`max-w-md mx-auto mb-8 ${
                         isDark ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
-                      Get AI-generated schedule suggestions based on your
-                      patterns
+                      Get AI-generated schedule suggestions optimized for your
+                      productivity patterns and goals.
                     </p>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleGetScheduleSuggestions}
                       disabled={isLoading}
-                      className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
+                      className={`px-8 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg shadow-emerald-500/20 ${
                         isDark
-                          ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400"
-                          : "bg-emerald-100/50 border border-emerald-300/50 text-emerald-600 hover:bg-emerald-200/70 hover:border-emerald-500"
+                          ? "bg-emerald-600 text-white hover:bg-emerald-500"
+                          : "bg-emerald-500 text-white hover:bg-emerald-600"
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       {isLoading ? "Generating..." : "Generate Schedule Ideas"}
@@ -460,15 +476,45 @@ const AIPage = () => {
                   </div>
                 ) : (
                   <div
-                    className={`p-6 rounded-lg border ${
+                    className={`rounded-3xl p-8 border ${
                       isDark
-                        ? "bg-gray-900/50 border-gray-700"
-                        : "bg-gray-50 border-gray-200"
+                        ? "bg-gray-800/30 border-gray-700/50"
+                        : "bg-white border-gray-100 shadow-xl shadow-gray-200/40"
                     }`}
                   >
-                    <FormattedMessage
-                      content={scheduleSuggestions.suggestions}
-                    />
+                    <div className="flex items-center gap-3 mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                      <div
+                        className={`p-2 rounded-lg ${
+                          isDark
+                            ? "bg-purple-500/20 text-purple-400"
+                            : "bg-purple-50 text-purple-600"
+                        }`}
+                      >
+                        <Calendar className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h2
+                          className={`text-xl font-bold ${
+                            isDark ? "text-white" : "text-gray-900"
+                          }`}
+                        >
+                          Optimized Schedules
+                        </h2>
+                        <p
+                          className={`text-sm ${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
+                          AI-suggested daily plans based on your habits
+                        </p>
+                      </div>
+                    </div>
+                    <div className="max-w-none">
+                      <FormattedMessage
+                        content={scheduleSuggestions.suggestions}
+                        className="text-base leading-relaxed space-y-6"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
@@ -477,24 +523,40 @@ const AIPage = () => {
             {activeTab === "skills" && (
               <div>
                 {!skillAnalysis ? (
-                  <div className="text-center py-12">
+                  <div className="text-center py-16 px-4">
+                    <div
+                      className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 ${
+                        isDark
+                          ? "bg-gray-800 text-gray-600"
+                          : "bg-gray-100 text-gray-300"
+                      }`}
+                    >
+                      <BarChart2 className="w-10 h-10" />
+                    </div>
+                    <h3
+                      className={`text-xl font-semibold mb-2 ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      Skill Gap Analysis
+                    </h3>
                     <p
-                      className={`mb-6 ${
+                      className={`max-w-md mx-auto mb-8 ${
                         isDark ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
-                      Analyze your skill progress and get a personalized
-                      learning path
+                      Analyze your current progress and receive a personalized
+                      learning path to master your goals.
                     </p>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleAnalyzeSkills}
                       disabled={isLoading}
-                      className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
+                      className={`px-8 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg shadow-blue-500/20 ${
                         isDark
-                          ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400"
-                          : "bg-emerald-100/50 border border-emerald-300/50 text-emerald-600 hover:bg-emerald-200/70 hover:border-emerald-500"
+                          ? "bg-blue-600 text-white hover:bg-blue-500"
+                          : "bg-blue-500 text-white hover:bg-blue-600"
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       {isLoading ? "Analyzing..." : "Analyze Skills"}
@@ -502,23 +564,69 @@ const AIPage = () => {
                   </div>
                 ) : (
                   <div
-                    className={`p-6 rounded-lg border ${
+                    className={`rounded-3xl p-8 border ${
                       isDark
-                        ? "bg-gray-900/50 border-gray-700"
-                        : "bg-gray-50 border-gray-200"
+                        ? "bg-gray-800/30 border-gray-700/50"
+                        : "bg-white border-gray-100 shadow-xl shadow-gray-200/40"
                     }`}
                   >
-                    <FormattedMessage content={skillAnalysis.analysis} />
-                    <p
-                      className={`text-sm mt-4 pt-4 border-t ${
+                    <div className="flex items-center gap-3 mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                      <div
+                        className={`p-2 rounded-lg ${
+                          isDark
+                            ? "bg-blue-500/20 text-blue-400"
+                            : "bg-blue-50 text-blue-600"
+                        }`}
+                      >
+                        <BarChart2 className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h2
+                          className={`text-xl font-bold ${
+                            isDark ? "text-white" : "text-gray-900"
+                          }`}
+                        >
+                          Skill Development Path
+                        </h2>
+                        <p
+                          className={`text-sm ${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
+                          Personalized roadmap to master your goals
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="max-w-none">
+                      <FormattedMessage
+                        content={skillAnalysis.analysis}
+                        className="text-base leading-relaxed space-y-6"
+                      />
+                    </div>
+
+                    <div
+                      className={`mt-8 pt-6 border-t flex items-center justify-between text-sm ${
                         isDark
-                          ? "text-gray-400 border-gray-700"
-                          : "text-gray-500 border-gray-200"
+                          ? "border-gray-700 text-gray-400"
+                          : "border-gray-200 text-gray-500"
                       }`}
                     >
-                      Skills analyzed: {skillAnalysis.skillCount} | Analyzed on:{" "}
-                      {new Date(skillAnalysis.analyzedAt).toLocaleString()}
-                    </p>
+                      <span>
+                        Skills analyzed:{" "}
+                        <span
+                          className={isDark ? "text-white" : "text-gray-900"}
+                        >
+                          {skillAnalysis.skillCount}
+                        </span>
+                      </span>
+                      <span>
+                        Analyzed on:{" "}
+                        {new Date(
+                          skillAnalysis.analyzedAt
+                        ).toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
@@ -527,67 +635,141 @@ const AIPage = () => {
             {activeTab === "report" && (
               <div>
                 {!weeklyReport ? (
-                  <div className="text-center py-12">
+                  <div className="text-center py-16 px-4">
+                    <div
+                      className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 ${
+                        isDark
+                          ? "bg-gray-800 text-gray-600"
+                          : "bg-gray-100 text-gray-300"
+                      }`}
+                    >
+                      <FileText className="w-10 h-10" />
+                    </div>
+                    <h3
+                      className={`text-xl font-semibold mb-2 ${
+                        isDark ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      Weekly Productivity Report
+                    </h3>
                     <p
-                      className={`mb-6 ${
+                      className={`max-w-md mx-auto mb-8 ${
                         isDark ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
-                      Generate a comprehensive weekly productivity report
+                      Generate a comprehensive analysis of your performance,
+                      time allocation, and achievements for the week.
                     </p>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleGetWeeklyReport}
                       disabled={isLoading}
-                      className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
+                      className={`px-8 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg shadow-indigo-500/20 ${
                         isDark
-                          ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400"
-                          : "bg-emerald-100/50 border border-emerald-300/50 text-emerald-600 hover:bg-emerald-200/70 hover:border-emerald-500"
+                          ? "bg-indigo-600 text-white hover:bg-indigo-500"
+                          : "bg-indigo-500 text-white hover:bg-indigo-600"
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       {isLoading ? "Generating..." : "Generate Weekly Report"}
                     </motion.button>
                   </div>
                 ) : (
-                  <div>
-                    <div
-                      className={`mb-4 p-4 rounded-lg ${
-                        isDark
-                          ? "bg-indigo-900/20 border border-indigo-500/30"
-                          : "bg-indigo-50 border border-indigo-200"
-                      }`}
-                    >
-                      <p
-                        className={`text-sm ${
-                          isDark ? "text-indigo-400" : "text-indigo-600"
-                        }`}
-                      >
-                        Report Period:{" "}
-                        {new Date(
-                          weeklyReport.period.startDate
-                        ).toLocaleDateString()}{" "}
-                        -{" "}
-                        {new Date(
-                          weeklyReport.period.endDate
-                        ).toLocaleDateString()}
-                      </p>
-                      <div className="mt-2 flex gap-4 text-sm">
-                        <span>Schedules: {weeklyReport.stats.schedules}</span>
-                        <span>Timetables: {weeklyReport.stats.timetables}</span>
-                        <span>
-                          Total Hours: {weeklyReport.stats.totalHours}
-                        </span>
+                  <div
+                    className={`rounded-3xl p-8 border ${
+                      isDark
+                        ? "bg-gray-800/30 border-gray-700/50"
+                        : "bg-white border-gray-100 shadow-xl shadow-gray-200/40"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-700 flex-wrap gap-4">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`p-2 rounded-lg ${
+                            isDark
+                              ? "bg-indigo-500/20 text-indigo-400"
+                              : "bg-indigo-50 text-indigo-600"
+                          }`}
+                        >
+                          <FileText className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <h2
+                            className={`text-xl font-bold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            Weekly Report
+                          </h2>
+                          <p
+                            className={`text-sm ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            {new Date(
+                              weeklyReport.period.startDate
+                            ).toLocaleDateString()}{" "}
+                            -{" "}
+                            {new Date(
+                              weeklyReport.period.endDate
+                            ).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <div
+                          className={`px-4 py-2 rounded-lg border ${
+                            isDark
+                              ? "bg-gray-800 border-gray-700"
+                              : "bg-gray-50 border-gray-200"
+                          }`}
+                        >
+                          <span
+                            className={`block text-xs ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            Schedules
+                          </span>
+                          <span
+                            className={`text-lg font-semibold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            {weeklyReport.stats.schedules}
+                          </span>
+                        </div>
+                        <div
+                          className={`px-4 py-2 rounded-lg border ${
+                            isDark
+                              ? "bg-gray-800 border-gray-700"
+                              : "bg-gray-50 border-gray-200"
+                          }`}
+                        >
+                          <span
+                            className={`block text-xs ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            Total Hours
+                          </span>
+                          <span
+                            className={`text-lg font-semibold ${
+                              isDark ? "text-white" : "text-gray-900"
+                            }`}
+                          >
+                            {weeklyReport.stats.totalHours}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    <div
-                      className={`p-6 rounded-lg border ${
-                        isDark
-                          ? "bg-gray-900/50 border-gray-700"
-                          : "bg-gray-50 border-gray-200"
-                      }`}
-                    >
-                      <FormattedMessage content={weeklyReport.report} />
+
+                    <div className="max-w-none">
+                      <FormattedMessage
+                        content={weeklyReport.report}
+                        className="text-base leading-relaxed space-y-6"
+                      />
                     </div>
                   </div>
                 )}
