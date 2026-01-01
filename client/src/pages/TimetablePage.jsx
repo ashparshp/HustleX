@@ -114,6 +114,7 @@ const TimetablePage = () => {
   } = useCategories("timetable");
 
   const [pageReady, setPageReady] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
   const [editingActivity, setEditingActivity] = useState(null);
   const [stats, setStats] = useState(null);
@@ -287,13 +288,13 @@ const TimetablePage = () => {
 
   const refreshTimetableData = async () => {
     try {
-      setPageReady(false);
+      setIsSwitching(true);
+      if (!pageReady) setPageReady(false); // Only trigger skeleton if we want a full reload effect, but mostly we want smooth switch
 
       await fetchTimetables();
 
       if (localCurrentTimetable) {
         await fetchCurrentWeek(localCurrentTimetable.id);
-
 
         const currentActivities = await fetchCurrentTimetableActivities(
           localCurrentTimetable.id
@@ -303,12 +304,18 @@ const TimetablePage = () => {
 
       forceUpdate();
 
+      // Ensure page is ready after initial load or refresh
+      if (!pageReady) {
+         setPageReady(true);
+      }
+
       setTimeout(() => {
-        setPageReady(true);
-      }, 200);
+        setIsSwitching(false);
+      }, 300);
     } catch (error) {
       console.error("Error refreshing data:", error);
-      setPageReady(true);
+      setIsSwitching(false);
+      setPageReady(true); // Ensure we don't get stuck in skeleton
     }
   };
 
@@ -572,7 +579,6 @@ const TimetablePage = () => {
           forceUpdate();
         } else {
           setLocalCurrentTimetable(null);
-          setCurrentWeek(null);
           setActivities([]);
         }
       } else {
@@ -594,7 +600,7 @@ const TimetablePage = () => {
   const handleTimetableChange = async (id) => {
     try {
       setIsSubmitting(true);
-      setPageReady(false);
+      setIsSwitching(true);
 
       const selected = timetables.find((t) => t.id === id);
 
@@ -613,12 +619,12 @@ const TimetablePage = () => {
 
         forceUpdate();
 
-        setTimeout(() => setPageReady(true), 200);
+        setTimeout(() => setIsSwitching(false), 300);
       }
     } catch (error) {
       console.error("Error changing timetable:", error);
       toast.error("Failed to change timetable");
-      setPageReady(true);
+      setIsSwitching(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -862,11 +868,12 @@ const TimetablePage = () => {
             className="relative group">
 
             <div
-              className={`relative rounded-xl p-5 backdrop-blur-sm border shadow-xl 
+              className={`relative rounded-xl p-5 backdrop-blur-sm border shadow-xl transition-all duration-300
               ${
               isDark ?
               "bg-indigo-950/20 border-gray-700" :
-              "bg-white border-gray-200"}`
+              "bg-white border-gray-200"}
+              ${isSwitching ? "opacity-50 scale-[0.99]" : "opacity-100 scale-100"}`
               }>
 
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
