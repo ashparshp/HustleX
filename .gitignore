@@ -1,0 +1,5 @@
+.DS_Store
+server.log
+docs/
+package.json
+package-lock.json
